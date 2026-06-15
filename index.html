@@ -765,7 +765,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
 </div></div>
 
 <!-- PANTALLA LOGIN -->
-<div class="login-screen" id="login-screen" style="display:none;">
+<div class="login-screen" id="login-screen">
   <div class="login-box">
     <div class="login-logo">
       <div class="login-logo-sh">ATAH</div>
@@ -1414,6 +1414,7 @@ function moverCategoria(playerId,destTeam){
       PLS[destTeam].push(rem);
       document.getElementById('m-pv').classList.remove('open');
       renderEqP();renderPad();
+dbAutoSave();
       alert('✅ '+rem.nombre+' fue movido/a a '+(TM[destTeam]?.n||destTeam)+'.');
       return;
     }
@@ -1565,13 +1566,13 @@ function toggleAsistEv(evId){
 
 function asistSet(evId, playerId, estado){
   setAsistEstado(evId,curTeam,playerId,estado);
-  renderAsistencia();
+  renderAsistencia();dbAutoSave();
 }
 
 function asistMarcarTodos(evId, estado){
   const jugadors=PLS[curTeam]||[];
   jugadors.forEach(p=>setAsistEstado(evId,curTeam,p.id,estado));
-  renderAsistencia();
+  renderAsistencia();dbAutoSave();
 }
 
 // ── IMPORTAR EXCEL ────────────────────────────────────────────────────────────
@@ -1793,7 +1794,7 @@ function confirmarBaja(){
   if(!p.historialBajas) p.historialBajas=[];
   p.historialBajas.push({fecha, motivo, anio: new Date(fecha).getFullYear()});
   document.getElementById('m-baja').classList.remove('open');
-  renderEqP(); renderPad();
+  renderEqP(); renderPad();dbAutoSave();
 }
 
 function reincorporar(playerId){
@@ -1801,7 +1802,7 @@ function reincorporar(playerId){
   if(!p) return;
   p.proceso = 'activo';
   document.getElementById('m-baja').classList.remove('open');
-  renderEqP(); renderPad();
+  renderEqP(); renderPad();dbAutoSave();
 }
 function openImportExcel(){
   excelData=[];excelHeaders=[];excelColMap={};
@@ -1914,7 +1915,7 @@ function excelImportar(){
   });
   PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});
   document.getElementById('m-excel').classList.remove('open');
-  renderEqP();renderPad();
+  renderEqP();renderPad();dbAutoSave();
   alert('✅ '+importados+' jugadores/as importados/as a '+( TM[curTeam]?.n||curTeam));
 }
 
@@ -1927,8 +1928,51 @@ function excelReset(){
 // ── SISTEMA DE USUARIOS Y PERMISOS ───────────────────────────────────────────
 const USERS=[
   {id:1,user:'asesor',pass:'atah2025',nombre:'Asesor Provincial',rol:'admin',teams:[]},
+  {id:2,user:'mentores',pass:'1234',nombre:'Mentores',rol:'admin',teams:[]},
 ];
 let curUser=null;
+
+
+// ── BASE DE DATOS — Google Sheets ─────────────────────────────────────────────
+const DB_URL = 'https://script.google.com/macros/s/AKfycby_nkfXOutu5d_OXlEBAoBT0STeeCml9lsW3xxWkptN80rUU2BeymDTzEncYim5_KULiQ/exec';
+let DB_SAVING = false;
+
+async function dbLoad() {
+  try {
+    const res = await fetch(DB_URL + '?action=load');
+    const data = await res.json();
+    if(data.EVS && data.EVS.length) { EVS.length=0; data.EVS.forEach(e=>{ EVS.push(e); if(e.id>=evIdC) evIdC=e.id+1; }); }
+    if(data.PLS && Object.keys(data.PLS).length) { Object.keys(data.PLS).forEach(k=>{ PLS[k]=data.PLS[k]; }); }
+    if(data.ASIST && data.ASIST.length) { ASIST.length=0; data.ASIST.forEach(a=>ASIST.push(a)); }
+    if(data.ENTS && data.ENTS.length) { ENTS.length=0; data.ENTS.forEach(e=>ENTS.push(e)); }
+    if(data.CONVS && data.CONVS.length) { CONVS.length=0; data.CONVS.forEach(c=>CONVS.push(c)); }
+    if(data.USERS && data.USERS.length) { data.USERS.forEach(u=>{ if(!USERS.find(x=>x.id===u.id)) USERS.push(u); }); }
+    console.log('✅ Datos cargados desde Google Sheets');
+    // Re-renderizar con los datos cargados
+    navegarPorRol();
+  } catch(err) {
+    console.warn('⚠️ Sin conexión a Sheets:', err);
+    navegarPorRol();
+  }
+}
+
+async function dbSave() {
+  if(DB_SAVING) return;
+  DB_SAVING = true;
+  try {
+    await fetch(DB_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'saveAll', payload: { EVS, PLS, ASIST, ENTS, CONVS, USERS } })
+    });
+  } catch(err) { console.warn('⚠️ Error al guardar:', err); }
+  DB_SAVING = false;
+}
+
+let dbSaveTimer = null;
+function dbAutoSave() {
+  if(dbSaveTimer) clearTimeout(dbSaveTimer);
+  dbSaveTimer = setTimeout(dbSave, 2000);
+}
 
 function doLogin(){
   const u=document.getElementById('login-user').value.trim().toLowerCase();
@@ -1940,19 +1984,14 @@ function doLogin(){
     return;
   }
   curUser=found;
-  // Guardar sesión
   try{localStorage.setItem('atah_session', JSON.stringify({user:found.user}));}catch(e){}
   document.getElementById('login-screen').style.display='none';
   document.getElementById('login-err').style.display='none';
   applyPermissions();
   buildTP();
-  if(curUser.rol==='admin'){
-    goTeam('mayor-m',null);
-  } else {
-    const t=curUser.teams[0];
-    if(t) goTeam(t,null);
-  }
   updateMobileNav();
+  navegarPorRol();
+  dbLoad();
 }
 
 function applyPermissions(){
@@ -2025,7 +2064,7 @@ function agregarUsuario(){
   if(!user||!pass||!nombre){alert('Completá todos los campos');return;}
   if(USERS.find(u=>u.user.toLowerCase()===user.toLowerCase())){alert('Ese usuario ya existe');return;}
   const newUser={id:Date.now(),user,pass,nombre,rol,teams:rol==='coach'?[...nuTeams]:[]};
-  USERS.push(newUser);
+  USERS.push(newUser);dbAutoSave();
   nuTeams=new Set();
   document.getElementById('nu-user').value='';
   document.getElementById('nu-pass').value='';
@@ -2039,7 +2078,7 @@ function agregarUsuario(){
 function eliminarUsuario(id){
   showConfirm('¿Eliminar usuario?','Esta acción no se puede deshacer.','Sí, eliminar',()=>{
     const i=USERS.findIndex(u=>u.id===id);
-    if(i>-1)USERS.splice(i,1);
+    if(i>-1)USERS.splice(i,1);dbAutoSave();
     renderUsersList();
   });
 }
@@ -2310,7 +2349,7 @@ function convMarcarTodos(estado){
 function guardarConvocatoria(){
   const c=CONVS.find(x=>x.id===curConvId);if(!c)return;
   document.getElementById('m-conv').classList.remove('open');
-  renderConvs();renderEqP();
+  renderConvs();renderEqP();dbAutoSave();
   const conv=c.jugadores.filter(j=>j.estado==='convocado').length;
   alert('✅ Convocatoria guardada: '+conv+' convocados/as.');
 }
@@ -2410,7 +2449,8 @@ function execConfirm(){
   if(_confirmCb){_confirmCb();_confirmCb=null;}
   else execDel(); // compatibilidad con flujo de eventos
 }
-function execDel(){if(!pendingDelId)return;const i=EVS.findIndex(e=>e.id===pendingDelId);if(i>-1)EVS.splice(i,1);['m-confirm','m-ev','m-evv'].forEach(id=>document.getElementById(id).classList.remove('open'));pendingDelId=null;_confirmCb=null;renderAgCal();if(curTeam)renderEqCal();}
+function execDel(){if(!pendingDelId)return;const i=EVS.findIndex(e=>e.id===pendingDelId);if(i>-1)EVS.splice(i,1);['m-confirm','m-ev','m-evv'].forEach(id=>document.getElementById(id).classList.remove('open'));pendingDelId=null;_confirmCb=null;renderAgCal();if(curTeam)renderEqCal();dbAutoSave();
+dbAutoSave();}
 
 // DÍAS
 let selDays=new Set(),currentCalMonth=5,currentCalYear=2025;
@@ -2582,11 +2622,12 @@ function saveEv(){
   }
   document.getElementById('m-ev').classList.remove('open');
   renderAgCal();if(curTeam)renderEqCal();
+  dbAutoSave();
 }
 function openEvView(id,ev2){ev2&&ev2.stopPropagation();evViewId=id;evViewTeam=curTeam||null;const ev=EVS.find(x=>x.id===id);if(!ev)return;const ti=TI[ev.type]||TI.entrenamiento;const dStr=ev.days.length===1?`${ev.days[0]} de ${MN[ev.month]}`:`${ev.days[0]}–${ev.days[ev.days.length-1]} de ${MN[ev.month]} (${ev.days.length} días)`;document.getElementById('evv-bar').style.background=ti.b;document.getElementById('evv-type').textContent=ti.e+' '+ti.l;document.getElementById('evv-type').style.color=ti.b;document.getElementById('evv-name').textContent=ti.e+' '+ti.l+' · '+dStr;document.getElementById('evv-date').textContent=dStr+' '+agY;document.getElementById('evv-hora').textContent=ev.horaI+' hs → '+ev.horaF+' hs';document.getElementById('evv-lugar').textContent=ev.lugar;const sH=ev.sels.length>=10?'<span class="tbadge" style="background:#E8ECF8;color:#1A2B5C;">Todas las selecciones</span>':ev.sels.map(s=>`<span class="tbadge" style="background:${TM[s]?.g==='F'?'rgba(232,123,30,0.12)':TM[s]?.g==='M'?'#E8ECF8':'#F3F0FA'};color:${TM[s]?.g==='F'?'#7A3A00':TM[s]?.g==='M'?'#1A2B5C':'#4A1A7A'};">${TM[s]?.n||s}</span>`).join('');document.getElementById('evv-sels').innerHTML=sH;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';
   const convBtn=document.getElementById('evv-conv-btn');
   if(convBtn)convBtn.style.display=['torneo','gira','partido'].includes(ev.type)?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';document.getElementById('m-evv').classList.add('open');}
-function evTogDone(){if(!evViewId)return;const ev=EVS.find(e=>e.id===evViewId);if(!ev)return;ev.done=!ev.done;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';renderAgCal();if(curTeam)renderEqCal();}
+function evTogDone(){if(!evViewId)return;const ev=EVS.find(e=>e.id===evViewId);if(!ev)return;ev.done=!ev.done;dbAutoSave();document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';renderAgCal();if(curTeam)renderEqCal();}
 
 // CALENDARIOS
 let agY=2026,agM=new Date().getMonth(),agFiltros=new Set(),eqFiltros=new Set(),agSelFiltros=new Set(),agVista='tabla';
@@ -2924,7 +2965,7 @@ function renderEqP(){const q=(document.getElementById('eq-srch')?.value||'').toL
 function selPos(p){curPos=p;['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));const m={'Arquero/a':'arq','Defensa':'def','Mediocampista':'med','Delantera/o':'del'};if(m[p])document.getElementById('ppb-'+m[p]).classList.add('sel');}
 function openNewP(){editPId=null;curPos=null;document.getElementById('mp-title').textContent='Nuevo jugador/a';document.getElementById('p-delbtn').style.display='none';['pf-n','pf-f','pf-d','pf-t','pf-tp','pf-e','pf-c'].forEach(i=>document.getElementById(i).value='');['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));document.getElementById('pf-sl').value=curTeam==='arqueros'?'Arqueros/as':TM[curTeam]?.n||'';document.getElementById('m-p').classList.add('open');setTimeout(()=>document.getElementById('pf-n').focus(),100);}
 function openEditPById(id){const p=allP().find(x=>x.id===id);if(!p)return;editPId=id;curPos=p.pos||null;document.getElementById('mp-title').textContent='Editar jugador/a';document.getElementById('p-delbtn').style.display='inline-flex';document.getElementById('pf-n').value=p.nombre||'';document.getElementById('pf-f').value=p.fnac||'';document.getElementById('pf-d').value=p.dni||'';document.getElementById('pf-t').value=p.tel||'';document.getElementById('pf-tp').value=p.telp||'';document.getElementById('pf-e').value=p.email||'';document.getElementById('pf-c').value=p.club||'';document.getElementById('pf-sl').value=curTeam==='arqueros'?'Arqueros/as':TM[curTeam]?.n||'';['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));const mp={'Arquero/a':'arq','Defensa':'def','Mediocampista':'med','Delantera/o':'del'};if(p.pos&&mp[p.pos])document.getElementById('ppb-'+mp[p.pos]).classList.add('sel');document.getElementById('m-pv').classList.remove('open');document.getElementById('m-p').classList.add('open');}
-function savePlayer(){const n=document.getElementById('pf-n').value.trim();if(!n){alert('Ingresá el nombre');return;}const data={nombre:n,fnac:document.getElementById('pf-f').value,dni:document.getElementById('pf-d').value.trim(),tel:document.getElementById('pf-t').value.trim(),telp:document.getElementById('pf-tp').value.trim(),email:document.getElementById('pf-e').value.trim(),club:document.getElementById('pf-c').value.trim(),pos:curPos||'—',teams:[curTeam]};if(!PLS[curTeam])PLS[curTeam]=[];if(editPId){const ap=allP().find(x=>x.id===editPId);if(ap)Object.assign(ap,data);}else{PLS[curTeam].push({id:Date.now(),...data});}if(PLS[curTeam])PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});document.getElementById('m-p').classList.remove('open');renderEqP();renderPad();}
+function savePlayer(){const n=document.getElementById('pf-n').value.trim();if(!n){alert('Ingresá el nombre');return;}const data={nombre:n,fnac:document.getElementById('pf-f').value,dni:document.getElementById('pf-d').value.trim(),tel:document.getElementById('pf-t').value.trim(),telp:document.getElementById('pf-tp').value.trim(),email:document.getElementById('pf-e').value.trim(),club:document.getElementById('pf-c').value.trim(),pos:curPos||'—',teams:[curTeam]};if(!PLS[curTeam])PLS[curTeam]=[];if(editPId){const ap=allP().find(x=>x.id===editPId);if(ap)Object.assign(ap,data);}else{PLS[curTeam].push({id:Date.now(),...data});}if(PLS[curTeam])PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});document.getElementById('m-p').classList.remove('open');renderEqP();renderPad();dbAutoSave();gsSave();}
 function delPlayer(){
   if(!editPId)return;
   const p=allP().find(x=>x.id===editPId);
@@ -2937,7 +2978,7 @@ function delPlayer(){
       if(PLS[curTeam])PLS[curTeam]=PLS[curTeam].filter(x=>x.id!==editPId);
       if(PLS[curTeam])PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});
       document.getElementById('m-p').classList.remove('open');
-      renderEqP();renderPad();
+      renderEqP();renderPad();dbAutoSave();
     }
   );
 }
@@ -2991,7 +3032,7 @@ function entAllTeams(){const a=ATEAMS.every(t=>entFTeams.has(t));if(a){entFTeams
 function resetEntF(){curRol=null;entFTeams=new Set();['ef2-n','ef2-f','ef2-d','ef2-t','ef2-e'].forEach(i=>document.getElementById(i).value='');ROL_KEYS.forEach(k=>document.getElementById('rb-'+ROL_IDS[k]).className='rol-btn');ATEAMS.forEach(t=>{const el=document.getElementById('etcb-'+t);if(el)el.className='tcb navy';});document.getElementById('etcb-all').className='tcb navy';}
 function openNewEnt(){editEntId=null;resetEntF();document.getElementById('ment-title').textContent='Nuevo/a entrenador/a';document.getElementById('ent-delbtn').style.display='none';document.getElementById('m-ent').classList.add('open');setTimeout(()=>document.getElementById('ef2-n').focus(),100);}
 function openEditEntById(id){const e=ENTS.find(x=>x.id===id);if(!e)return;editEntId=id;resetEntF();document.getElementById('ment-title').textContent='Editar entrenador/a';document.getElementById('ent-delbtn').style.display='inline-flex';document.getElementById('ef2-n').value=e.nombre||'';document.getElementById('ef2-f').value=e.fnac||'';document.getElementById('ef2-d').value=e.dni||'';document.getElementById('ef2-t').value=e.tel||'';document.getElementById('ef2-e').value=e.email||'';curRol=e.rol;const rid=ROL_IDS[e.rol];if(rid)document.getElementById('rb-'+rid).className='rol-btn sel';e.teams.forEach(t=>{const el=document.getElementById('etcb-'+t);if(el){entFTeams.add(t);el.className='tcb navy on';}});document.getElementById('etcb-all').className='tcb navy'+(ATEAMS.every(t=>entFTeams.has(t))?' on':'');document.getElementById('m-entv').classList.remove('open');document.getElementById('m-ent').classList.add('open');}
-function saveEnt(){const n=document.getElementById('ef2-n').value.trim();if(!n){alert('Ingresá el nombre');return;}if(!curRol){alert('Seleccioná un rol');return;}const data={nombre:n,fnac:document.getElementById('ef2-f').value,dni:document.getElementById('ef2-d').value.trim(),tel:document.getElementById('ef2-t').value.trim(),email:document.getElementById('ef2-e').value.trim(),rol:curRol,teams:[...entFTeams]};if(editEntId){const e=ENTS.find(x=>x.id===editEntId);if(e)Object.assign(e,data);}else{ENTS.push({id:++entIdC,...data});}document.getElementById('m-ent').classList.remove('open');renderEnts();}
+function saveEnt(){const n=document.getElementById('ef2-n').value.trim();if(!n){alert('Ingresá el nombre');return;}if(!curRol){alert('Seleccioná un rol');return;}const data={nombre:n,fnac:document.getElementById('ef2-f').value,dni:document.getElementById('ef2-d').value.trim(),tel:document.getElementById('ef2-t').value.trim(),email:document.getElementById('ef2-e').value.trim(),rol:curRol,teams:[...entFTeams]};if(editEntId){const e=ENTS.find(x=>x.id===editEntId);if(e)Object.assign(e,data);}else{ENTS.push({id:++entIdC,...data});}document.getElementById('m-ent').classList.remove('open');renderEnts();dbAutoSave();gsSave();}
 function delEnt(){
   if(!editEntId)return;
   const e=ENTS.find(x=>x.id===editEntId);
@@ -3004,7 +3045,7 @@ function delEnt(){
       const i=ENTS.findIndex(x=>x.id===editEntId);
       if(i>-1)ENTS.splice(i,1);
       document.getElementById('m-ent').classList.remove('open');
-      renderEnts();
+      renderEnts();dbAutoSave();
     }
   );
 }
@@ -3043,16 +3084,112 @@ function mnavTeam(teamId){
   const el=document.getElementById('mnav-'+teamId);if(el)el.classList.add('active');
   goTeam(teamId,null);
 }
-// Sin login — acceso directo
+// ── SINCRONIZACIÓN CON GOOGLE SHEETS ─────────────────────────────────────────
+const GS_API = 'https://script.google.com/macros/s/AKfycby_nkfXOutu5d_OXlEBAoBT0STeeCml9lsW3xxWkptN80rUU2BeymDTzEncYim5_KULiQ/exec';
+let gsSyncTimeout = null;
+
+// Cargar datos al iniciar
+async function gsLoad() {
+  try {
+    const resp = await fetch(GS_API + '?action=load');
+    const data = await resp.json();
+    if (data.EVS && Array.isArray(data.EVS) && data.EVS.length > 0) {
+      data.EVS.forEach(e => { if (!EVS.find(x=>x.id===e.id)) EVS.push(e); });
+      evIdC = Math.max(evIdC, ...EVS.map(e=>e.id));
+    }
+    if (data.PLS && typeof data.PLS === 'object') {
+      Object.keys(data.PLS).forEach(k => {
+        if (!PLS[k] || PLS[k].length === 0) PLS[k] = data.PLS[k];
+      });
+    }
+    if (data.ENTS && Array.isArray(data.ENTS) && data.ENTS.length > 0) {
+      data.ENTS.forEach(e => { if (!ENTS.find(x=>x.id===e.id)) ENTS.push(e); });
+    }
+    if (data.ASIST && Array.isArray(data.ASIST)) {
+      data.ASIST.forEach(a => { if (!ASIST.find(x=>x.evId===a.evId&&x.teamId===a.teamId)) ASIST.push(a); });
+    }
+    if (data.CONVS && Array.isArray(data.CONVS)) {
+      data.CONVS.forEach(c => { if (!CONVS.find(x=>x.id===c.id)) CONVS.push(c); });
+    }
+    if (data.USERS && Array.isArray(data.USERS) && data.USERS.length > 0) {
+      data.USERS.forEach(u => { if (!USERS.find(x=>x.id===u.id)) USERS.push(u); });
+    }
+    console.log('✅ Datos cargados desde Google Sheets');
+    showSyncStatus('✅ Datos cargados', 'green');
+  } catch(err) {
+    console.warn('⚠️ Sin conexión a Sheets:', err.message);
+    showSyncStatus('⚠️ Sin conexión', 'orange');
+  }
+}
+
+// Guardar todo (con debounce de 2 segundos)
+function gsSave() {
+  clearTimeout(gsSyncTimeout);
+  gsSyncTimeout = setTimeout(async () => {
+    showSyncStatus('💾 Guardando...', '#7A98B8');
+    try {
+      await fetch(GS_API, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'saveAll',
+          payload: { EVS, PLS, ENTS, ASIST, CONVS, USERS }
+        })
+      });
+      showSyncStatus('✅ Guardado', 'green');
+    } catch(err) {
+      showSyncStatus('❌ Error al guardar', 'red');
+    }
+  }, 2000);
+}
+
+// Indicador visual de sync en el topbar
+function showSyncStatus(msg, color) {
+  let el = document.getElementById('sync-status');
+  if (!el) {
+    el = document.createElement('span');
+    el.id = 'sync-status';
+    el.style.cssText = 'font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,0.1);margin-left:8px;transition:all .3s;';
+    const tb = document.getElementById('tb-title');
+    if (tb && tb.parentNode) tb.parentNode.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.color = color;
+  if (msg.includes('✅')) setTimeout(()=>{ if(el) el.textContent=''; }, 3000);
+}
+
+// Inicializar — esperar login
 buildTP();
-curUser={id:1,user:'asesor',pass:'atah2025',nombre:'Asesor Provincial',rol:'admin',teams:[]};
-goTeam('mayor-m',null);
-updateMobileNav();
-// Activar ítem correcto en barra inferior
-document.querySelectorAll('.mnav-item').forEach(el=>el.classList.remove('active'));
-const initEl=document.getElementById('mnav-mayor-m');if(initEl)initEl.classList.add('active');
+function navegarPorRol(){
+  if(curUser.rol==='admin'){
+    showPg('agenda',null);
+    document.querySelectorAll('.mnav-item').forEach(el=>el.classList.remove('active'));
+    const agEl=document.getElementById('mnav-agenda');if(agEl)agEl.classList.add('active');
+  } else {
+    const t=curUser.teams[0];
+    if(t){
+      goTeam(t,null);
+      document.querySelectorAll('.mnav-item').forEach(el=>el.classList.remove('active'));
+      const tEl=document.getElementById('mnav-'+t);if(tEl)tEl.classList.add('active');
+    }
+  }
+}
+// Intentar restaurar sesión
+try {
+  const saved=localStorage.getItem('atah_session');
+  if(saved){
+    const {user}=JSON.parse(saved);
+    const found=USERS.find(u=>u.user===user);
+    if(found){
+      curUser=found;
+      document.getElementById('login-screen').style.display='none';
+      applyPermissions();
+      updateMobileNav();
+      navegarPorRol();
+      dbLoad();
+    }
+  }
+} catch(e){}
 // Activar botón del año actual
-const curYr=new Date().getFullYear();
 const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
 </script>
 
@@ -3109,7 +3246,7 @@ const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
     <div class="mnav-item admin-only" id="mnav-usuarios" onclick="openUsers()">
       <i class="ti ti-users-group"></i>Usuarios
     </div>
-    <div class="mnav-item" onclick="checkLogout()" style="display:none;">
+    <div class="mnav-item" onclick="checkLogout()">
       <i class="ti ti-logout"></i>Salir
     </div>
   </div>
