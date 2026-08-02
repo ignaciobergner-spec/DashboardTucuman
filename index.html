@@ -2114,7 +2114,7 @@ function doLogin(){
   }
   curUser=found;
   // Guardar sesión
-  try{localStorage.setItem('atah_session_v4', JSON.stringify({user:found.user}));}catch(e){}
+  try{localStorage.setItem('atah_session_v5', JSON.stringify({user:found.user}));}catch(e){}
   document.getElementById('login-screen').style.display='none';
   document.getElementById('login-err').style.display='none';
   applyPermissions();
@@ -2143,7 +2143,7 @@ function canAccess(teamId){
 function checkLogout(){
   showConfirm('¿Cerrar sesión?','Vas a salir del sistema.','Sí, salir',()=>{
     curUser=null;
-    try{localStorage.removeItem('atah_session');}catch(e){}
+    try{['atah_session','atah_session_v2','atah_session_v3','atah_session_v5'].forEach(k=>localStorage.removeItem(k));}catch(e){}
     document.getElementById('login-screen').style.display='flex';
     document.getElementById('login-user').value='';
     document.getElementById('login-pass').value='';
@@ -2193,7 +2193,7 @@ function agregarUsuario(){
   if(!user||!pass||!nombre){alert('Completá todos los campos');return;}
   if(USERS.find(u=>u.user.toLowerCase()===user.toLowerCase())){alert('Ese usuario ya existe');return;}
   const newUser={id:Date.now(),user,pass,nombre,rol,teams:rol==='coach'?[...nuTeams]:[]};
-  USERS.push(newUser);
+  USERS.push(newUser);dbAutoSave();
   nuTeams=new Set();
   document.getElementById('nu-user').value='';
   document.getElementById('nu-pass').value='';
@@ -2207,7 +2207,7 @@ function agregarUsuario(){
 function eliminarUsuario(id){
   showConfirm('¿Eliminar usuario?','Esta acción no se puede deshacer.','Sí, eliminar',()=>{
     const i=USERS.findIndex(u=>u.id===id);
-    if(i>-1)USERS.splice(i,1);
+    if(i>-1){USERS.splice(i,1);dbAutoSave();}
     renderUsersList();
   });
 }
@@ -3987,7 +3987,11 @@ function navegarPorRol(){
   if(curUser.rol==='admin'){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     const pg=document.getElementById('pg-home');
-    if(pg){pg.classList.add('active');}
+    if(pg){pg.classList.add('active');pg.style.display='block';}
+    // Ocultar todas las demás páginas explícitamente
+    ['pg-agenda','pg-padron','pg-entrenadores','pg-equipo','pg-capacitaciones','pg-convocatorias'].forEach(id=>{
+      const el=document.getElementById(id);if(el){el.classList.remove('active');el.style.display='none';}
+    });
     const _t1=document.getElementById('tb-title');if(_t1)_t1.textContent='';
     const _t2=document.getElementById('tb-sub');if(_t2)_t2.textContent='';
     const _ta=document.getElementById('tb-acts');if(_ta)_ta.innerHTML='';
@@ -4067,14 +4071,12 @@ function dbAutoSave() {
 }
 
 buildTP();
-// Limpiar sesiones viejas
-['atah_session','atah_session_v2','atah_session_v3'].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
 // Activar botón del año actual
 const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
 // Restaurar sesión o mostrar login
 (function(){
   try {
-    const saved=localStorage.getItem('atah_session_v4');
+    const saved=localStorage.getItem('atah_session_v5');
     if(saved){
       const {user}=JSON.parse(saved);
       const found=USERS.find(u=>u.user===user);
@@ -4090,7 +4092,9 @@ const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
       }
     }
   } catch(e){}
-  // Sin sesión → el login ya es visible por defecto
+  // Sin sesión → mostrar login
+  const ls=document.getElementById('login-screen');
+  if(ls) ls.style.display='flex';
 })();
 </script>
 
@@ -4152,7 +4156,7 @@ const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
     <div class="mnav-item admin-only" id="mnav-usuarios" onclick="openUsers()">
       <i class="ti ti-users-group"></i>Usuarios
     </div>
-    <div class="mnav-item" onclick="checkLogout()" style="display:none;">
+    <div class="mnav-item" onclick="checkLogout()">
       <i class="ti ti-logout"></i>Salir
     </div>
   </div>
