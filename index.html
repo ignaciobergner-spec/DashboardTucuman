@@ -4144,7 +4144,7 @@ async function dbLoad() {
 }
 
 async function dbSave() {
-  if(DB_SAVING) return;
+  if(DB_SAVING || !DB_LOADED) return;
   DB_SAVING = true;
   try {
     const saves = [
