@@ -4203,8 +4203,23 @@ function dbAutoSave() {
 buildTP();
 // Activar botón del año actual
 const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
-// Restaurar sesión o mostrar login
-(function(){
+// Restaurar sesión: siempre cargar Supabase primero
+(async function(){
+  const ls=document.getElementById('login-screen');
+  
+  // Cargar usuarios de Supabase antes de cualquier validación
+  try {
+    const rows = await fetch(SB_URL+'/rest/v1/atah_data?id=eq.USERS', {
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    }).then(r=>r.json());
+    if(rows && rows[0] && Array.isArray(rows[0].data) && rows[0].data.length){
+      USERS.length=0;
+      rows[0].data.forEach(u=>USERS.push(u));
+      console.log('✅ Usuarios cargados:', USERS.length);
+    }
+  } catch(err){ console.warn('Sin Supabase al iniciar:', err); }
+
+  // Intentar restaurar sesión con usuarios actualizados
   try {
     const saved=localStorage.getItem('atah_session_v5');
     if(saved){
@@ -4212,18 +4227,17 @@ const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
       const found=USERS.find(u=>u.user===user);
       if(found){
         curUser=found;
-        const ls=document.getElementById('login-screen');
         if(ls) ls.style.display='none';
         applyPermissions();
         updateMobileNav();
         navegarPorRol();
-        dbLoad();
+        dbLoad(); // cargar resto de datos en background
         return;
       }
     }
   } catch(e){}
-  // Sin sesión → mostrar login
-  const ls=document.getElementById('login-screen');
+  
+  // Sin sesión válida → mostrar login
   if(ls) ls.style.display='flex';
 })();
 </script>
