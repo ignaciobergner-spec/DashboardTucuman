@@ -1053,23 +1053,23 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
             <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Agenda</div>
             <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Anual · Tabla · Mes</div>
           </div>
-          <div onclick="mnavGo('padron')" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
+          <div onclick="mnavGo('padron')" data-home-admin="1" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
             <i class="ti ti-address-book" style="font-size:24px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
             <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Padrón</div>
             <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Todos los jugadores</div>
           </div>
-          <div onclick="mnavGo('entrenadores')" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
+          <div onclick="mnavGo('entrenadores')" data-home-admin="1" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
             <i class="ti ti-address-book" style="font-size:24px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
             <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Entrenadores</div>
             <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Cuerpo técnico</div>
           </div>
-          <div onclick="openUsers()" class="admin-only" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
+          <div onclick="openUsers()" class="admin-only" data-home-admin="1" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
             <i class="ti ti-users-group" style="font-size:24px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
             <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Usuarios</div>
             <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Gestión de accesos</div>
           </div>
         </div>
-        <div style="font-size:11px;color:#E87B1E;font-weight:500;letter-spacing:.04em;margin-bottom:8px;">SELECCIONES FEMENINAS</div>
+        <div id="home-sec-f" style="font-size:11px;color:#E87B1E;font-weight:500;letter-spacing:.04em;margin-bottom:8px;">SELECCIONES FEMENINAS</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
           <div onclick="mnavTeam('mayor-f')" data-team-card="mayor-f" style="background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid #FDE8D0;display:flex;align-items:center;gap:8px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:#E87B1E;flex-shrink:0;"></span><span style="font-size:12px;font-weight:500;">Mayor F</span></div>
           <div onclick="mnavTeam('sub19-f')" data-team-card="sub19-f" style="background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid #FDE8D0;display:flex;align-items:center;gap:8px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:#E87B1E;opacity:.7;flex-shrink:0;"></span><span style="font-size:12px;font-weight:500;">Sub-19 F</span></div>
@@ -1077,7 +1077,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
           <div onclick="mnavTeam('sub14-f')" data-team-card="sub14-f" style="background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid #FDE8D0;display:flex;align-items:center;gap:8px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:#E87B1E;opacity:.7;flex-shrink:0;"></span><span style="font-size:12px;font-weight:500;">Sub-14 F</span></div>
           <div onclick="mnavTeam('sub12-f')" data-team-card="sub12-f" style="background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid #FDE8D0;display:flex;align-items:center;gap:8px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:#E87B1E;opacity:.7;flex-shrink:0;"></span><span style="font-size:12px;font-weight:500;">Sub-12 F</span></div>
         </div>
-        <div style="font-size:11px;color:#1A2B5C;font-weight:500;letter-spacing:.04em;margin-bottom:8px;">SELECCIONES MASCULINAS</div>
+        <div id="home-sec-m" style="font-size:11px;color:#1A2B5C;font-weight:500;letter-spacing:.04em;margin-bottom:8px;">SELECCIONES MASCULINAS</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
           <div onclick="mnavTeam('mayor-m')" data-team-card="mayor-m" style="background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid #C8DAF0;display:flex;align-items:center;gap:8px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:#1A2B5C;flex-shrink:0;"></span><span style="font-size:12px;font-weight:500;">Mayor M</span></div>
           <div onclick="mnavTeam('sub19-m')" data-team-card="sub19-m" style="background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid #C8DAF0;display:flex;align-items:center;gap:8px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:#1A2B5C;opacity:.7;flex-shrink:0;"></span><span style="font-size:12px;font-weight:500;">Sub-19 M</span></div>
@@ -2134,6 +2134,14 @@ function applyPermissions(){
   }
 }
 
+
+// ── FUNCIÓN CENTRAL DE PERMISOS ───────────────────────────────────────────────
+function aplicarTodosPermisos(){
+  if(!curUser) return;
+  applyPermissions();
+  updateMobileNav();
+  filtrarHomeEquipos();
+}
 function canAccess(teamId){
   if(!curUser)return false;
   if(curUser.rol==='admin')return true;
@@ -2207,12 +2215,32 @@ function agregarUsuario(){
 
 
 function filtrarHomeEquipos(){
-  if(!curUser || curUser.rol==='admin') return; // Admin ve todo
-  // Ocultar tarjetas de equipos sin acceso en pg-home
+  if(!curUser) return;
+  const esAdmin = curUser.rol==='admin';
+  // Ocultar tarjetas de equipos sin acceso
   document.querySelectorAll('[data-team-card]').forEach(card=>{
     const t=card.dataset.teamCard;
     card.style.display=canAccess(t)?'':'none';
   });
+  // Ocultar secciones admin si no es admin
+  const adminCards=document.querySelectorAll('[data-home-admin]');
+  adminCards.forEach(card=>{
+    card.style.display=esAdmin?'':'none';
+  });
+  // Ocultar categorías vacías
+  const secF=document.getElementById('home-sec-f');
+  const secM=document.getElementById('home-sec-m');
+  // Ocultar secciones si no tiene equipos visibles
+  if(secF){
+    const visF=document.querySelectorAll('[data-team-card$="-f"],[data-team-card="arqueros"]');
+    const anyF=[...visF].some(c=>c.style.display!=='none');
+    secF.style.display=anyF?'':'none';
+  }
+  if(secM){
+    const visM=document.querySelectorAll('[data-team-card$="-m"]');
+    const anyM=[...visM].some(c=>c.style.display!=='none');
+    secM.style.display=anyM?'':'none';
+  }
 }
 function editarUsuario(id){
   const u=USERS.find(x=>x.id===id);
@@ -4021,6 +4049,7 @@ function mnavGo(id){
     if(sal&&curUser) sal.textContent='Hola, '+curUser.nombre.split(' ')[0]+' 👋';
     const hlogo=document.getElementById('home-logo');
     if(hlogo) hlogo.src=ATAH_LOGO;
+    setTimeout(aplicarTodosPermisos, 50);
     return;
   }
   // original mnavGo:
@@ -4097,6 +4126,12 @@ async function dbLoad() {
       if(row.id === 'USERS' && d.length)  { d.forEach(u=>{ if(!USERS.find(x=>x.id===u.id)) USERS.push(u); }); }
     });
     console.log('✅ Datos cargados desde Supabase');
+    // Re-aplicar permisos con usuarios actualizados de Supabase
+    if(curUser){
+      const updatedUser = USERS.find(u=>u.user===curUser.user);
+      if(updatedUser) curUser=updatedUser;
+      aplicarTodosPermisos();
+    }
   } catch(err) { console.warn('⚠️ Sin conexión a Supabase:', err); }
 }
 
