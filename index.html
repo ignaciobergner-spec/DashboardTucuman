@@ -1326,215 +1326,22 @@ const ROLES={'Entrenador/a principal':{label:'Entrenador/a principal',cls:'rol-p
 const ROL_KEYS=Object.keys(ROLES);
 const ROL_IDS={'Entrenador/a principal':'princ','Asistente':'asist','Entrenador/a de arqueros/as':'arqc','Preparador/a físico/a':'fis','Mentor/a':'mentor'};
 
-const EVS=[
-  {id:1,month:1,days:[8],horaI:'08:00',horaF:'10:00',type:'entrenamiento',sels:ATEAMS.filter(t=>t!=='arqueros'),lugar:'Cancha ATAH',done:false},
-  {id:2,month:2,days:[15,16,17],horaI:'09:00',horaF:'18:00',type:'torneo',sels:['mayor-f','mayor-m'],lugar:'Club Atlético',done:false},
-  {id:3,month:3,days:[5],horaI:'10:00',horaF:'12:00',type:'partido',sels:['mayor-f','mayor-m','sub19-f','sub19-m'],lugar:'Club Náutico',done:false},
-  {id:4,month:4,days:[17,18,19],horaI:'08:00',horaF:'20:00',type:'torneo',sels:['mayor-f','mayor-m','sub19-f'],lugar:'Salta',done:false},
-  {id:5,month:5,days:[14,15,16,17],horaI:'08:00',horaF:'20:00',type:'torneo',sels:['mayor-f','mayor-m'],lugar:'Buenos Aires',done:false},
-  {id:6,month:5,days:[21],horaI:'09:00',horaF:'12:00',type:'entrenamiento',sels:['mayor-f','mayor-m','sub19-f','sub19-m'],lugar:'Cancha ATAH',done:false},
-  {id:7,month:6,days:[12,13],horaI:'08:00',horaF:'18:00',type:'torneo',sels:['sub16-f','sub16-m'],lugar:'Tucumán',done:false},
-  {id:8,month:6,days:[19,20,21,22],horaI:'07:00',horaF:'22:00',type:'gira',sels:['mayor-f','mayor-m','sub19-f','sub19-m'],lugar:'Jujuy',done:false},
-  {id:9,month:7,days:[16,17,18,19,20],horaI:'08:00',horaF:'20:00',type:'torneo',sels:['sub19-f','sub19-m'],lugar:'Córdoba',done:false},
-  {id:10,month:8,days:[6],horaI:'09:00',horaF:'14:00',type:'partido',sels:['mayor-f','mayor-m','sub19-f','sub19-m'],lugar:'Cancha ATAH',done:false},
-  {id:11,month:10,days:[8,9,10,11],horaI:'09:00',horaF:'18:00',type:'torneo',sels:['mayor-f','mayor-m','sub19-f','sub19-m'],lugar:'Cancha ATAH',done:false},
-  {id:12,month:10,days:[22,23,24,25,26,27,28],horaI:'07:00',horaF:'23:00',type:'gira',sels:['sub16-f','sub16-m'],lugar:'Chile',done:false},
-];
+const EVS=[];
 
 const PLS={};ATEAMS.forEach(k=>PLS[k]=[]);
-PLS['mayor-m']=[{id:1,nombre:'Rodríguez, Matías',fnac:'1998-04-12',dni:'38012345',tel:'381-412-1111',telp:'381-412-0001',email:'mrodriguez@mail.com',club:'Club Atlético',pos:'Defensa',teams:['mayor-m']},{id:2,nombre:'García, Lucas',fnac:'1997-08-22',dni:'37654321',tel:'381-412-2222',telp:'381-412-0002',email:'lgarcia@mail.com',club:'San Jorge HC',pos:'Mediocampista',teams:['mayor-m']},{id:3,nombre:'Fernández, Tomás',fnac:'1999-01-05',dni:'39876543',tel:'381-412-3333',telp:'',email:'',club:'Tucumán RC',pos:'Delantera/o',teams:['mayor-m']},{id:4,nombre:'López, Santiago',fnac:'2000-11-18',dni:'40123456',tel:'381-412-4444',telp:'381-412-0004',email:'slopez@mail.com',club:'Los Cardones',pos:'Arquero/a',teams:['mayor-m']},{id:5,nombre:'Martínez, Franco',fnac:'1998-06-30',dni:'38234567',tel:'381-412-5555',telp:'',email:'fmartinez@mail.com',club:'Club Atlético',pos:'Defensa',teams:['mayor-m']}];
-PLS['mayor-f']=[
-  {id:412,nombre:'Aimaro, Emilia',fnac:'',dni:'',tel:'',telp:'',email:'',club:'TRC',pos:'—',teams:['mayor-f']},
-  {id:407,nombre:'Almaraz, Milagros',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Huira',pos:'—',teams:['mayor-f']},
-  {id:405,nombre:'Barreiro, Agustina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:415,nombre:'Barros, Rocío',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:411,nombre:'Bravo, Catalina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'CASM',pos:'—',teams:['mayor-f']},
-  {id:424,nombre:'Bringas, Agustina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:414,nombre:'Campero, Rocío',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:408,nombre:'Casmuz, Agustina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'TRC',pos:'—',teams:['mayor-f']},
-  {id:425,nombre:'Córdoba, Lucía',fnac:'',dni:'',tel:'',telp:'',email:'',club:'JCT',pos:'—',teams:['mayor-f']},
-  {id:420,nombre:'Dande, Guillermina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Huira',pos:'—',teams:['mayor-f']},
-  {id:418,nombre:'Fernández, Malena',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:427,nombre:'García Galo, Luciana',fnac:'',dni:'',tel:'',telp:'',email:'',club:'',pos:'—',teams:['mayor-f']},
-  {id:423,nombre:'Grandi, Paloma',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Tarcos',pos:'—',teams:['mayor-f']},
-  {id:406,nombre:'Gravano, Candelaria',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Tarcos',pos:'—',teams:['mayor-f']},
-  {id:421,nombre:'Gutiérrez, Paula',fnac:'',dni:'',tel:'',telp:'',email:'',club:'TRC',pos:'—',teams:['mayor-f']},
-  {id:416,nombre:'Lamas, Rosario',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:426,nombre:'Lascano, Delfina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Huira',pos:'—',teams:['mayor-f']},
-  {id:413,nombre:'López, Abril',fnac:'',dni:'',tel:'',telp:'',email:'',club:'CASM',pos:'—',teams:['mayor-f']},
-  {id:431,nombre:'Machín, Camila',fnac:'',dni:'',tel:'',telp:'',email:'',club:'',pos:'—',teams:['mayor-f']},
-  {id:409,nombre:'Martínez, Candela',fnac:'',dni:'',tel:'',telp:'',email:'',club:'UNI',pos:'—',teams:['mayor-f']},
-  {id:430,nombre:'Migles, Luisina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'',pos:'—',teams:['mayor-f']},
-  {id:429,nombre:'Miranda, Agustina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'',pos:'—',teams:['mayor-f']},
-  {id:401,nombre:'Ortiz, Ana',fnac:'',dni:'',tel:'',telp:'',email:'',club:'CASM',pos:'—',teams:['mayor-f']},
-  {id:419,nombre:'Palacio, Julieta',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Tarcos',pos:'—',teams:['mayor-f']},
-  {id:404,nombre:'Pujadas, Virginia',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Huira',pos:'—',teams:['mayor-f']},
-  {id:433,nombre:'Riera, Ana Paula',fnac:'',dni:'',tel:'',telp:'',email:'',club:'',pos:'—',teams:['mayor-f']},
-  {id:410,nombre:'Rodríguez, Julieta',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:403,nombre:'Salazar, Paulina',fnac:'',dni:'',tel:'',telp:'',email:'',club:'JCT',pos:'—',teams:['mayor-f']},
-  {id:428,nombre:'Santamarina, Paula',fnac:'',dni:'',tel:'',telp:'',email:'',club:'',pos:'—',teams:['mayor-f']},
-  {id:417,nombre:'Santamarina, Victoria',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Huira',pos:'—',teams:['mayor-f']},
-  {id:432,nombre:'Sauze, Victoria',fnac:'',dni:'',tel:'',telp:'',email:'',club:'',pos:'—',teams:['mayor-f']},
-  {id:422,nombre:'Suárez, Constanza',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']},
-  {id:402,nombre:'Vasile, Sofía',fnac:'',dni:'',tel:'',telp:'',email:'',club:'NYG',pos:'—',teams:['mayor-f']}
-];
-PLS['sub19-m']=[{id:10,nombre:'Herrera, Nicolás',fnac:'2006-04-18',dni:'44234567',tel:'381-414-1111',telp:'381-414-0001',email:'',club:'San Jorge HC',pos:'Mediocampista',teams:['sub19-m']}];
-PLS['sub19-f']=[
-  {id:575,nombre:'Agustina Garcia Galo',fnac:'2007-10-10',dni:'48345979',tel:'',telp:'',email:'agustinagarciagalo@gmail.com',club:'Tucuman Rugby',pos:'—',teams:['sub19-f']},
-  {id:574,nombre:'Ana Valentina Suarez',fnac:'2008-02-16',dni:'48712227',tel:'',telp:'',email:'as8720432@gmail.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub19-f']},
-  {id:607,nombre:'Anna Camila Caceres',fnac:'2009-11-02',dni:'49906672',tel:'',telp:'',email:'cacerescamila3434@gmail.com',club:'Atletico Tucuman',pos:'—',teams:['sub19-f']},
-  {id:604,nombre:'Ariana Sofia Diaz',fnac:'2009-07-30',dni:'49687950',tel:'',telp:'',email:'aridiaz557@gmail.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub19-f']},
-  {id:592,nombre:'Camila Duhart',fnac:'2007-11-07',dni:'48418087',tel:'',telp:'',email:'camila.duhart.07@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:584,nombre:'Catalina Bravo',fnac:'2008-03-11',dni:'48711536',tel:'',telp:'',email:'catubravo11@gmail.com',club:'San Martin de Tucuman',pos:'—',teams:['sub19-f']},
-  {id:595,nombre:'Catalina Reginato',fnac:'2009-01-15',dni:'49151554',tel:'',telp:'',email:'catareginato8@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:588,nombre:'Catalina Vallejo',fnac:'2007-06-07',dni:'48120619',tel:'',telp:'',email:'catuvallejo1@gmail.com',club:'Tucuman Rugby',pos:'—',teams:['sub19-f']},
-  {id:608,nombre:'Caterina Boero',fnac:'2008-10-21',dni:'49047193',tel:'',telp:'',email:'cateeboero2110@gmail.com',club:'Tucuman Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:586,nombre:'Delfina Lazcano',fnac:'2008-08-23',dni:'49047055',tel:'',telp:'',email:'delfilaz75@gmail.com',club:'Bs Cricket & Rugby',pos:'—',teams:['sub19-f']},
-  {id:573,nombre:'Elena Gramajo',fnac:'2007-04-16',dni:'47917219',tel:'',telp:'',email:'Elegramcan1@gmail.com',club:'Tucuman Lawn Tennis',pos:'—',teams:['sub19-f']},
-  {id:609,nombre:'Emilia Goldman',fnac:'2009-04-12',dni:'49505203',tel:'',telp:'',email:'emiliagoldman1@gmail.com',club:'Tucuman Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:576,nombre:'Emma Garmendia',fnac:'2007-09-15',dni:'48347761',tel:'',telp:'',email:'emmagarmendia354@gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:585,nombre:'Francisca Lopez',fnac:'2009-10-03',dni:'49777712',tel:'',telp:'',email:'franchulopez61@gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:577,nombre:'Guillermina Nicolari',fnac:'2009-01-15',dni:'49151722',tel:'',telp:'',email:'guillernicolari@gmail.com',club:'San Martin de Tucuman',pos:'—',teams:['sub19-f']},
-  {id:572,nombre:'Isabella Belluscio',fnac:'2009-06-19',dni:'49615209',tel:'',telp:'',email:'Isabellabelluscio13@gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:600,nombre:'Julieta Cardozo',fnac:'2007-03-27',dni:'47917289',tel:'',telp:'',email:'julietacardozo2703@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:579,nombre:'Julieta Vigo',fnac:'2008-03-11',dni:'48664568',tel:'',telp:'',email:'Julietavigo07@gmail.com',club:'Tucuman Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:580,nombre:'Lucia Galindez',fnac:'2008-01-24',dni:'48956818',tel:'',telp:'',email:'luciagalindez24@gmail.com',club:'Tucuman Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:596,nombre:'Lucia Mia Albornoz',fnac:'2007-04-21',dni:'47756942',tel:'',telp:'',email:'albornozluciamia@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:583,nombre:'Lucia Pando',fnac:'2009-12-07',dni:'49946475',tel:'',telp:'',email:'luciapando99@gmail.com',club:'Tucuman Lawn Tennis',pos:'—',teams:['sub19-f']},
-  {id:601,nombre:'Lujan Lizarraga',fnac:'2007-09-18',dni:'48284880',tel:'',telp:'',email:'lujanlizarraga18@gmail.com',club:'Tucuman Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:610,nombre:'Maia Bellusci',fnac:'2009-03-10',dni:'49150392',tel:'',telp:'',email:'belluscimaia@gmail.com',club:'Tucuman Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:599,nombre:'Martina Victoria Brito',fnac:'2008-12-18',dni:'49209077',tel:'',telp:'',email:'martubritoo08@gmail.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub19-f']},
-  {id:598,nombre:'Mercedes Maria Kaufman',fnac:'2009-05-26',dni:'49616636',tel:'',telp:'',email:'mercedesmkpa@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:578,nombre:'Milagros Guzman',fnac:'',dni:'48484774',tel:'',telp:'',email:'milagrosguzman2019@gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:605,nombre:'Milena Adle Hillen',fnac:'2008-10-30',dni:'49148686',tel:'',telp:'',email:'milenaadlehillen@gmail.com',club:'Club Atletico San Martin',pos:'—',teams:['sub19-f']},
-  {id:611,nombre:'Olivia Suklje Scarso',fnac:'2008-01-28',dni:'48546629',tel:'',telp:'',email:'osukljescarso@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:589,nombre:'Oriana Morales',fnac:'2009-03-06',dni:'49442614',tel:'',telp:'',email:'orisofiff09@gmail.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub19-f']},
-  {id:593,nombre:'Paz Zalazar',fnac:'2009-02-18',dni:'49344474',tel:'',telp:'',email:'mariadelapazzr@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:606,nombre:'Pia Sofia Aguirre',fnac:'2009-09-06',dni:'49775639',tel:'',telp:'',email:'piasofiaaguirre@gmail.com',club:'Club Atletico San Martin',pos:'—',teams:['sub19-f']},
-  {id:591,nombre:'Rebora Maria del Rosario',fnac:'2007-06-12',dni:'48120986',tel:'',telp:'',email:'mrosariorebora@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:581,nombre:'Serafina Frias Silva',fnac:'2008-08-19',dni:'48957853',tel:'',telp:'',email:'serafriassilvaaa@gmail.com',club:'Tucuman Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:594,nombre:'Sofia Luna',fnac:'2008-05-22',dni:'48784796',tel:'',telp:'',email:'sofialunajct@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:571,nombre:'Sofia Melchori',fnac:'2007-01-13',dni:'48118985',tel:'',telp:'',email:'Smelchiorinunez@gmail.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub19-f']},
-  {id:582,nombre:'Sofia Samoluk',fnac:'2009-01-29',dni:'49151747',tel:'',telp:'',email:'Sofiasamoluk08@gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:603,nombre:'Valentina Solana Valenzuela',fnac:'2007-11-15',dni:'48485183',tel:'',telp:'',email:'valentinasolanavalenzuela@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub19-f']},
-  {id:597,nombre:'Valentina Zar',fnac:'2007-05-08',dni:'48009946',tel:'',telp:'',email:'zarvalentina98@gmail.com',club:'Jockey Club',pos:'—',teams:['sub19-f']},
-  {id:602,nombre:'Victoria Alvarez Amaya',fnac:'2009-06-11',dni:'49615203',tel:'',telp:'',email:'vickyvickybailarina@gmail.com',club:'Universitario Rubgy Club',pos:'—',teams:['sub19-f']},
-  {id:587,nombre:'Victoria Diaz',fnac:'2009-07-30',dni:'49688063',tel:'',telp:'',email:'Victoria_diaz_315@icloud.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub19-f']},
-  {id:590,nombre:'Victoria Fagalde',fnac:'2009-09-21',dni:'49948282',tel:'',telp:'',email:'fagaldevictoria@gmail.com',club:'Tucuman Rugby',pos:'—',teams:['sub19-f']}
-];
-PLS['sub16-m']=[{id:12,nombre:'Castro, Ezequiel',fnac:'2009-03-12',dni:'47890123',tel:'',telp:'381-416-0001',email:'',club:'Club Atlético',pos:'Defensa',teams:['sub16-m']}];
-PLS['sub16-f']=[
-  {id:532,nombre:'Agostina Molina',fnac:'2011-01-01',dni:'50814168',tel:'',telp:'',email:'agosmolina2011@icloud.com',club:'Club Atletico San Martin',pos:'—',teams:['sub16-f']},
-  {id:539,nombre:'Agostina Salazar Caro',fnac:'2011-02-09',dni:'50831146',tel:'',telp:'',email:'jgostinasalazarcaro120@gmail.com',club:'Jockey',pos:'—',teams:['sub16-f']},
-  {id:563,nombre:'Alma Monaco',fnac:'2010-10-22',dni:'50600614',tel:'',telp:'',email:'almiiiimon@gmail.com',club:'UNIVERSITARIO RUGBY CLUB',pos:'—',teams:['sub16-f']},
-  {id:557,nombre:'Anita Corbalan Costilla',fnac:'2010-04-01',dni:'50105878',tel:'',telp:'',email:'anicorcos@gmail.com',club:'Lawn Tennis',pos:'—',teams:['sub16-f']},
-  {id:535,nombre:'Cata Antonella',fnac:'2011-01-24',dni:'50617142',tel:'',telp:'',email:'antonellacata601@gmail.com',club:'Club Atlético Tucumán',pos:'—',teams:['sub16-f']},
-  {id:569,nombre:'Catalina Chemes',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Jockey Club',pos:'—',teams:['sub16-f']},
-  {id:536,nombre:'Catalina Torres',fnac:'2011-02-01',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub16-f']},
-  {id:561,nombre:'Clementina Coronel reina',fnac:'2010-09-24',dni:'50614986',tel:'',telp:'',email:'Clemencoronel759@gmail.com',club:'Jockey club de Tucuman',pos:'—',teams:['sub16-f']},
-  {id:533,nombre:'Delfina Paz',fnac:'2011-01-15',dni:'50814120',tel:'',telp:'',email:'delfinapaz01@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:540,nombre:'Ernestina Sanz',fnac:'2011-02-11',dni:'50831074',tel:'',telp:'',email:'ernestina.sanzservetto@sanpatriciotucuman.edu.ar',club:'Tucuman Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:549,nombre:'Giovana Montesinos',fnac:'2011-10-12',dni:'51447877',tel:'',telp:'',email:'giovanamontesinos8@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:541,nombre:'Gordillo Moreno Gimena',fnac:'2011-02-11',dni:'50876667',tel:'',telp:'',email:'gime8650@gmail.com',club:'Huirapuca',pos:'—',teams:['sub16-f']},
-  {id:567,nombre:'Guada Granado',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Universitario Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:558,nombre:'Guadalupe Dumit Francesena',fnac:'2010-04-06',dni:'50201604',tel:'',telp:'',email:'guadadumitt@gmail.com',club:'San martin',pos:'—',teams:['sub16-f']},
-  {id:543,nombre:'Guillermina Lubo',fnac:'2011-03-17',dni:'50932614',tel:'',telp:'',email:'Guillerminalubo078@gmail.com',club:'Universitario rugby club',pos:'—',teams:['sub16-f']},
-  {id:547,nombre:'Helena Diaz Silva',fnac:'2011-09-15',dni:'51225165',tel:'',telp:'',email:'Helenadiazsilva6@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:556,nombre:'Helena Teran',fnac:'2010-02-22',dni:'50068792',tel:'',telp:'',email:'helenitateran2010@gmail.com',club:'Tucumán Rugby',pos:'—',teams:['sub16-f']},
-  {id:562,nombre:'Josefina Fagalde',fnac:'2010-10-20',dni:'49691048',tel:'',telp:'',email:'fagaldeejosefina@gmail.col',club:'tucuman rugby',pos:'—',teams:['sub16-f']},
-  {id:559,nombre:'Josefina Paz',fnac:'2010-06-02',dni:'50318161',tel:'',telp:'',email:'jojopazc@gmail.com',club:'Jockey club',pos:'—',teams:['sub16-f']},
-  {id:551,nombre:'Julia lichtmajer',fnac:'',dni:'51448470',tel:'',telp:'',email:'Julialichtmajersantos@gmail.com',club:'Jockey club',pos:'—',teams:['sub16-f']},
-  {id:544,nombre:'Juliana Rojas',fnac:'2011-05-22',dni:'51092775',tel:'',telp:'',email:'julianitarojas2011@gmail.com',club:'Tucuman Rugby',pos:'—',teams:['sub16-f']},
-  {id:555,nombre:'Julieta Vallejo',fnac:'2010-02-10',dni:'50068832',tel:'',telp:'',email:'julietavallejo308@gmail.com',club:'Tucumán Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:565,nombre:'Justina Navarro Pérez',fnac:'2010-11-25',dni:'50815614',tel:'',telp:'',email:'justinanavarro1025@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:545,nombre:'Justina cardozo pujol',fnac:'2011-06-17',dni:'51093144',tel:'',telp:'',email:'Cardozojusss@gmail.com',club:'Universitario rugby club',pos:'—',teams:['sub16-f']},
-  {id:568,nombre:'Lucia Cruz',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Universitario Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:553,nombre:'Lucia Maltez',fnac:'2010-01-13',dni:'49946856',tel:'',telp:'',email:'lucianahimaltez@gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:570,nombre:'Luisana Coria',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub16-f']},
-  {id:560,nombre:'Luna Yazmina Liebano Diaz',fnac:'2010-07-20',dni:'50464221',tel:'',telp:'',email:'lunaliebano@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:542,nombre:'Margarita Budeguer',fnac:'2011-03-09',dni:'50831843',tel:'',telp:'',email:'Margabudeguer08@gmail.com',club:'Universitario rugby club',pos:'—',teams:['sub16-f']},
-  {id:534,nombre:'Martina Turbay',fnac:'2011-01-20',dni:'50814205',tel:'',telp:'',email:'martinaturbay1@gmail.com',club:'universitario',pos:'—',teams:['sub16-f']},
-  {id:550,nombre:'Martina Vega Armanini',fnac:'2011-11-10',dni:'51374270',tel:'',telp:'',email:'Joar560@hotmail.com',club:'Jockey Club Tucumán',pos:'—',teams:['sub16-f']},
-  {id:537,nombre:'Micol luna',fnac:'2011-02-01',dni:'50875590',tel:'',telp:'',email:'micolluna590@gmail.com',club:'universitario rugby club',pos:'—',teams:['sub16-f']},
-  {id:566,nombre:'Paz Sofia',fnac:'',dni:'50106201',tel:'',telp:'',email:'sofipaz0106@gmail.com',club:'Natación y Gimnasia',pos:'—',teams:['sub16-f']},
-  {id:538,nombre:'Salazar caro María Luz',fnac:'2011-02-09',dni:'50831148',tel:'',telp:'',email:'Marialuzsalazar00gmail.com',club:'Jockey club de Tucumán',pos:'—',teams:['sub16-f']},
-  {id:552,nombre:'Sofía Odstrcil',fnac:'2010-01-11',dni:'50023665',tel:'',telp:'',email:'odstrcilsofia@gmail.com',club:'Jockey Club',pos:'—',teams:['sub16-f']},
-  {id:554,nombre:'Sofía Sbrocco',fnac:'2010-01-28',dni:'50068699',tel:'',telp:'',email:'sofiasbrocco10@gmail.com',club:'Tucumán Rugby Club',pos:'—',teams:['sub16-f']},
-  {id:548,nombre:'Solana Goldman',fnac:'2011-10-09',dni:'51372090',tel:'',telp:'',email:'solanagoldman@gmail.com',club:'Tucuman Rugby',pos:'—',teams:['sub16-f']},
-  {id:564,nombre:'Valentina Maldonado',fnac:'2010-10-28',dni:'50679638',tel:'',telp:'',email:'valentinamaldonado20101028@gmail.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub16-f']},
-  {id:546,nombre:'Victoria Mocoroa',fnac:'2011-08-10',dni:'51206477',tel:'',telp:'',email:'mocoroavictoria@gmail.com',club:'Atlético Tucumán',pos:'—',teams:['sub16-f']}
-];
-PLS['sub14-m']=[
-  {id:301,nombre:'Rueda, Pablo Tiziano',fnac:'',dni:'',tel:'',telp:'',email:'',club:'San Martín',pos:'—',teams:['sub14-m']},
-  {id:302,nombre:'Dulor Marchesi, Joaquín',fnac:'',dni:'',tel:'',telp:'',email:'',club:'San Martín',pos:'—',teams:['sub14-m']},
-  {id:303,nombre:'Marini, Nicolás',fnac:'',dni:'',tel:'',telp:'',email:'',club:'San Martín',pos:'—',teams:['sub14-m']},
-  {id:304,nombre:'Moreno, Matías',fnac:'',dni:'',tel:'',telp:'',email:'',club:'San Martín',pos:'—',teams:['sub14-m']},
-  {id:305,nombre:'Núñez, Federico',fnac:'',dni:'',tel:'',telp:'',email:'',club:'San Martín',pos:'—',teams:['sub14-m']},
-  {id:306,nombre:'Paz, Bautista',fnac:'',dni:'',tel:'',telp:'',email:'',club:'San Martín',pos:'—',teams:['sub14-m']},
-  {id:307,nombre:'Jerez, Mathias',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:308,nombre:'Frías Rizzi, Gian Franco',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:309,nombre:'Khon Navarro, Germán',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:310,nombre:'Aduriz, Alexander',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:311,nombre:'Robles, Santiago',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:312,nombre:'Cazado, Vicente Benicio',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:313,nombre:'Gramajo, Benjamín',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:314,nombre:'García Urueña, Ignacio',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:315,nombre:'Terán Salas, Lautaro',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Natación y Gimnasia',pos:'—',teams:['sub14-m']},
-  {id:316,nombre:'Suárez, Joaquín',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Tarcos',pos:'—',teams:['sub14-m']},
-  {id:317,nombre:'Rubio, Benjamín',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Tarcos',pos:'—',teams:['sub14-m']},
-  {id:318,nombre:'Pacheco, Benjamín',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Tarcos',pos:'—',teams:['sub14-m']},
-  {id:319,nombre:'Díaz, Bruno',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Atlético Tucumán',pos:'—',teams:['sub14-m']},
-  {id:320,nombre:'Nanni Ruiz, Tiziano',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Atlético Tucumán',pos:'—',teams:['sub14-m']},
-  {id:321,nombre:'Morales Ávila, Mateo',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Atlético Tucumán',pos:'—',teams:['sub14-m']},
-  {id:322,nombre:'Larivey, Francesco',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Querencia',pos:'—',teams:['sub14-m']},
-  {id:323,nombre:'Hassi, Emiliano',fnac:'',dni:'',tel:'',telp:'',email:'',club:'Querencia',pos:'—',teams:['sub14-m']}
-];
-PLS['sub14-f']=[
-  {id:531,nombre:'Agostina Del Angel',fnac:'2012-12-19',dni:'52799602',tel:'',telp:'',email:'agosdelangel1912@gmail.com',club:'Universitario rugby club',pos:'—',teams:['sub14-f']},
-  {id:517,nombre:'Amparo Lucía Graneros López',fnac:'2012-03-11',dni:'52150694',tel:'',telp:'',email:'granerosamparo@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:504,nombre:'Amparo López',fnac:'2013-04-26',dni:'53122525',tel:'',telp:'',email:'franchulopez61@gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:500,nombre:'Bernardita Andujar',fnac:'2013-01-16',dni:'52880221',tel:'',telp:'',email:'Bernarditaandujar@colelsalvador.edu.ar',club:'Tucumán rugby club',pos:'—',teams:['sub14-f']},
-  {id:516,nombre:'Camila Esteban Dávalos',fnac:'2012-03-05',dni:'52150579',tel:'',telp:'',email:'camied604@gmail.com',club:'natación y gimnasia',pos:'—',teams:['sub14-f']},
-  {id:512,nombre:'Clara Teran',fnac:'2012-01-02',dni:'52077415',tel:'',telp:'',email:'Clariylulyteran@gmail.com',club:'Tucuman Rugby',pos:'—',teams:['sub14-f']},
-  {id:510,nombre:'Elena Gomez Maneff',fnac:'2014-03-29',dni:'52879134',tel:'',telp:'',email:'egomezmaneff@gmail.com',club:'Club Atlético San Martín',pos:'—',teams:['sub14-f']},
-  {id:526,nombre:'Emma dip Morán',fnac:'2012-07-12',dni:'52576626',tel:'',telp:'',email:'emmadipmoran12@gmail.com',club:'Tucumán rugby',pos:'—',teams:['sub14-f']},
-  {id:522,nombre:'Felicitas pintado',fnac:'2012-05-16',dni:'52383826',tel:'',telp:'',email:'danielita_438@hotmail.com',club:'Tucumán rugby',pos:'—',teams:['sub14-f']},
-  {id:528,nombre:'Fiorella Arrieta',fnac:'2012-08-21',dni:'52579032',tel:'',telp:'',email:'fiorellaarrieta2108@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:524,nombre:'Guadalupe Bernardita Cajal Robles',fnac:'2012-07-02',dni:'52578121',tel:'',telp:'',email:'pilucajal1982@gmail.com',club:'Natacion y Gimnasia',pos:'—',teams:['sub14-f']},
-  {id:506,nombre:'Guadalupe Maltez',fnac:'2013-08-22',dni:'53345272',tel:'',telp:'',email:'guadamaltez803.gmail.com',club:'Universitario Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:518,nombre:'Guadalupe Navarro',fnac:'2012-03-12',dni:'52150403',tel:'',telp:'',email:'navarro.guada.2012@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:503,nombre:'Guillermina Argañaras Cordoba',fnac:'2013-03-26',dni:'52880671',tel:'',telp:'',email:'Arganarasguille1@gmail.com',club:'Tucuman rugby',pos:'—',teams:['sub14-f']},
-  {id:511,nombre:'Helena Diaz Alvillos',fnac:'',dni:'52877657',tel:'',telp:'',email:'hdiazalvillos@gmail.com',club:'Jockey Club',pos:'—',teams:['sub14-f']},
-  {id:505,nombre:'Inti mailin pardo',fnac:'2013-07-24',dni:'53345487',tel:'',telp:'',email:'pardointi2@gmail.com',club:'Club atlético tucuman',pos:'—',teams:['sub14-f']},
-  {id:520,nombre:'Isabella Morales',fnac:'2012-04-24',dni:'52385841',tel:'',telp:'',email:'moralesraulsergio@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:525,nombre:'Jazmin González',fnac:'2012-07-11',dni:'52390662',tel:'',telp:'',email:'jazmineta.gonza@gmail.com',club:'Atlético Tucuman',pos:'—',teams:['sub14-f']},
-  {id:501,nombre:'Joaquina Diaz Rojas',fnac:'2013-02-16',dni:'52877876',tel:'',telp:'',email:'joaquidiazrojas876@gmail.com',club:'Tucumán rugby',pos:'—',teams:['sub14-f']},
-  {id:513,nombre:'Lola Merino',fnac:'2012-01-04',dni:'52077220',tel:'',telp:'',email:'lolamerinor@gmail.com',club:'universitario rugby club',pos:'—',teams:['sub14-f']},
-  {id:502,nombre:'Lupe Chit Bascary',fnac:'2013-03-07',dni:'53088571',tel:'',telp:'',email:'lupechitbascary@gmail.com',club:'San Martín de Tucumán',pos:'—',teams:['sub14-f']},
-  {id:509,nombre:'Magdalena Galván montenegro',fnac:'2013-11-18',dni:'51706573',tel:'',telp:'',email:'Maguigm2013@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:530,nombre:'Malena Odstrcil',fnac:'2012-11-30',dni:'52535722',tel:'',telp:'',email:'odstrcilmalena@gmail.com',club:'Jockey Club',pos:'—',teams:['sub14-f']},
-  {id:523,nombre:'Matilde grandi',fnac:'2012-05-23',dni:'52386355',tel:'',telp:'',email:'Matilde.grandi12@gmail.com',club:'Los Tarcos Rugby Club',pos:'—',teams:['sub14-f']},
-  {id:507,nombre:'Mika Martin Scalora',fnac:'2013-09-26',dni:'53426726',tel:'',telp:'',email:'mikascalora13@gmail.com',club:'Universitario rugby club',pos:'—',teams:['sub14-f']},
-  {id:519,nombre:'Milagros Agostina Aguirre Moreno',fnac:'2012-03-23',dni:'52150538',tel:'',telp:'',email:'milagrosmorenoagostina56@gmail.com',club:'Natación y Gimnasia',pos:'—',teams:['sub14-f']},
-  {id:527,nombre:'Milagros casanova',fnac:'2012-08-15',dni:'52578594',tel:'',telp:'',email:'milicasanova1508@gmail.com',club:'Tucumán rugby',pos:'—',teams:['sub14-f']},
-  {id:515,nombre:'Pía Ladetto',fnac:'2012-01-18',dni:'52077467',tel:'',telp:'',email:'piaaladetto@gmail.com',club:'Universitario rugby club',pos:'—',teams:['sub14-f']},
-  {id:508,nombre:'Rocío Acuña',fnac:'2013-10-04',dni:'53426401',tel:'',telp:'',email:'miirrjuarez2017@gmail.com',club:'Atlético Tucumán',pos:'—',teams:['sub14-f']},
-  {id:514,nombre:'Sofía Pricacciante mayer',fnac:'2012-01-06',dni:'52077255',tel:'',telp:'',email:'pricacciantesofia@gmail.com',club:'Jockey',pos:'—',teams:['sub14-f']},
-  {id:521,nombre:'Trinidad Pintado',fnac:'2012-05-16',dni:'52383827',tel:'',telp:'',email:'danielita_438@hotmail.com',club:'Tucumán Rugby',pos:'—',teams:['sub14-f']},
-  {id:529,nombre:'Umma Mansilla',fnac:'2012-10-18',dni:'52734275',tel:'',telp:'',email:'Ummamansila@gmail.com',club:'Natacion y gimnasia',pos:'—',teams:['sub14-f']}
-];
-PLS['sub12-m']=[{id:16,nombre:'Ibáñez, Ramiro',fnac:'2013-09-22',dni:'51678901',tel:'',telp:'381-420-0001',email:'',club:'El Ateneo',pos:'Delantera/o',teams:['sub12-m']}];
-PLS['sub12-f']=[{id:17,nombre:'Cabrera, Alma',fnac:'2013-01-16',dni:'51890123',tel:'',telp:'381-421-0001',email:'',club:'Tucumán RC',pos:'Mediocampista',teams:['sub12-f']}];
-PLS['arqueros']=[{id:18,nombre:'López, Santiago',fnac:'2000-11-18',dni:'40123456',tel:'381-412-4444',telp:'381-412-0004',email:'slopez@mail.com',club:'Los Cardones',pos:'Arquero/a',teams:['arqueros']},{id:19,nombre:'Núñez, Sofía',fnac:'1997-05-25',dni:'37567890',tel:'381-413-4444',telp:'381-413-0004',email:'snunez@mail.com',club:'Tucumán RC',pos:'Arquero/a',teams:['arqueros']}];
 
-const ENTS=[
-  {id:201,nombre:'Villanueva, Carlos',fnac:'1975-03-22',dni:'22345678',tel:'381-500-1111',email:'cvillanueva@mail.com',rol:'Entrenador/a principal',teams:['mayor-m','mayor-f']},
-  {id:202,nombre:'Ríos, Patricia',fnac:'1980-08-14',dni:'27456789',tel:'381-500-2222',email:'prios@mail.com',rol:'Entrenador/a principal',teams:['sub19-f','sub16-f']},
-  {id:203,nombre:'Domínguez, Sergio',fnac:'1982-11-05',dni:'29567890',tel:'381-500-3333',email:'sdominguez@mail.com',rol:'Asistente',teams:['mayor-m','sub19-m']},
-  {id:204,nombre:'Molina, Vanesa',fnac:'1985-06-18',dni:'31678901',tel:'381-500-4444',email:'vmolina@mail.com',rol:'Asistente',teams:['mayor-f','sub19-f']},
-  {id:205,nombre:'Torres, Marcelo',fnac:'1978-09-30',dni:'25789012',tel:'381-500-5555',email:'mtorres@mail.com',rol:'Entrenador/a de arqueros/as',teams:['arqueros','mayor-m','mayor-f']},
-  {id:206,nombre:'Acuña, Jimena',fnac:'1988-02-12',dni:'34890123',tel:'381-500-6666',email:'jacuna@mail.com',rol:'Preparador/a físico/a',teams:['mayor-m','mayor-f','sub19-m','sub19-f']},
-];
+
+
+
+
+
+
+
+
+
+
+
+const ENTS=[];
 
 
 function getAnoNac(fnac){if(!fnac)return'—';return fnac.split('-')[0];}
