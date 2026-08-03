@@ -1940,7 +1940,7 @@ async function doLogin(){
     return;
   }
   curUser=found;
-  try{localStorage.setItem('atah_session_v5', JSON.stringify({user:found.user}));}catch(e){}
+  // Sin sesión persistente — siempre pide login
   document.getElementById('login-screen').style.display='none';
   document.getElementById('login-err').style.display='none';
   applyPermissions();
@@ -4010,11 +4010,15 @@ function dbAutoSave() {
 buildTP();
 // Activar botón del año actual
 const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
-// Restaurar sesión: siempre cargar Supabase primero
+// Siempre mostrar login — cargar usuarios de Supabase en background
 (async function(){
   const ls=document.getElementById('login-screen');
+  if(ls) ls.style.display='flex';
   
-  // Cargar usuarios de Supabase antes de cualquier validación
+  // Limpiar cualquier sesión guardada
+  try{localStorage.clear();}catch(e){}
+  
+  // Cargar usuarios de Supabase
   try {
     const rows = await fetch(SB_URL+'/rest/v1/atah_data?id=eq.USERS', {
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
@@ -4022,30 +4026,9 @@ const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
     if(rows && rows[0] && Array.isArray(rows[0].data) && rows[0].data.length){
       USERS.length=0;
       rows[0].data.forEach(u=>USERS.push(u));
-      console.log('✅ Usuarios cargados:', USERS.length);
+      console.log('✅ Usuarios listos:', USERS.length);
     }
-  } catch(err){ console.warn('Sin Supabase al iniciar:', err); }
-
-  // Intentar restaurar sesión con usuarios actualizados
-  try {
-    const saved=localStorage.getItem('atah_session_v5');
-    if(saved){
-      const {user}=JSON.parse(saved);
-      const found=USERS.find(u=>u.user===user);
-      if(found){
-        curUser=found;
-        if(ls) ls.style.display='none';
-        applyPermissions();
-        updateMobileNav();
-        navegarPorRol();
-        dbLoad(); // cargar resto de datos en background
-        return;
-      }
-    }
-  } catch(e){}
-  
-  // Sin sesión válida → mostrar login
-  if(ls) ls.style.display='flex';
+  } catch(err){ console.warn('Sin Supabase:', err); }
 })();
 </script>
 
