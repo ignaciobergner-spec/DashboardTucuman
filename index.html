@@ -4094,7 +4094,7 @@ function navegarPorRol(){
 
 // ── SUPABASE DB ───────────────────────────────────────────────────────────────
 const SB_URL = 'https://vzjjkifbqchmjghjfupi.supabase.co';
-const SB_KEY = 'sb_publishable_7wEhDDI1pnXW_Jm_sof4hQ_9D0mk7n6';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6ampraWZicWNobWpnaGpmdXBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NzkzODYsImV4cCI6MjEwMTI1NTM4Nn0.PIr9RkHvOv25UtDIhGKPAV45cbFmX17zXUYNx5dgKoI';
 let DB_SAVING = false;
 let DB_LOADED = false;
 
@@ -4111,7 +4111,11 @@ async function sbFetch(method, id, body) {
   };
   if(body) opts.body = JSON.stringify(body);
   const res = await fetch(url, opts);
-  if(!res.ok) throw new Error('Supabase error: ' + res.status);
+  if(!res.ok) {
+    const errText = await res.text();
+    console.error('Supabase error:', res.status, errText);
+    throw new Error('Supabase error: ' + res.status + ' ' + errText);
+  }
   return method === 'PATCH' ? null : res.json();
 }
 
