@@ -4094,6 +4094,7 @@ function navegarPorRol(){
 const SB_URL = 'https://vzjjkifbqchmjghjfupi.supabase.co';
 const SB_KEY = 'sb_publishable_7wEhDDI1pnXW_Jm_sof4hQ_9D0mk7n6';
 let DB_SAVING = false;
+let DB_LOADED = false;
 
 async function sbFetch(method, id, body) {
   const url = SB_URL + '/rest/v1/atah_data' + (method==='GET' ? '' : '?id=eq.'+id);
@@ -4131,6 +4132,7 @@ async function dbLoad() {
         });
       }
     });
+    DB_LOADED = true;
     console.log('✅ Datos cargados desde Supabase');
     // Re-aplicar permisos con usuarios actualizados de Supabase
     if(curUser){
@@ -4161,6 +4163,7 @@ async function dbSave() {
 
 let dbSaveTimer = null;
 function dbAutoSave() {
+  if(!DB_LOADED) return; // No guardar hasta que Supabase haya cargado
   if(dbSaveTimer) clearTimeout(dbSaveTimer);
   dbSaveTimer = setTimeout(dbSave, 2000);
 }
