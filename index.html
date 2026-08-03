@@ -2103,9 +2103,29 @@ const USERS=[
 ];
 let curUser=null;
 
-function doLogin(){
+async function doLogin(){
   const u=document.getElementById('login-user').value.trim().toLowerCase();
   const p=document.getElementById('login-pass').value;
+  const btn=document.querySelector('.login-btn');
+  
+  // Mostrar estado de carga en el botón
+  if(btn){btn.textContent='Ingresando...';btn.disabled=true;}
+  
+  // Cargar usuarios de Supabase antes de validar
+  try {
+    const rows = await fetch(SB_URL+'/rest/v1/atah_data?id=eq.USERS', {
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    }).then(r=>r.json());
+    if(rows && rows[0] && rows[0].data && rows[0].data.length){
+      USERS.length=0;
+      rows[0].data.forEach(u2=>USERS.push(u2));
+    }
+  } catch(err){ console.warn('Sin Supabase, usando usuarios locales'); }
+  
+  // Restaurar botón
+  if(btn){btn.textContent='Ingresar';btn.disabled=false;}
+  
+  // Validar
   const found=USERS.find(x=>x.user.toLowerCase()===u&&x.pass===p);
   if(!found){
     document.getElementById('login-err').style.display='block';
@@ -2113,7 +2133,6 @@ function doLogin(){
     return;
   }
   curUser=found;
-  // Guardar sesión
   try{localStorage.setItem('atah_session_v5', JSON.stringify({user:found.user}));}catch(e){}
   document.getElementById('login-screen').style.display='none';
   document.getElementById('login-err').style.display='none';
