@@ -2202,8 +2202,8 @@ function agregarUsuario(){
   if(USERS.find(u=>u.user.toLowerCase()===user.toLowerCase())){alert('Ese usuario ya existe');return;}
   const newUser={id:Date.now(),user,pass,nombre,rol,teams:rol==='coach'?[...nuTeams]:[]};
   USERS.push(newUser);
-  // Guardar inmediatamente sin debounce
-  if(DB_LOADED) dbSave();
+  // Guardar inmediatamente siempre
+  dbSave().catch(e=>console.error('Error guardando usuario:', e));
   nuTeams=new Set();
   document.getElementById('nu-user').value='';
   document.getElementById('nu-pass').value='';
@@ -2280,7 +2280,7 @@ function guardarEdicionUsuario(id){
   USERS[idx]={...USERS[idx],nombre,user,pass,rol,teams:[...nuTeams]};
   document.getElementById('m-nu').classList.remove('open');
   renderUsersList();
-  if(DB_LOADED) dbSave();
+  dbSave().catch(e=>console.error(e));
   // Restaurar botón a "Agregar"
   const saveBtn=document.getElementById('nu-save-btn');
   if(saveBtn){saveBtn.textContent='Agregar';saveBtn.onclick=agregarUsuario;}
@@ -2290,7 +2290,7 @@ function guardarEdicionUsuario(id){
 function eliminarUsuario(id){
   showConfirm('¿Eliminar usuario?','Esta acción no se puede deshacer.','Sí, eliminar',()=>{
     const i=USERS.findIndex(u=>u.id===id);
-    if(i>-1){USERS.splice(i,1);if(DB_LOADED)dbSave();}
+    if(i>-1){USERS.splice(i,1);dbSave().catch(e=>console.error(e));}
     renderUsersList();
   });
 }
@@ -4150,7 +4150,7 @@ async function dbLoad() {
 }
 
 async function dbSave() {
-  if(DB_SAVING || !DB_LOADED) return;
+  if(DB_SAVING) return;
   DB_SAVING = true;
   try {
     const saves = [
