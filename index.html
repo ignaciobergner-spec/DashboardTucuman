@@ -4123,13 +4123,19 @@ async function dbLoad() {
       if(row.id === 'ASIST' && d.length)  { ASIST.length=0; d.forEach(a=>ASIST.push(a)); }
       if(row.id === 'ENTS'  && d.length)  { ENTS.length=0;  d.forEach(e=>ENTS.push(e)); }
       if(row.id === 'CONVS' && d.length)  { CONVS.length=0; d.forEach(c=>CONVS.push(c)); }
-      if(row.id === 'USERS' && d.length)  { d.forEach(u=>{ if(!USERS.find(x=>x.id===u.id)) USERS.push(u); }); }
+      if(row.id === 'USERS' && d.length)  { 
+        d.forEach(u=>{
+          const idx=USERS.findIndex(x=>x.id===u.id||x.user===u.user);
+          if(idx>-1) USERS[idx]=u;
+          else USERS.push(u);
+        });
+      }
     });
     console.log('✅ Datos cargados desde Supabase');
     // Re-aplicar permisos con usuarios actualizados de Supabase
     if(curUser){
       const updatedUser = USERS.find(u=>u.user===curUser.user);
-      if(updatedUser) curUser=updatedUser;
+      if(updatedUser){ curUser=updatedUser; }
       aplicarTodosPermisos();
     }
   } catch(err) { console.warn('⚠️ Sin conexión a Supabase:', err); }
