@@ -1924,12 +1924,12 @@ async function doLogin(){
   
   // Cargar usuarios de Supabase antes de validar
   try {
-    const rows = await fetch(SB_URL+'/rest/v1/atah_data?id=eq.USERS', {
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
-    }).then(r=>r.json());
-    if(rows && rows[0] && rows[0].data && rows[0].data.length){
-      USERS.length=0;
-      rows[0].data.forEach(u2=>USERS.push(u2));
+    if(initFirebase()){
+      const doc = await fbDb.collection('atah').doc('USERS').get();
+      if(doc.exists && Array.isArray(doc.data().value) && doc.data().value.length){
+        USERS.length=0;
+        doc.data().value.forEach(u2=>USERS.push(u2));
+      }
     }
   } catch(err){ console.warn('Sin Firebase, usando usuarios locales', err); }
   
