@@ -160,8 +160,8 @@
   input, select, textarea { font-size: 16px !important; }
   </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-firestore-compat.min.js"></script>
 </head>
 <body>
 
@@ -1931,7 +1931,7 @@ async function doLogin(){
       USERS.length=0;
       rows[0].data.forEach(u2=>USERS.push(u2));
     }
-  } catch(err){ console.warn('Sin Supabase, usando usuarios locales'); }
+  } catch(err){ console.warn('Sin Firebase, usando usuarios locales', err); }
   
   // Restaurar botón
   if(btn){btn.textContent='Ingresar';btn.disabled=false;}
