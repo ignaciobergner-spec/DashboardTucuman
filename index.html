@@ -3402,6 +3402,7 @@ function saveEv(){
   }
   document.getElementById('m-ev').classList.remove('open');
   renderAgCal();if(curTeam)renderEqCal();
+  dbAutoSave();
 }
 function openEvView(id,ev2){ev2&&ev2.stopPropagation();evViewId=id;evViewTeam=curTeam||null;const ev=EVS.find(x=>x.id===id);if(!ev)return;const ti=TI[ev.type]||TI.entrenamiento;const dStr=ev.days.length===1?`${ev.days[0]} de ${MN[ev.month]}`:`${ev.days[0]}–${ev.days[ev.days.length-1]} de ${MN[ev.month]} (${ev.days.length} días)`;document.getElementById('evv-bar').style.background=ti.b;document.getElementById('evv-type').textContent=ti.e+' '+ti.l;document.getElementById('evv-type').style.color=ti.b;document.getElementById('evv-name').textContent=ti.e+' '+ti.l+' · '+dStr;document.getElementById('evv-date').textContent=dStr+' '+agY;document.getElementById('evv-hora').textContent=ev.horaI+' hs → '+ev.horaF+' hs';document.getElementById('evv-lugar').textContent=ev.lugar;const sH=ev.sels.length>=10?'<span class="tbadge" style="background:#E8ECF8;color:#1A2B5C;">Todas las selecciones</span>':ev.sels.map(s=>`<span class="tbadge" style="background:${TM[s]?.g==='F'?'rgba(232,123,30,0.12)':TM[s]?.g==='M'?'#E8ECF8':'#F3F0FA'};color:${TM[s]?.g==='F'?'#7A3A00':TM[s]?.g==='M'?'#1A2B5C':'#4A1A7A'};">${TM[s]?.n||s}</span>`).join('');document.getElementById('evv-sels').innerHTML=sH;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';
   const convBtn=document.getElementById('evv-conv-btn');
