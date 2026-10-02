@@ -160,6 +160,8 @@
   input, select, textarea { font-size: 16px !important; }
   </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -3919,118 +3921,96 @@ function navegarPorRol(){
   }
 }
 
-// ── SUPABASE DB ───────────────────────────────────────────────────────────────
-const SB_URL = 'https://vzjjkifbqchmjghjfupi.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6ampraWZicWNobWpnaGpmdXBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NzkzODYsImV4cCI6MjEwMTI1NTM4Nn0.PIr9RkHvOv25UtDIhGKPAV45cbFmX17zXUYNx5dgKoI';
+// ── FIREBASE DB ──────────────────────────────────────────────────────────────
+// Importar Firebase via CDN
+const FB_CONFIG = {
+  apiKey: "AIzaSyA2GZKkdmir6WbBNg0YZmO8qBh7ThaM8RM",
+  authDomain: "atah-tucuman.firebaseapp.com",
+  projectId: "atah-tucuman"
+};
+
+let fbDb = null;
 let DB_SAVING = false;
 let DB_LOADED = false;
 
-async function sbFetch(method, id, body) {
-  const url = SB_URL + '/rest/v1/atah_data' + (method==='GET' ? '' : '?id=eq.'+id);
-  const opts = {
-    method,
-    headers: {
-      'apikey': SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': method==='PATCH' ? 'return=minimal' : 'return=representation'
-    }
-  };
-  if(body) opts.body = JSON.stringify(body);
-  const res = await fetch(url, opts);
-  if(!res.ok) {
-    const errText = await res.text();
-    console.error('Supabase error:', res.status, errText);
-    throw new Error('Supabase error: ' + res.status + ' ' + errText);
+function initFirebase() {
+  if(typeof firebase === 'undefined') { console.warn('Firebase no cargado'); return false; }
+  if(!fbDb) {
+    if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    fbDb = firebase.firestore();
   }
-  return method === 'PATCH' ? null : res.json();
+  return true;
 }
 
 async function dbLoad() {
+  if(!initFirebase()) return;
   try {
-    const rows = await sbFetch('GET');
-    if(!rows || !rows.length) return;
-    rows.forEach(row => {
-      const d = row.data;
-      if(row.id === 'EVS'   && d.length)  { EVS.length=0;   d.forEach(e=>{ EVS.push(e);   if(e.id>=evIdC) evIdC=e.id+1; }); }
-      if(row.id === 'PLS'   && Object.keys(d).length) { Object.keys(d).forEach(k=>{ PLS[k]=d[k]; }); }
-      if(row.id === 'ASIST' && d.length)  { ASIST.length=0; d.forEach(a=>ASIST.push(a)); }
-      if(row.id === 'ENTS'  && d.length)  { ENTS.length=0;  d.forEach(e=>ENTS.push(e)); }
-      if(row.id === 'CONVS' && d.length)  { CONVS.length=0; d.forEach(c=>CONVS.push(c)); }
-      if(row.id === 'USERS' && d.length)  { 
-        d.forEach(u=>{
-          const idx=USERS.findIndex(x=>x.id===u.id||x.user===u.user);
-          if(idx>-1) USERS[idx]=u;
-          else USERS.push(u);
-        });
-      }
+    const snap = await fbDb.collection('atah').get();
+    snap.forEach(doc => {
+      const d = doc.data().value;
+      const id = doc.id;
+      if(id==='EVS' && Array.isArray(d) && d.length){ EVS.length=0; d.forEach(e=>{EVS.push(e);if(e.id>=evIdC)evIdC=e.id+1;}); }
+      if(id==='PLS' && d && Object.keys(d).length){ Object.keys(d).forEach(k=>{PLS[k]=d[k];}); }
+      if(id==='ASIST' && Array.isArray(d) && d.length){ ASIST.length=0; d.forEach(a=>ASIST.push(a)); }
+      if(id==='ENTS' && Array.isArray(d) && d.length){ ENTS.length=0; d.forEach(e=>ENTS.push(e)); }
+      if(id==='CONVS' && Array.isArray(d) && d.length){ CONVS.length=0; d.forEach(c=>CONVS.push(c)); }
+      if(id==='USERS' && Array.isArray(d) && d.length){ USERS.length=0; d.forEach(u=>USERS.push(u)); }
     });
     DB_LOADED = true;
-    console.log('✅ Datos cargados desde Supabase');
-    // Re-aplicar permisos con usuarios actualizados de Supabase
-    if(curUser){
-      const updatedUser = USERS.find(u=>u.user===curUser.user);
-      if(updatedUser){ curUser=updatedUser; }
-      aplicarTodosPermisos();
-    }
-  } catch(err) { console.warn('⚠️ Sin conexión a Supabase:', err); }
+    console.log('✅ Firebase cargado');
+  } catch(err) { DB_LOADED=true; console.warn('⚠️ Firebase error:', err); }
+}
+
+async function fbSaveDoc(id, value) {
+  if(!initFirebase()) return;
+  await fbDb.collection('atah').doc(id).set({ value });
 }
 
 async function dbSave() {
   if(DB_SAVING) return;
   DB_SAVING = true;
   try {
-    // USERS no se incluye aquí — se guarda solo al crear/editar/eliminar usuarios
-    const saves = [
-      { id:'EVS',   data:EVS   },
-      { id:'PLS',   data:PLS   },
-      { id:'ASIST', data:ASIST },
-      { id:'ENTS',  data:ENTS  },
-      { id:'CONVS', data:CONVS },
-    ];
-    await Promise.all(saves.map(s => sbFetch('PATCH', s.id, { data: s.data, updated_at: new Date().toISOString() })));
-    console.log('✅ Guardado en Supabase');
-  } catch(err) { console.warn('⚠️ Error al guardar:', err); }
+    await Promise.all([
+      fbSaveDoc('EVS', EVS),
+      fbSaveDoc('PLS', PLS),
+      fbSaveDoc('ASIST', ASIST),
+      fbSaveDoc('ENTS', ENTS),
+      fbSaveDoc('CONVS', CONVS),
+    ]);
+    console.log('✅ Guardado en Firebase');
+  } catch(err) { console.warn('⚠️ Error guardando:', err); }
   DB_SAVING = false;
 }
 
-// Guardar SOLO usuarios en Supabase
 async function saveUsers() {
   try {
-    await sbFetch('PATCH', 'USERS', { data: USERS, updated_at: new Date().toISOString() });
-    console.log('✅ Usuarios guardados en Supabase');
-  } catch(err) { console.warn('⚠️ Error al guardar usuarios:', err); }
+    await fbSaveDoc('USERS', USERS);
+    console.log('✅ Usuarios guardados en Firebase');
+  } catch(err) { console.warn('⚠️ Error usuarios:', err); }
 }
 
-let dbSaveTimer = null;
+let dbSaveTimer=null;
 function dbAutoSave() {
-  if(!DB_LOADED) return; // No guardar hasta que Supabase haya cargado
+  if(!DB_LOADED) return;
   if(dbSaveTimer) clearTimeout(dbSaveTimer);
   dbSaveTimer = setTimeout(dbSave, 2000);
 }
-
-buildTP();
-// Activar botón del año actual
-const ayEl=document.getElementById('ay26');if(ayEl)ayEl.className='ypill on';
-// Siempre mostrar login — cargar usuarios de Supabase en background
+// Siempre mostrar login — cargar usuarios de Firebase en background
 (async function(){
   const ls=document.getElementById('login-screen');
   if(ls) ls.style.display='flex';
-  
-  // Limpiar cualquier sesión guardada
   try{localStorage.clear();}catch(e){}
-  
-  // Cargar usuarios de Supabase
-  try {
-    const rows = await fetch(SB_URL+'/rest/v1/atah_data?id=eq.USERS', {
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
-    }).then(r=>r.json());
-    if(rows && rows[0] && Array.isArray(rows[0].data) && rows[0].data.length){
-      USERS.length=0;
-      rows[0].data.forEach(u=>USERS.push(u));
-      console.log('✅ Usuarios listos:', USERS.length);
-    }
-  } catch(err){ console.warn('Sin Supabase:', err); }
+  // Cargar usuarios de Firebase
+  if(initFirebase()){
+    try {
+      const doc = await fbDb.collection('atah').doc('USERS').get();
+      if(doc.exists && Array.isArray(doc.data().value) && doc.data().value.length){
+        USERS.length=0;
+        doc.data().value.forEach(u=>USERS.push(u));
+        console.log('✅ Usuarios listos:', USERS.length);
+      }
+    } catch(err){ console.warn('Sin Firebase:', err); }
+  }
 })();
 </script>
 
