@@ -615,6 +615,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
   <div class="evfooter" style="flex-wrap:wrap;gap:6px;">
     <button class="btn btn-red" onclick="askDel('view')" style="font-size:12px;"><i class="ti ti-trash"></i> Eliminar</button>
     <button class="btn" id="evv-donebtn" onclick="evTogDone()" style="flex:1;justify-content:center;font-size:12px;"></button>
+    <button class="btn" id="evv-suspbtn" onclick="evTogSusp()" style="font-size:12px;background:#FCEBEB;color:#A32D2D;border-color:#F7C1C1;"><i class="ti ti-ban"></i> <span id="evv-susplbl">Suspendido</span></button>
     <button class="btn" id="evv-conv-btn" onclick="openConvDesdeEvento(evViewId,evViewTeam,event)" style="flex:1;justify-content:center;font-size:12px;background:#EAF3DE;color:#27500A;border-color:#A8D5A2;"><i class="ti ti-clipboard-list"></i> Convocar</button>
     <button class="btn btn-org" onclick="openEvEdit()" style="flex:1;justify-content:center;font-size:12px;"><i class="ti ti-pencil"></i> Editar</button>
   </div>
@@ -1185,7 +1186,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
           <button class="fpill" id="er-princ" onclick="entF('Entrenador/a principal')">E. Principal</button>
           <button class="fpill" id="er-asist" onclick="entF('Asistente')">Asistente</button>
           <button class="fpill" id="er-arqc" onclick="entF('Entrenador/a de arqueros/as')">Arq.</button>
-          <button class="fpill" id="er-fis" onclick="entF('Preparador/a físico/a')">Prep. Físico</button><button class="fpill" id="er-mentor" onclick="entF('Mentor/a')">Mentor/a</button>
+          <button class="fpill" id="er-fis" onclick="entF('Preparador/a físico/a')">Prep. Físico</button><button class="fpill" id="er-mentor" onclick="entF('Mentor/a')">Mentor/a</button><button class="fpill" id="er-video" onclick="entF('Video Analista')">Video Analista</button>
         </div>
       </div>
       <div class="ptable">
@@ -3406,8 +3407,29 @@ function saveEv(){
 }
 function openEvView(id,ev2){ev2&&ev2.stopPropagation();evViewId=id;evViewTeam=curTeam||null;const ev=EVS.find(x=>x.id===id);if(!ev)return;const ti=TI[ev.type]||TI.entrenamiento;const dStr=ev.days.length===1?`${ev.days[0]} de ${MN[ev.month]}`:`${ev.days[0]}–${ev.days[ev.days.length-1]} de ${MN[ev.month]} (${ev.days.length} días)`;document.getElementById('evv-bar').style.background=ti.b;document.getElementById('evv-type').textContent=ti.e+' '+ti.l;document.getElementById('evv-type').style.color=ti.b;document.getElementById('evv-name').textContent=ti.e+' '+ti.l+' · '+dStr;document.getElementById('evv-date').textContent=dStr+' '+agY;document.getElementById('evv-hora').textContent=ev.horaI+' hs → '+ev.horaF+' hs';document.getElementById('evv-lugar').textContent=ev.lugar;const sH=ev.sels.length>=10?'<span class="tbadge" style="background:#E8ECF8;color:#1A2B5C;">Todas las selecciones</span>':ev.sels.map(s=>`<span class="tbadge" style="background:${TM[s]?.g==='F'?'rgba(232,123,30,0.12)':TM[s]?.g==='M'?'#E8ECF8':'#F3F0FA'};color:${TM[s]?.g==='F'?'#7A3A00':TM[s]?.g==='M'?'#1A2B5C':'#4A1A7A'};">${TM[s]?.n||s}</span>`).join('');document.getElementById('evv-sels').innerHTML=sH;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';
   const convBtn=document.getElementById('evv-conv-btn');
-  if(convBtn)convBtn.style.display=['torneo','gira','partido'].includes(ev.type)?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';document.getElementById('m-evv').classList.add('open');}
-function evTogDone(){if(!evViewId)return;const ev=EVS.find(e=>e.id===evViewId);if(!ev)return;ev.done=!ev.done;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}}
+  if(convBtn)convBtn.style.display=['torneo','gira','partido'].includes(ev.type)?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';db.style.opacity=ev.estado==='suspendido'?'0.4':'1';
+  const sb=document.getElementById('evv-suspbtn');const sl=document.getElementById('evv-susplbl');
+  if(sb&&sl){sl.textContent=ev.estado==='suspendido'?'Quitar suspensión':'Suspendido';sb.style.background=ev.estado==='suspendido'?'#F7C1C1':'#FCEBEB';}document.getElementById('m-evv').classList.add('open');}
+function evTogSusp(){
+  const ev=EVS.find(e=>e.id===evViewId);
+  if(!ev) return;
+  const wasSusp=ev.estado==='suspendido';
+  ev.estado=wasSusp?null:'suspendido';
+  if(!wasSusp) ev.done=false;
+  const lbl=document.getElementById('evv-susplbl');
+  const btn=document.getElementById('evv-suspbtn');
+  const doneBtn=document.getElementById('evv-donebtn');
+  if(lbl) lbl.textContent=ev.estado==='suspendido'?'Quitar suspensión':'Suspendido';
+  if(btn) btn.style.background=ev.estado==='suspendido'?'#F7C1C1':'#FCEBEB';
+  if(doneBtn) doneBtn.style.opacity=ev.estado==='suspendido'?'0.4':'1';
+  if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();
+  if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}
+  dbAutoSave();
+}
+
+function evTogDone(){if(!evViewId)return;const ev=EVS.find(e=>e.id===evViewId);if(!ev)return;ev.done=!ev.done;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';db.style.opacity=ev.estado==='suspendido'?'0.4':'1';
+  const sb=document.getElementById('evv-suspbtn');const sl=document.getElementById('evv-susplbl');
+  if(sb&&sl){sl.textContent=ev.estado==='suspendido'?'Quitar suspensión':'Suspendido';sb.style.background=ev.estado==='suspendido'?'#F7C1C1':'#FCEBEB';}if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}}
 
 // CALENDARIOS
 let agY=2026,agM=new Date().getMonth(),agFiltros=new Set(),eqFiltros=new Set(),agSelFiltros=new Set(),agVista='tabla';
