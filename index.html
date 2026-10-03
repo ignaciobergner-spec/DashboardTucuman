@@ -1055,7 +1055,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
       <div style="padding:16px 14px 100px;">
         <div style="font-size:11px;color:#7A98B8;font-weight:500;letter-spacing:.04em;margin-bottom:10px;">SECCIONES</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
-          <div onclick="mnavGo('agenda')" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
+          <div onclick="curUser&&curUser.rol==='coach'?(()=>{const t=curUser.teams&&curUser.teams[0];if(t){goTeam(t,null);eqTab('agenda');}})():mnavGo('agenda')" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
             <i class="ti ti-calendar-stats" style="font-size:24px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
             <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Agenda</div>
             <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Anual · Tabla · Mes</div>
@@ -3969,7 +3969,11 @@ function mnavGo(id){
     return;
   }
   // original mnavGo:
-  // Quitar active de todos
+  // Si es entrenador y quiere ver agenda → redirigir a su equipo
+  if(id==='agenda' && curUser && curUser.rol==='coach'){
+    const t=curUser.teams&&curUser.teams[0];
+    if(t){ goTeam(t,null); eqTab('agenda'); return; }
+  }
   document.querySelectorAll('.mnav-item').forEach(el=>el.classList.remove('active'));
   const el=document.getElementById('mnav-'+id);if(el)el.classList.add('active');
   showPg(id,null);
@@ -4106,6 +4110,7 @@ function dbAutoSave() {
       <i class="ti ti-home"></i>Inicio
     </div>
     <div class="mnav-sep"></div>
+
     <div class="mnav-item" id="mnav-agenda" onclick="mnavGo('agenda')">
       <i class="ti ti-calendar"></i>Agenda
     </div>
