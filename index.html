@@ -800,6 +800,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
       <div class="fg"><label class="flabel">Rol</label>
         <select class="finput" id="nu-rol">
           <option value="admin">Asesor / Admin</option>
+                <option value="mentor">Mentor/a</option>
           <option value="coach">Entrenador/a · Equipo</option>
         </select>
       </div>
@@ -916,6 +917,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
       <div class="fg"><label class="flabel">Rol</label>
         <select class="finput" id="nu-rol">
           <option value="admin">Asesor / Admin</option>
+                <option value="mentor">Mentor/a</option>
           <option value="coach">Entrenador/a · Equipo</option>
         </select>
       </div>
@@ -1957,7 +1959,7 @@ async function doLogin(){
 
 function applyPermissions(){
   if(!curUser)return;
-  if(curUser.rol==='admin'){
+  if(curUser.rol==='admin'||curUser.rol==='mentor'){
     // Acceso total — mostrar todo
     document.querySelectorAll('.admin-only').forEach(el=>el.style.display='');
   } else {
@@ -2033,7 +2035,17 @@ function guardarNuevaPass(){
   alert('✅ Contraseña actualizada correctamente.');
 }
 function openUsers(){
-  if(!curUser||curUser.rol!=='admin'){alert('Solo el asesor puede gestionar usuarios.');return;}
+  if(!curUser||( curUser.rol!=='admin' && curUser.rol!=='mentor')){
+    alert('No tenés permisos para gestionar usuarios.');return;
+  }
+  // Si es mentor, ocultar opción de crear admin y mentor
+  const rolSel=document.getElementById('nu-rol');
+  if(rolSel){
+    // Limpiar opciones
+    rolSel.innerHTML = curUser.rol==='admin'
+      ? '<option value="admin">Asesor / Admin</option><option value="mentor">Mentor/a</option><option value="coach">Entrenador/a</option>'
+      : '<option value="coach">Entrenador/a</option>';
+  }
   renderUsersList();
   // Render checkboxes de equipos
   document.getElementById('nu-teams').innerHTML=ATEAMS.map(t=>
@@ -2055,14 +2067,18 @@ function nuToggleTeam(t){
 }
 
 function renderUsersList(){
-  document.getElementById('users-list').innerHTML=USERS.map(u=>`
+  const esMentor = curUser&&curUser.rol==='mentor';
+  const listaVisible = esMentor
+    ? USERS.filter(u=>u.id===curUser.id || u.creadoPor===curUser.id)
+    : USERS;
+  document.getElementById('users-list').innerHTML=listaVisible.map(u=>`
     <div class="user-row">
       <div class="user-avatar">${u.nombre.split(',')[0].trim().slice(0,2).toUpperCase()}</div>
       <div style="flex:1">
         <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);">${u.nombre}</div>
         <div style="font-size:11px;color:var(--color-text-secondary);">@${u.user} · ${u.rol==='admin'?'Admin / Asesor':'Entrenador/a'}${u.teams.length?' · '+u.teams.map(t=>TM[t]?.n||t).join(', '):''}</div>
       </div>
-      <span class="user-role-badge ${u.rol==='admin'?'role-admin':'role-coach'}">${u.rol==='admin'?'Admin':'Entrenador/a'}</span>
+      <span class="user-role-badge ${u.rol==='admin'?'role-admin':'role-coach'}">${u.rol==='admin'?'Admin':u.rol==='mentor'?'Mentor/a':'Entrenador/a'}</span>
       ${u.id!==1?`<button onclick="editarUsuario(${u.id})" style="background:none;border:none;cursor:pointer;color:#1A2B5C;font-size:14px;margin-right:4px;"><i class="ti ti-pencil"></i></button><button onclick="eliminarUsuario(${u.id})" style="background:none;border:none;cursor:pointer;color:#A32D2D;font-size:14px;"><i class="ti ti-trash"></i></button>`:''}
     </div>`).join('');
 }
@@ -2120,6 +2136,9 @@ function filtrarHomeEquipos(){
 function editarUsuario(id){
   const u=USERS.find(x=>x.id===id);
   if(!u) return;
+  if(curUser.rol==='mentor' && u.creadoPor!==curUser.id){
+    alert('Solo podés editar usuarios que vos creaste.');return;
+  }
   // Pre-cargar el formulario de usuario con los datos actuales
   document.getElementById('nu-nombre').value=u.nombre||'';
   document.getElementById('nu-user').value=u.user||'';
@@ -3963,7 +3982,7 @@ function mnavTeam(teamId){
 // Sin login — acceso directo
 function navegarPorRol(){
   if(!curUser) return;
-  if(curUser.rol==='admin'){
+  if(curUser.rol==='admin'||curUser.rol==='mentor'){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     const pg=document.getElementById('pg-home');
     if(pg){pg.classList.add('active');pg.style.display='block';}
