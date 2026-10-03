@@ -1991,7 +1991,49 @@ function checkLogout(){
 }
 
 // ── GESTIÓN DE USUARIOS ───────────────────────────────────────────────────────
+
+function abrirCambiarPass(){
+  document.getElementById('cp-actual').value='';
+  document.getElementById('cp-nueva').value='';
+  document.getElementById('cp-confirmar').value='';
+  document.getElementById('cp-error').style.display='none';
+  document.getElementById('m-cambiar-pass').classList.add('open');
+}
+
+function guardarNuevaPass(){
+  const actual=document.getElementById('cp-actual').value;
+  const nueva=document.getElementById('cp-nueva').value.trim();
+  const confirmar=document.getElementById('cp-confirmar').value.trim();
+  const errEl=document.getElementById('cp-error');
+  
+  if(!curUser){return;}
+  if(actual!==curUser.pass){
+    errEl.textContent='La contraseña actual es incorrecta.';
+    errEl.style.display='block';
+    return;
+  }
+  if(nueva.length<4){
+    errEl.textContent='La nueva contraseña debe tener al menos 4 caracteres.';
+    errEl.style.display='block';
+    return;
+  }
+  if(nueva!==confirmar){
+    errEl.textContent='Las contraseñas no coinciden.';
+    errEl.style.display='block';
+    return;
+  }
+  // Actualizar contraseña
+  const idx=USERS.findIndex(u=>u.id===curUser.id);
+  if(idx>-1){
+    USERS[idx].pass=nueva;
+    curUser.pass=nueva;
+    saveUsers();
+  }
+  document.getElementById('m-cambiar-pass').classList.remove('open');
+  alert('✅ Contraseña actualizada correctamente.');
+}
 function openUsers(){
+  if(!curUser||curUser.rol!=='admin'){alert('Solo el asesor puede gestionar usuarios.');return;}
   renderUsersList();
   // Render checkboxes de equipos
   document.getElementById('nu-teams').innerHTML=ATEAMS.map(t=>
@@ -4095,10 +4137,36 @@ function dbAutoSave() {
     <div class="mnav-item admin-only" id="mnav-usuarios" onclick="openUsers()">
       <i class="ti ti-users-group"></i>Usuarios
     </div>
+    <div class="mnav-item" onclick="abrirCambiarPass()">
+      <i class="ti ti-lock"></i>Clave
+    </div>
     <div class="mnav-item" onclick="checkLogout()">
       <i class="ti ti-logout"></i>Salir
     </div>
   </div>
 </div>
+
+<!-- MODAL CAMBIAR CONTRASEÑA -->
+<div class="moverlay" id="m-cambiar-pass" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="mbox" onclick="event.stopPropagation()" style="width:340px;">
+  <div class="mtitle">🔒 Cambiar contraseña<button class="mclose" onclick="document.getElementById('m-cambiar-pass').classList.remove('open')">×</button></div>
+  <div style="margin-bottom:16px;">
+    <label style="font-size:12px;color:var(--color-text-secondary);display:block;margin-bottom:4px;">Contraseña actual</label>
+    <input id="cp-actual" type="password" placeholder="Tu contraseña actual" style="width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--color-border-secondary);border-radius:8px;font-size:14px;"/>
+  </div>
+  <div style="margin-bottom:16px;">
+    <label style="font-size:12px;color:var(--color-text-secondary);display:block;margin-bottom:4px;">Nueva contraseña</label>
+    <input id="cp-nueva" type="password" placeholder="Nueva contraseña" style="width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--color-border-secondary);border-radius:8px;font-size:14px;"/>
+  </div>
+  <div style="margin-bottom:20px;">
+    <label style="font-size:12px;color:var(--color-text-secondary);display:block;margin-bottom:4px;">Confirmar nueva contraseña</label>
+    <input id="cp-confirmar" type="password" placeholder="Repetí la nueva contraseña" style="width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--color-border-secondary);border-radius:8px;font-size:14px;"/>
+  </div>
+  <div id="cp-error" style="display:none;color:#A32D2D;font-size:12px;margin-bottom:12px;"></div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn" onclick="document.getElementById('m-cambiar-pass').classList.remove('open')" style="flex:1;">Cancelar</button>
+    <button class="btn btn-org" onclick="guardarNuevaPass()" style="flex:1;">Guardar</button>
+  </div>
+</div></div>
 </body>
 </html>
