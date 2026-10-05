@@ -1194,7 +1194,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
           <button class="fpill" id="er-princ" onclick="entF('Entrenador/a principal')">E. Principal</button>
           <button class="fpill" id="er-asist" onclick="entF('Asistente')">Asistente</button>
           <button class="fpill" id="er-arqc" onclick="entF('Entrenador/a de arqueros/as')">Arq.</button>
-          <button class="fpill" id="er-fis" onclick="entF('Preparador/a físico/a')">Prep. Físico</button><button class="fpill" id="er-mentor" onclick="entF('Mentor/a')">Mentor/a</button><button class="fpill" id="er-video" onclick="entF('Video Analista')">Video Analista</button>
+          <button class="fpill" id="er-fis" onclick="entF('Preparador/a físico/a')">Prep. Físico</button><button class="fpill" id="er-mentor" onclick="entF('Mentor/a')">Mentor/a</button><button class="fpill" id="er-video" onclick="entF('Video Analista')">Video Analista</button><button class="fpill" id="er-jefe" onclick="entF('Jefe de Equipo')">Jefe Equipo</button>
         </div>
       </div>
       <div class="ptable">
@@ -2263,8 +2263,8 @@ function openUsers(){
   if(rolSel){
     // Limpiar opciones
     rolSel.innerHTML = curUser.rol==='admin'
-      ? '<option value="admin">Asesor / Admin</option><option value="mentor">Mentor/a</option><option value="coach">Entrenador/a</option>'
-      : '<option value="coach">Entrenador/a</option>';
+      ? '<option value="admin">Asesor / Admin</option><option value="mentor">Mentor/a</option><option value="jefe">Jefe de Equipo</option><option value="coach">Entrenador/a</option>'
+      : '<option value="jefe">Jefe de Equipo</option><option value="coach">Entrenador/a</option>';
   }
   renderUsersList();
   // Render checkboxes de equipos
@@ -2298,7 +2298,7 @@ function renderUsersList(){
         <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);">${u.nombre}</div>
         <div style="font-size:11px;color:var(--color-text-secondary);">@${u.user} · ${u.rol==='admin'?'Admin / Asesor':'Entrenador/a'}${u.teams.length?' · '+u.teams.map(t=>TM[t]?.n||t).join(', '):''}</div>
       </div>
-      <span class="user-role-badge ${u.rol==='admin'?'role-admin':'role-coach'}">${u.rol==='admin'?'Admin':u.rol==='mentor'?'Mentor/a':'Entrenador/a'}</span>
+      <span class="user-role-badge ${u.rol==='admin'?'role-admin':'role-coach'}">${u.rol==='admin'?'Admin':u.rol==='mentor'?'Mentor/a':u.rol==='jefe'?'Jefe de Equipo':'Entrenador/a'}</span>
       ${u.id!==1?`<button onclick="editarUsuario(${u.id})" style="background:none;border:none;cursor:pointer;color:#1A2B5C;font-size:14px;margin-right:4px;"><i class="ti ti-pencil"></i></button><button onclick="eliminarUsuario(${u.id})" style="background:none;border:none;cursor:pointer;color:#A32D2D;font-size:14px;"><i class="ti ti-trash"></i></button>`:''}
     </div>`).join('');
 }
@@ -4224,6 +4224,19 @@ function navegarPorRol(){
     setTimeout(filtrarHomeEquipos, 50);
     document.querySelectorAll('.mnav-item').forEach(el=>el.classList.remove('active'));
     const hEl=document.getElementById('mnav-home');if(hEl)hEl.classList.add('active');
+  } else if(curUser.rol==='jefe'){
+    // Jefe de equipo: va a pg-home con sus equipos
+    document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='';});
+    const pg=document.getElementById('pg-home');
+    if(pg){pg.classList.add('active');pg.style.display='block';}
+    ['tb-title','tb-sub','tb-acts'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+    const sal=document.getElementById('home-saludo');
+    if(sal) sal.textContent='Hola, '+curUser.nombre.split(' ')[0]+' 👋';
+    const hlogo=document.getElementById('home-logo');
+    if(hlogo&&typeof ATAH_LOGO!=='undefined') hlogo.src=ATAH_LOGO;
+    document.querySelectorAll('.mnav-item').forEach(el=>el.classList.remove('active'));
+    const hEl=document.getElementById('mnav-home');if(hEl)hEl.classList.add('active');
+    setTimeout(filtrarHomeEquipos,100);
   } else {
     const t=curUser.teams&&curUser.teams[0];
     if(t) goTeam(t,null);
