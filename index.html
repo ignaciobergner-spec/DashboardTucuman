@@ -1589,10 +1589,6 @@ const EXCEL_CAMPOS=[
   {key:'pos',       label:'Posición'},
 ];
 
-
-
-
-
 function openNewEvFromTabla(mi, dia, teamId){
   // Pre-configurar el modal de nuevo evento con mes, día y equipo
   evTeamContext = teamId || null;
@@ -3381,13 +3377,14 @@ function convToggle(playerId){
   else entry.estado=entry.estado==='convocado'?'desafectado':'convocado';
   renderModalConv();
 }
-
+  dbAutoSave();
+}
 function convMarcarTodos(estado){
   const c=CONVS.find(x=>x.id===curConvId);if(!c)return;
   c.jugadores.forEach(j=>j.estado=estado);
   renderModalConv();
+  dbAutoSave();
 }
-
 function guardarConvocatoria(){
   const c=CONVS.find(x=>x.id===curConvId);if(!c)return;
   document.getElementById('m-conv').classList.remove('open');
@@ -3448,8 +3445,8 @@ function setAsistEstado(evId, teamId, playerId, estado){
   const r=a.registros.find(x=>x.playerId===playerId);
   if(r)r.estado=estado;
   else a.registros.push({playerId,estado});
+  dbAutoSave();
 }
-
 function getAsistEstado(evId, teamId, playerId){
   const a=ASIST.find(x=>x.evId===evId&&x.teamId===teamId);
   if(!a)return'nr';
@@ -4134,7 +4131,7 @@ function entAllTeams(){const a=ATEAMS.every(t=>entFTeams.has(t));if(a){entFTeams
 function resetEntF(){curRol=null;entFTeams=new Set();['ef2-n','ef2-f','ef2-d','ef2-t','ef2-e'].forEach(i=>document.getElementById(i).value='');ROL_KEYS.forEach(k=>document.getElementById('rb-'+ROL_IDS[k]).className='rol-btn');ATEAMS.forEach(t=>{const el=document.getElementById('etcb-'+t);if(el)el.className='tcb navy';});document.getElementById('etcb-all').className='tcb navy';}
 function openNewEnt(){editEntId=null;resetEntF();document.getElementById('ment-title').textContent='Nuevo/a entrenador/a';document.getElementById('ent-delbtn').style.display='none';document.getElementById('m-ent').classList.add('open');setTimeout(()=>document.getElementById('ef2-n').focus(),100);}
 function openEditEntById(id){const e=ENTS.find(x=>x.id===id);if(!e)return;editEntId=id;resetEntF();document.getElementById('ment-title').textContent='Editar entrenador/a';document.getElementById('ent-delbtn').style.display='inline-flex';document.getElementById('ef2-n').value=e.nombre||'';document.getElementById('ef2-f').value=e.fnac||'';document.getElementById('ef2-d').value=e.dni||'';document.getElementById('ef2-t').value=e.tel||'';document.getElementById('ef2-e').value=e.email||'';curRol=e.rol;const rid=ROL_IDS[e.rol];if(rid)document.getElementById('rb-'+rid).className='rol-btn sel';e.teams.forEach(t=>{const el=document.getElementById('etcb-'+t);if(el){entFTeams.add(t);el.className='tcb navy on';}});document.getElementById('etcb-all').className='tcb navy'+(ATEAMS.every(t=>entFTeams.has(t))?' on':'');document.getElementById('m-entv').classList.remove('open');document.getElementById('m-ent').classList.add('open');}
-function saveEnt(){const n=document.getElementById('ef2-n').value.trim();if(!n){alert('Ingresá el nombre');return;}if(!curRol){alert('Seleccioná un rol');return;}const data={nombre:n,fnac:document.getElementById('ef2-f').value,dni:document.getElementById('ef2-d').value.trim(),tel:document.getElementById('ef2-t').value.trim(),email:document.getElementById('ef2-e').value.trim(),rol:curRol,teams:[...entFTeams]};if(editEntId){const e=ENTS.find(x=>x.id===editEntId);if(e)Object.assign(e,data);}else{ENTS.push({id:++entIdC,...data});}document.getElementById('m-ent').classList.remove('open');renderEnts();}
+function saveEnt(){const n=document.getElementById('ef2-n').value.trim();if(!n){alert('Ingresá el nombre');return;}if(!curRol){alert('Seleccioná un rol');return;}const data={nombre:n,fnac:document.getElementById('ef2-f').value,dni:document.getElementById('ef2-d').value.trim(),tel:document.getElementById('ef2-t').value.trim(),email:document.getElementById('ef2-e').value.trim(),rol:curRol,teams:[...entFTeams]};if(editEntId){const e=ENTS.find(x=>x.id===editEntId);if(e)Object.assign(e,data);}else{ENTS.push({id:++entIdC,...data});}document.getElementById('m-ent').classList.remove('open');renderEnts();dbAutoSave();}
 function delEnt(){
   if(!editEntId)return;
   const e=ENTS.find(x=>x.id===editEntId);
@@ -4148,6 +4145,7 @@ function delEnt(){
       if(i>-1)ENTS.splice(i,1);
       document.getElementById('m-ent').classList.remove('open');
       renderEnts();
+      dbAutoSave();
     }
   );
 }
