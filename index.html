@@ -2414,10 +2414,10 @@ function updateMobileNav(){
     const el=document.getElementById('mnav-'+t);
     if(el)el.style.display=canAccess(t)?'flex':'none';
   });
-  // Ocultar padrón general y entrenadores si no es admin
+  // Ocultar padrón general y entrenadores si no es admin ni mentor
   ['mnav-padron','mnav-entrenadores'].forEach(id=>{
     const el=document.getElementById(id);
-    if(el)el.style.display=curUser.rol==='admin'?'flex':'none';
+    if(el)el.style.display=(curUser.rol==='admin'||curUser.rol==='mentor')?'flex':'none';
   });
 }
 
