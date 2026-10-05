@@ -1163,6 +1163,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
           <button class="fpill on" id="fg-todos" onclick="padF('g','todos')">Todos</button>
           <button class="fpill" id="fg-f" onclick="padF('g','F')">Femenino</button>
           <button class="fpill" id="fg-m" onclick="padF('g','M')">Masculino</button>
+          <button class="fpill" id="fg-proy" onclick="mostrarProyeccionPadron()" style="background:#1A2B5C;color:#fff;border-color:#1A2B5C;">📊 Proyección 2027</button>
           <span class="flabel-sm" style="margin-left:4px;">Cat.:</span>
           <button class="fpill nv on" id="fc-todas" onclick="padF('c','todas')">Todas</button>
           <button class="fpill nv" id="fc-mayor" onclick="padF('c','Mayor')">Mayor</button>
@@ -1175,7 +1176,8 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
       </div>
       <div class="ptable">
         <div class="pthdr-pad"><div class="th" style="text-align:center;">#</div><div class="th">Nombre</div><div class="th">Selección</div><div class="th">Posición</div><div class="th">Nac./Edad</div><div class="th">Club</div><div class="th">Teléfono</div><div class="th">DNI</div><div class="th"></div></div>
-        <div id="pad-list"></div>
+        <div id="pad-proy" style="display:none;"></div>
+      <div id="pad-list"></div>
       </div>
     </div>
 
@@ -1234,6 +1236,11 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
                 <i class="ti ti-checkbox" style="font-size:22px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
                 <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Asistencia</div>
                 <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Control por evento</div>
+              </div>
+              <div onclick="eqTab('proyeccion')" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
+                <i class="ti ti-chart-bar" style="font-size:22px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
+                <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Proyección</div>
+                <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Cambios en 2027</div>
               </div>
             </div>
           </div>
@@ -1304,7 +1311,8 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
         </div>
         <div class="ptable" id="eq-conv-list"></div>
       </div>
-      <div id="sub-asist" style="display:none;">
+      <div id="sub-proy" style="display:none;padding:14px 0;"></div>
+        <div id="sub-asist" style="display:none;">
         <div id="eq-asist-content"></div>
       </div>
     </div>
@@ -1980,9 +1988,217 @@ function aplicarTodosPermisos(){
   updateMobileNav();
   filtrarHomeEquipos();
 }
+
+// ── PROYECCIÓN AÑO SIGUIENTE ─────────────────────────────────────────────────
+function getCatAnioSig(fnac) {
+  if(!fnac) return null;
+  const anioNac = parseInt((fnac+'').slice(0,4));
+  if(isNaN(anioNac)) return null;
+  const t = new Date().getFullYear() + 1; // año siguiente
+  if(anioNac >= t-12) return {cat:'Sub-12', color:'#9B59D4'};
+  if(anioNac >= t-14) return {cat:'Sub-14', color:'#E87B1E'};
+  if(anioNac >= t-16) return {cat:'Sub-16', color:'#5DB8F0'};
+  if(anioNac >= t-19) return {cat:'Sub-19', color:'#27AE60'};
+  return {cat:'Mayor', color:'#1A2B5C'};
+}
+
+function renderProyeccion(genero) {
+  // genero: 'F', 'M', o 'todos'
+  const anioSig = new Date().getFullYear() + 1;
+  const cats = ['Sub-12','Sub-14','Sub-16','Sub-19','Mayor'];
+  
+  // Obtener todos los jugadores activos
+  let jugadores = [];
+  Object.keys(PLS).forEach(teamId => {
+    const g = TM[teamId]?.g;
+    if(genero !== 'todos' && g !== genero) return;
+    (PLS[teamId]||[]).forEach(p => {
+      if(p.proceso === 'baja') return;
+      if(!jugadores.find(j=>j.id===p.id)) {
+        jugadores.push({...p, teamId, genero: g});
+      }
+    });
+  });
+
+  // Agrupar por categoría actual y futura
+  const cambios = jugadores.filter(p => {
+    const actual = getCatInfo(p.fnac);
+    const futura = getCatAnioSig(p.fnac);
+    return actual && futura && actual.cat !== futura.cat;
+  });
+
+  // Resumen numérico por categoría futura
+  const resumen = {};
+  cats.forEach(c => resumen[c] = {F:0, M:0});
+  jugadores.forEach(p => {
+    const futura = getCatAnioSig(p.fnac);
+    if(futura && resumen[futura.cat]) {
+      if(p.genero === 'F') resumen[futura.cat].F++;
+      else if(p.genero === 'M') resumen[futura.cat].M++;
+    }
+  });
+
+  let html = `<div style="padding:12px 0;">`;
+  
+  // Resumen numérico
+  html += `<div style="font-size:11px;color:#7A98B8;font-weight:500;letter-spacing:.04em;margin-bottom:10px;">RESUMEN ${anioSig}</div>`;
+  html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:20px;">`;
+  cats.forEach(cat => {
+    const info = {cat, color: cat==='Sub-12'?'#9B59D4':cat==='Sub-14'?'#E87B1E':cat==='Sub-16'?'#5DB8F0':cat==='Sub-19'?'#27AE60':'#1A2B5C'};
+    const totalF = resumen[cat].F;
+    const totalM = resumen[cat].M;
+    if(genero==='todos'||genero==='F'||genero==='M') {
+      html += `<div style="background:#fff;border-radius:10px;padding:12px;border:0.5px solid #C8DAF0;">
+        <div style="font-size:13px;font-weight:600;color:${info.color};margin-bottom:6px;">${cat}</div>`;
+      if(genero==='todos'||genero==='F') html += `<div style="font-size:11px;color:#E87B1E;">F: <b>${totalF}</b></div>`;
+      if(genero==='todos'||genero==='M') html += `<div style="font-size:11px;color:#1A2B5C;">M: <b>${totalM}</b></div>`;
+      html += `</div>`;
+    }
+  });
+  html += `</div>`;
+
+  // Lista de jugadores que cambian de categoría
+  if(cambios.length > 0) {
+    html += `<div style="font-size:11px;color:#7A98B8;font-weight:500;letter-spacing:.04em;margin-bottom:10px;">SUBEN DE CATEGORÍA EN ${anioSig}</div>`;
+    
+    // Agrupar por género
+    const grupos = genero==='todos' ? ['F','M'] : [genero];
+    grupos.forEach(g => {
+      const lista = cambios.filter(p=>p.genero===g);
+      if(!lista.length) return;
+      html += `<div style="font-size:12px;font-weight:600;color:${g==='F'?'#E87B1E':'#1A2B5C'};margin-bottom:8px;">${g==='F'?'Femenino':'Masculino'}</div>`;
+      html += `<div style="background:#fff;border-radius:10px;border:0.5px solid #C8DAF0;margin-bottom:14px;overflow:hidden;">`;
+      lista.sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(p => {
+        const actual = getCatInfo(p.fnac);
+        const futura = getCatAnioSig(p.fnac);
+        html += `<div style="padding:8px 12px;border-bottom:0.5px solid #EEF3FA;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:12px;font-weight:500;">${p.nombre}</span>
+          <span style="font-size:11px;color:#7A98B8;">${actual.cat} → <b style="color:${futura.color}">${futura.cat}</b></span>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+  } else {
+    html += `<div style="text-align:center;color:#7A98B8;font-size:13px;padding:20px;">Sin cambios de categoría para ${anioSig}</div>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function renderProyeccionEquipo(teamId) {
+  const g = TM[teamId]?.g || 'M';
+  const anioSig = new Date().getFullYear() + 1;
+  const jugadores = (PLS[teamId]||[]).filter(p=>p.proceso!=='baja');
+  
+  // Quiénes siguen
+  const siguen = jugadores.filter(p=>{
+    const futura = getCatAnioSig(p.fnac);
+    const actual = getCatInfo(p.fnac);
+    return futura && actual && futura.cat === actual.cat;
+  });
+  
+  // Quiénes suben (salen del equipo)
+  const suben = jugadores.filter(p=>{
+    const futura = getCatAnioSig(p.fnac);
+    const actual = getCatInfo(p.fnac);
+    return futura && actual && futura.cat !== actual.cat;
+  });
+
+  // Quiénes llegan desde la categoría inferior
+  const catActual = TM[teamId]?.cat;
+  const catInferior = catActual==='Mayor'?'Sub-19':catActual==='Sub-19'?'Sub-16':catActual==='Sub-16'?'Sub-14':catActual==='Sub-14'?'Sub-12':null;
+  let llegan = [];
+  if(catInferior) {
+    Object.keys(PLS).forEach(tid => {
+      if(TM[tid]?.g !== g) return;
+      (PLS[tid]||[]).forEach(p => {
+        if(p.proceso==='baja') return;
+        const futura = getCatAnioSig(p.fnac);
+        const actual = getCatInfo(p.fnac);
+        if(futura && actual && futura.cat===catActual && actual.cat===catInferior) {
+          if(!llegan.find(j=>j.id===p.id)) llegan.push(p);
+        }
+      });
+    });
+  }
+
+  let html = `<div style="padding:12px 0;">`;
+  html += `<div style="font-size:11px;color:#7A98B8;font-weight:500;letter-spacing:.04em;margin-bottom:12px;">PROYECCIÓN ${anioSig}</div>`;
+  
+  // Stats
+  html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
+    <div style="background:#EAF3DE;border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:20px;font-weight:700;color:#3B6D11;">${siguen.length}</div>
+      <div style="font-size:10px;color:#3B6D11;">Continúan</div>
+    </div>
+    <div style="background:#FCEBEB;border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:20px;font-weight:700;color:#A32D2D;">${suben.length}</div>
+      <div style="font-size:10px;color:#A32D2D;">Suben</div>
+    </div>
+    <div style="background:#EEF3FF;border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:20px;font-weight:700;color:#1A2B5C;">${llegan.length}</div>
+      <div style="font-size:10px;color:#1A2B5C;">Llegan</div>
+    </div>
+  </div>`;
+
+  // Quiénes suben
+  if(suben.length) {
+    html += `<div style="font-size:11px;color:#A32D2D;font-weight:500;margin-bottom:6px;">SUBEN DE CATEGORÍA</div>`;
+    html += `<div style="background:#fff;border-radius:10px;border:0.5px solid #F7C1C1;margin-bottom:14px;">`;
+    suben.forEach(p=>{
+      const futura = getCatAnioSig(p.fnac);
+      html += `<div style="padding:8px 12px;border-bottom:0.5px solid #FEF0F0;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;font-weight:500;">${p.nombre}</span>
+        <span style="font-size:11px;color:#A32D2D;">→ ${futura?.cat||''}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Quiénes llegan
+  if(llegan.length) {
+    html += `<div style="font-size:11px;color:#1A2B5C;font-weight:500;margin-bottom:6px;">LLEGAN DE ${catInferior?.toUpperCase()}</div>`;
+    html += `<div style="background:#fff;border-radius:10px;border:0.5px solid #C8DAF0;margin-bottom:14px;">`;
+    llegan.forEach(p=>{
+      html += `<div style="padding:8px 12px;border-bottom:0.5px solid #EEF3FA;">
+        <span style="font-size:12px;font-weight:500;">${p.nombre}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function mostrarProyeccionPadron(){
+  // Activar botón
+  document.querySelectorAll('#pg-padron .fpill').forEach(b=>b.classList.remove('on'));
+  document.getElementById('fg-proy').classList.add('on');
+  // Ocultar lista y mostrar proyección
+  document.getElementById('pad-list').style.display='none';
+  const proyDiv=document.getElementById('pad-proy');
+  proyDiv.style.display='block';
+  // Tabs F/M/Todos
+  proyDiv.innerHTML=`
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="fpill on" id="proy-tab-todos" onclick="switchProyTab('todos')">Todos</button>
+      <button class="fpill" id="proy-tab-f" onclick="switchProyTab('F')">Femenino</button>
+      <button class="fpill" id="proy-tab-m" onclick="switchProyTab('M')">Masculino</button>
+    </div>
+    <div id="proy-content">${renderProyeccion('todos')}</div>
+  `;
+}
+
+function switchProyTab(g){
+  document.querySelectorAll('#pad-proy .fpill').forEach(b=>b.classList.remove('on'));
+  document.getElementById('proy-tab-'+g).classList.add('on');
+  document.getElementById('proy-content').innerHTML=renderProyeccion(g);
+}
 function canAccess(teamId){
   if(!curUser)return false;
-  if(curUser.rol==='admin')return true;
+  if(curUser.rol==='admin'||curUser.rol==='mentor')return true;
   return curUser.teams.includes(teamId);
 }
 
@@ -2111,7 +2327,7 @@ function agregarUsuario(){
 
 function filtrarHomeEquipos(){
   if(!curUser) return;
-  const esAdmin = curUser.rol==='admin';
+  const esAdmin = curUser.rol==='admin'||curUser.rol==='mentor';
   // Ocultar tarjetas de equipos sin acceso
   document.querySelectorAll('[data-team-card]').forEach(card=>{
     const t=card.dataset.teamCard;
@@ -3702,7 +3918,7 @@ function agNext(){if(agM===11){agM=0;agY++;}else agM++;agYear(agY);}
 // EQUIPO
 let curTeam='mayor-m',eqM=5,eqY=2025,curTab='agenda';
 function goTeam(id,n){document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='';});document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));document.getElementById('pg-equipo').classList.add('active');if(n)n.classList.add('active');curTeam=id;const fn=id==='arqueros'?'Arqueros/as':(TM[id].n.replace(' F',' Femenino').replace(' M',' Masculino'));document.getElementById('tb-title').textContent=fn;document.getElementById('tb-sub').textContent='Selección provincial · ATAH Tucumán 2025';// Mostrar pantalla de inicio del equipo
-  ['sub-home','sub-ag','sub-jug','sub-conv','sub-asist'].forEach(id=>{
+  ['sub-home','sub-ag','sub-jug','sub-conv','sub-asist','sub-proy'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display='none';
   });
   const subHome=document.getElementById('sub-home');
