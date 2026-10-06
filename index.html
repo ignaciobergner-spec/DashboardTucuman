@@ -1814,6 +1814,91 @@ function openImportExcel(){
   document.getElementById('m-excel').classList.add('open');
 }
 
+// ── IMPORTACIÓN DESDE EXCEL ──────────────────────────────────────────────────
+let excelRows=[], excelHeaderRow=0, excelRowOffset=0;
+
+// Texto normalizado: minúsculas, sin acentos, sin signos, espacios simples
+function excelNorm(t){
+  return String(t==null?'':t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9@ ]+/g,' ').replace(/\s+/g,' ').trim();
+}
+
+// Reconoce a qué campo corresponde un título de columna (o null)
+function excelCampoDeTitulo(h){
+  const t=excelNorm(h);
+  if(!t) return null;
+  const tiene=w=>(' '+t+' ').includes(' '+w+' ');
+  if((tiene('apellido')||tiene('apellidos'))&&(tiene('nombre')||tiene('nombres'))) return 'nombre';
+  if(['jugador','jugadora','jugador a','jugadores','nombre completo','deportista'].includes(t)) return 'nombre';
+  if(tiene('apellido')||tiene('apellidos')) return 'apellido';
+  if(tiene('nombre')||tiene('nombres')) return 'nombre2';
+  if(tiene('nacimiento')||tiene('fnac')||t==='fecha'||(t.startsWith('fec')&&(tiene('nac')||t.includes(' nac')))||t==='f nac') return 'fnac';
+  if(tiene('dni')||tiene('documento')||t==='doc') return 'dni';
+  if(tiene('padre')||tiene('madre')||tiene('tutor')||tiene('tutora')||tiene('responsable')) return 'telp';
+  if(tiene('email')||tiene('mail')||tiene('correo')||t.includes('e mail')) return 'email';
+  if(tiene('telefono')||tiene('tel')||tiene('celular')||tiene('cel')||tiene('whatsapp')) return 'tel';
+  if(tiene('club')||tiene('institucion')) return 'club';
+  if(tiene('posicion')||tiene('puesto')||t==='pos') return 'pos';
+  return null;
+}
+
+// Arma el mapa de columnas a partir de una fila de títulos
+function excelAutoMap(headers){
+  const map={};
+  headers.forEach((h,i)=>{
+    const campo=excelCampoDeTitulo(h);
+    if(campo && map[campo]===undefined) map[campo]=i;   // === undefined: la columna A (0) también cuenta
+  });
+  // Una sola columna "Nombre" sin columna de apellido → es el nombre completo
+  if(map.nombre===undefined && map.nombre2!==undefined && map.apellido===undefined){ map.nombre=map.nombre2; delete map.nombre2; }
+  if(map.nombre===undefined && map.apellido!==undefined && map.nombre2===undefined){ map.nombre=map.apellido; delete map.apellido; }
+  return map;
+}
+
+// Convierte la fecha del Excel a AAAA-MM-DD. Devuelve '' si no se puede interpretar.
+function excelFecha(v){
+  if(v===''||v==null) return '';
+  const pad=n=>String(n).padStart(2,'0');
+  const valida=(y,m,d)=>{ const dt=new Date(y,m-1,d); return y>1900&&y<2100&&dt.getFullYear()===y&&dt.getMonth()===m-1&&dt.getDate()===d; };
+  if(typeof v==='number'){                       // celda con formato fecha → número de serie de Excel
+    const dc=XLSX.SSF.parse_date_code(v);
+    if(dc&&valida(dc.y,dc.m,dc.d)) return dc.y+'-'+pad(dc.m)+'-'+pad(dc.d);
+    return '';
+  }
+  const t=String(v).trim();
+  let m=t.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);           // 2007-06-05
+  if(m){ const y=+m[1],mo=+m[2],d=+m[3]; return valida(y,mo,d)?y+'-'+pad(mo)+'-'+pad(d):''; }
+  m=t.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2}|\d{4})$/);         // 05/06/2007 (día/mes/año)
+  if(m){ let y=+m[3]; if(y<100) y+= y<=30?2000:1900; const d=+m[1],mo=+m[2]; return valida(y,mo,d)?y+'-'+pad(mo)+'-'+pad(d):''; }
+  return '';
+}
+
+// "PEREZ GOMEZ Ana Paula" → "Perez Gomez, Ana Paula". Si no sigue ese patrón, se deja igual.
+function excelTitulo(w){ return w.toLowerCase().replace(/(^|[\s\-'’])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase()); }
+function excelEsMayus(w){ return /\p{L}/u.test(w) && w===w.toUpperCase() && w!==w.toLowerCase(); }
+function excelFormatoNombre(n){
+  const t=String(n||'').replace(/\s+/g,' ').trim();
+  if(!t||t.includes(',')) return t;
+  const pal=t.split(' ');
+  let k=0; while(k<pal.length && excelEsMayus(pal[k])) k++;
+  if(k===0||k===pal.length) return t;               // sin apellido en mayúsculas, o todo en mayúsculas: no se toca
+  return excelTitulo(pal.slice(0,k).join(' '))+', '+pal.slice(k).join(' ');
+}
+// Posición del Excel → valores que usa la app. Devuelve null si no se reconoce.
+function excelPosicion(v){
+  const t=excelNorm(v);
+  if(!t) return '—';
+  if(/^(arq|gk|golero|golera|portero|portera)/.test(t)) return 'Arquero/a';
+  if(/^(def|zaguer|lateral|libero)/.test(t)) return 'Defensa';
+  if(/^(vol|med|mc\b|mediocamp|centrocamp)/.test(t)) return 'Mediocampista';
+  if(/^(del|ata|punta|extrem|centrodel|wing)/.test(t)) return 'Delantera/o';
+  return null;
+}
+
+// Clave para detectar la misma persona: DNI (solo dígitos) o nombre con las palabras ordenadas
+function excelDniKey(d){ const x=String(d||'').replace(/\D/g,''); return x.length>=6?x:''; }
+function excelNombreKey(n){ return excelNorm(n).split(' ').filter(Boolean).sort().join(' '); }
+
 function excelCargar(input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
@@ -1821,105 +1906,128 @@ function excelCargar(input){
     try{
       const wb=XLSX.read(e.target.result,{type:'array'});
       const ws=wb.Sheets[wb.SheetNames[0]];
-      const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-      if(!rows.length){alert('El archivo está vacío');return;}
-      excelHeaders=rows[0].map(h=>String(h).trim());
-      excelData=rows.slice(1).filter(r=>r.some(c=>c!==''));
-      excelColMap={};
-      // Auto-detectar columnas por nombre
-      const autoMap={
-        'nombre':['nombre','apellido y nombre','jugador','jugadora','apellido nombre'],
-        'apellido':['apellido'],
-        'nombre2':['nombre'],
-        'fnac':['fecha','nacimiento','fnac','fecha de nacimiento','fecha nac'],
-        'dni':['dni','documento'],
-        'club':['club','institución','institucion'],
-        'tel':['teléfono','telefono','tel','celular'],
-        'telp':['tel padre','tel madre','tutor','padre','madre'],
-        'email':['email','mail','correo'],
-        'pos':['posición','posicion','puesto'],
-      };
-      excelHeaders.forEach((h,i)=>{
-        const hl=h.toLowerCase();
-        for(const[campo,keywords] of Object.entries(autoMap)){
-          if(!excelColMap[campo]&&keywords.some(k=>hl.includes(k))){
-            excelColMap[campo]=i;
-          }
-        }
+      excelRows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true,blankrows:true});
+      excelRowOffset=ws['!ref']?XLSX.utils.decode_range(ws['!ref']).s.r:0; // para mostrar el número de fila real del Excel
+      if(!excelRows.some(r=>r.some(c=>String(c).trim()!==''))){alert('El archivo está vacío');return;}
+      // Buscar la fila de títulos entre las primeras 10: la que más columnas reconoce
+      let mejor=0, mejorPuntaje=-1;
+      excelRows.slice(0,10).forEach((r,i)=>{
+        const puntaje=Object.keys(excelAutoMap(r.map(c=>String(c)))).length;
+        if(puntaje>mejorPuntaje){ mejor=i; mejorPuntaje=puntaje; }
       });
-      renderExcelStep2();
+      if(mejorPuntaje<=0) mejor=excelRows.findIndex(r=>r.some(c=>String(c).trim()!==''));
+      excelSetHeaderRow(Math.max(0,mejor));
     }catch(err){alert('Error al leer el archivo: '+err.message);}
   };
   reader.readAsArrayBuffer(file);
 }
 
+function excelSetHeaderRow(i){
+  excelHeaderRow=+i;
+  const ancho=Math.max(...excelRows.map(r=>r.length));
+  excelHeaders=Array.from({length:ancho},(_,c)=>{
+    const h=String(excelRows[excelHeaderRow][c]??'').trim();
+    return h||('Columna '+String.fromCharCode(65+(c%26)));
+  });
+  excelData=excelRows.slice(excelHeaderRow+1).filter(r=>r.some(c=>String(c).trim()!==''));
+  excelColMap=excelAutoMap(excelRows[excelHeaderRow].map(c=>String(c)));
+  renderExcelStep2();
+}
+
+function excelSetMap(key,val){
+  if(val===''){ delete excelColMap[key]; } else { excelColMap[key]=parseInt(val); }
+  renderExcelStep2();
+}
+
+// Calcula qué filas se van a importar y cuáles se omiten
+function excelAnalizar(){
+  const get=(r,k)=>excelColMap[k]!==undefined?String(r[excelColMap[k]]??'').trim():'';
+  const dnis=new Set(), nombres=new Set();
+  allP().forEach(p=>{ const d=excelDniKey(p.dni); if(d) dnis.add(d); nombres.add(excelNombreKey(p.nombre)); });
+  const nuevos=[], repetidos=[], posMal=[];
+  let sinNombre=0, fechasMal=0, sinFecha=0;
+  excelData.forEach(r=>{
+    let nombre='';
+    if(excelColMap.nombre!==undefined) nombre=excelFormatoNombre(get(r,'nombre'));
+    else{ let ap=get(r,'apellido'); const nm=get(r,'nombre2'); if(excelEsMayus(ap.replace(/\s/g,''))) ap=excelTitulo(ap); nombre=ap&&nm?ap+', '+nm:(ap||nm); }
+    if(!nombre){ sinNombre++; return; }
+    const dni=get(r,'dni'), dk=excelDniKey(dni), nk=excelNombreKey(nombre);
+    const yaEsta = (dk&&dnis.has(dk)) || nombres.has(nk);
+    if(yaEsta){ repetidos.push(nombre); return; }
+    if(dk) dnis.add(dk); nombres.add(nk);          // también evita duplicados dentro del mismo archivo
+    const rawF=excelColMap.fnac!==undefined?r[excelColMap.fnac]:'';
+    const fnac=excelFecha(rawF);
+    if(String(rawF).trim()!==''&&!fnac) fechasMal++;
+    if(!fnac) sinFecha++;
+    const posRaw=get(r,'pos');
+    let pos=excelPosicion(posRaw);
+    if(pos===null){ posMal.push(nombre+' («'+posRaw.slice(0,25)+'»)'); pos='—'; }
+    nuevos.push({nombre,fnac,dni,tel:get(r,'tel'),telp:get(r,'telp'),email:get(r,'email'),club:get(r,'club'),pos});
+  });
+  return {nuevos,repetidos,sinNombre,fechasMal,sinFecha,posMal};
+}
+
 function renderExcelStep2(){
   document.getElementById('excel-step1').style.display='none';
   document.getElementById('excel-step2').style.display='block';
+  const resumenFila=r=>r.filter(c=>String(c).trim()!=='').slice(0,4).map(c=>String(c).slice(0,18)).join(' · ')||'(vacía)';
+  const opcionesFila=excelRows.slice(0,10).map((r,i)=>`<option value="${i}" ${i===excelHeaderRow?'selected':''}>Fila ${i+1+excelRowOffset}: ${resumenFila(r).replace(/</g,'&lt;')}</option>`).join('');
   document.getElementById('excel-preview-info').innerHTML=
-    `<b>${excelData.length}</b> filas encontradas · <b>${excelHeaders.length}</b> columnas · Equipo: <b>${TM[curTeam]?.n||curTeam}</b>`;
-  document.getElementById('excel-import-count').textContent='('+excelData.length+' jugadores/as)';
-  // Mapa de columnas
+    `<b>${excelData.length}</b> filas de datos · <b>${excelHeaders.length}</b> columnas · Equipo: <b>${TM[curTeam]?.n||curTeam}</b>
+     <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+       <span style="font-size:11px;white-space:nowrap;">Títulos en:</span>
+       <select class="finput" style="font-size:11px;padding:4px 6px;" onchange="excelSetHeaderRow(this.value)">${opcionesFila}</select>
+     </div>`;
   const mapHtml=EXCEL_CAMPOS.map(c=>`
     <div class="col-map-row">
       <span class="col-map-lbl">${c.label}${c.required?' *':''}</span>
-      <select class="finput" style="font-size:11px;padding:4px 6px;" onchange="excelColMap['${c.key}']=this.value===''?undefined:parseInt(this.value)">
+      <select class="finput" style="font-size:11px;padding:4px 6px;" onchange="excelSetMap('${c.key}',this.value)">
         <option value="">— No incluir —</option>
-        ${excelHeaders.map((h,i)=>`<option value="${i}" ${excelColMap[c.key]===i?'selected':''}>${h}</option>`).join('')}
+        ${excelHeaders.map((h,i)=>`<option value="${i}" ${excelColMap[c.key]===i?'selected':''}>${h.replace(/</g,'&lt;')}</option>`).join('')}
       </select>
     </div>`).join('');
   document.getElementById('excel-col-map').innerHTML=mapHtml;
-  // Preview primeras 5 filas
-  const prev=excelData.slice(0,5).map(r=>{
-    const nombre=excelColMap.nombre!==undefined?r[excelColMap.nombre]:
-      ((excelColMap.apellido!==undefined?r[excelColMap.apellido]:'')+(excelColMap.nombre2!==undefined?' '+r[excelColMap.nombre2]:'')).trim();
-    const club=excelColMap.club!==undefined?r[excelColMap.club]:'';
-    return`<div style="padding:5px 10px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;display:flex;gap:12px;">
-      <span style="flex:1;font-weight:500;">${nombre||'—'}</span>
-      <span style="color:var(--color-text-secondary);">${club||'—'}</span>
-    </div>`;
-  }).join('');
+
+  const an=excelAnalizar();
+  const prev=an.nuevos.slice(0,5).map(p=>`<div style="padding:5px 10px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;display:flex;gap:12px;">
+      <span style="flex:1;font-weight:500;">${p.nombre}</span>
+      <span style="color:var(--color-text-secondary);">${p.pos!=='—'?p.pos:''}</span>
+      <span style="color:var(--color-text-secondary);">${p.club||'—'}</span>
+    </div>`).join('');
+  const avisos=[];
+  if(an.repetidos.length) avisos.push(`<b>${an.repetidos.length}</b> ya ${an.repetidos.length>1?'están':'está'} en el padrón y no se ${an.repetidos.length>1?'importarán':'importará'}: ${an.repetidos.slice(0,6).join(' · ')}${an.repetidos.length>6?' …':''}`);
+  if(an.sinNombre) avisos.push(`<b>${an.sinNombre}</b> fila${an.sinNombre>1?'s':''} sin nombre (se omiten).`);
+  if(an.fechasMal) avisos.push(`<b>${an.fechasMal}</b> fecha${an.fechasMal>1?'s':''} de nacimiento no se ${an.fechasMal>1?'pudieron':'pudo'} interpretar y ${an.fechasMal>1?'quedarán vacías':'quedará vacía'}.`);
+  if(an.sinFecha) avisos.push(an.sinFecha===an.nuevos.length
+    ? `<b>Ninguna</b> de las ${an.nuevos.length} filas tiene fecha de nacimiento: no se va a poder calcular la categoría ni la proyección. Podés completarlas después en cada ficha.`
+    : `<b>${an.sinFecha}</b> sin fecha de nacimiento: no se va a poder calcular su categoría.`);
+  if(an.posMal.length) avisos.push(`<b>${an.posMal.length}</b> con posición no reconocida (quedará sin posición): ${an.posMal.slice(0,4).join(' · ')}${an.posMal.length>4?' …':''}`);
   document.getElementById('excel-preview-table').innerHTML=
-    `<div style="background:#1A2B5C;padding:6px 10px;border-radius:6px 6px 0 0;font-size:10px;font-weight:500;color:rgba(255,255,255,0.7);display:flex;gap:12px;"><span style="flex:1;">NOMBRE</span><span>CLUB</span></div>`+prev+
-    (excelData.length>5?`<div style="padding:5px 10px;font-size:11px;color:var(--color-text-tertiary);">... y ${excelData.length-5} más</div>`:'');
+    `<div style="background:#1A2B5C;padding:6px 10px;border-radius:6px 6px 0 0;font-size:10px;font-weight:500;color:rgba(255,255,255,0.7);display:flex;gap:12px;"><span style="flex:1;">NOMBRE</span><span>POSICIÓN</span><span>CLUB</span></div>`+
+    (prev||`<div style="padding:10px;font-size:12px;color:var(--color-text-secondary);">Elegí la columna de nombre para ver la vista previa.</div>`)+
+    (an.nuevos.length>5?`<div style="padding:5px 10px;font-size:11px;color:var(--color-text-tertiary);">... y ${an.nuevos.length-5} más</div>`:'')+
+    (avisos.length?`<div style="margin-top:8px;padding:8px 10px;background:#FFF3CD;border:1px solid #FFCF40;border-radius:6px;font-size:11px;color:#533f03;line-height:1.5;">${avisos.join('<br>')}</div>`:'');
+  document.getElementById('excel-import-count').textContent='('+an.nuevos.length+' jugadores/as)';
 }
 
 function excelImportar(){
-  if(excelColMap.nombre===undefined&&(excelColMap.apellido===undefined||excelColMap.nombre2===undefined)){
-    alert('Necesitás mapear al menos la columna de Nombre');return;
+  if(excelColMap.nombre===undefined&&excelColMap.apellido===undefined&&excelColMap.nombre2===undefined){
+    alert('Necesitás elegir la columna de Apellido y Nombre');return;
   }
-  let importados=0;
-  const maxId=Math.max(0,...Object.values(PLS).flat().map(p=>p.id))+1;
-  excelData.forEach((r,i)=>{
-    let nombre='';
-    if(excelColMap.nombre!==undefined) nombre=String(r[excelColMap.nombre]||'').trim();
-    else{
-      const ap=String(r[excelColMap.apellido]||'').trim();
-      const nm=String(r[excelColMap.nombre2]||'').trim();
-      nombre=ap&&nm?ap+', '+nm:ap||nm;
-    }
-    if(!nombre)return;
-    const get=(k)=>excelColMap[k]!==undefined?String(r[excelColMap[k]]||'').trim():'';
-    let fnac=get('fnac');
-    // Intentar convertir fecha a formato YYYY-MM-DD
-    if(fnac&&!fnac.match(/^\d{4}-\d{2}-\d{2}$/)){
-      const d=new Date(fnac);
-      if(!isNaN(d))fnac=d.toISOString().split('T')[0];
-    }
-    if(!PLS[curTeam])PLS[curTeam]=[];
-    PLS[curTeam].push({
-      id:maxId+i,nombre,fnac,
-      dni:get('dni'),tel:get('tel'),telp:get('telp'),
-      email:get('email'),club:get('club'),
-      pos:get('pos')||'—',teams:[curTeam]
-    });
-    importados++;
-  });
+  const an=excelAnalizar();
+  if(!an.nuevos.length){ alert('No hay jugadores/as nuevos/as para importar.'); return; }
+  let id=Math.max(Date.now(),0,...Object.values(PLS).flat().map(p=>Number(p.id)||0))+1;
+  if(!PLS[curTeam])PLS[curTeam]=[];
+  an.nuevos.forEach(p=>{ PLS[curTeam].push({id:id++,...p,teams:[curTeam]}); });
   PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});
   document.getElementById('m-excel').classList.remove('open');
   renderEqP();renderPad();
   dbAutoSave();
-  alert('✅ '+importados+' jugadores/as importados/as a '+( TM[curTeam]?.n||curTeam));
+  let msg='✅ '+an.nuevos.length+' jugadores/as importados/as a '+(TM[curTeam]?.n||curTeam)+'.';
+  if(an.repetidos.length) msg+='\n'+an.repetidos.length+' omitidos/as porque ya estaban en el padrón.';
+  if(an.sinFecha) msg+='\n'+an.sinFecha+' sin fecha de nacimiento: completala a mano para calcular la categoría.';
+  if(an.posMal.length) msg+='\n'+an.posMal.length+' con posición no reconocida: quedaron sin posición.';
+  alert(msg);
 }
 
 function excelReset(){
