@@ -4337,6 +4337,8 @@ async function dbLoad() {
     DB_LOAD_FAILED = false;
     dbAviso(null);
     console.log('✅ Firebase cargado');
+    // Reparar IDs repetidos y ajustar contadores para que no se vuelvan a repetir
+    dbRepararIds();
     // Re-renderizar la página activa con los datos nuevos
     const activePage = document.querySelector('.page.active');
     if(activePage){
@@ -4353,6 +4355,66 @@ async function dbLoad() {
     console.warn('⚠️ Firebase error:', err);
     dbAviso('⚠️ No se pudieron cargar los datos desde la base. Para no borrar información, los cambios <b>no se van a guardar</b>. Revisá la conexión y recargá la página.','error');
   }
+}
+
+// ── REPARACIÓN DE IDs ─────────────────────────────────────────────────────────
+// Antes, los contadores de entrenadores y convocatorias arrancaban siempre en el
+// mismo número en cada sesión, y se repetían IDs ya usados. Esto los corrige.
+function dbRepararIds(){
+  // 1) Ajustar contadores al ID más alto existente
+  const maxEnt = ENTS.reduce((m,e)=>Math.max(m, Number(e.id)||0), 0);
+  if(maxEnt >= entIdC) entIdC = maxEnt;
+  const maxConv = CONVS.reduce((m,c)=>Math.max(m, Number(c.id)||0), 0);
+  if(maxConv >= convIdC) convIdC = maxConv;
+
+  // 2) Dar un ID nuevo a cada repetido (el primero conserva su ID)
+  const reparadosEnt = [];
+  const vistosEnt = new Set();
+  ENTS.forEach(e=>{
+    if(vistosEnt.has(e.id)){
+      const viejo = e.id;
+      e.id = ++entIdC;
+      reparadosEnt.push({nombre:e.nombre, viejo, nuevo:e.id});
+    }
+    vistosEnt.add(e.id);
+  });
+  let reparadasConv = 0;
+  const vistosConv = new Set();
+  CONVS.forEach(c=>{
+    if(vistosConv.has(c.id)){ c.id = ++convIdC; reparadasConv++; }
+    vistosConv.add(c.id);
+  });
+
+  if(reparadosEnt.length || reparadasConv){
+    console.log('🔧 IDs reparados:', reparadosEnt, 'convocatorias:', reparadasConv);
+    dbAutoSave();
+    mostrarAvisoReparacion(reparadosEnt, reparadasConv);
+  }
+}
+
+// 3) Aviso con el detalle de lo reparado (se cierra a mano)
+function mostrarAvisoReparacion(ents, nConv){
+  const viejo=document.getElementById('aviso-reparacion'); if(viejo) viejo.remove();
+  // Agrupar por ID original: así se ve con quién compartía el ID cada uno
+  const porId = {};
+  ents.forEach(r=>{ (porId[r.viejo] = porId[r.viejo] || []).push(r.nombre); });
+  const filas = Object.keys(porId).map(id=>{
+    const original = ENTS.find(e=>e.id===Number(id));
+    const nombres = [original ? original.nombre : '(sin dato)'].concat(porId[id]);
+    return '<li style="margin:3px 0;">'+nombres.map(n=>'<b>'+n+'</b>').join(' · ')+'</li>';
+  }).join('');
+  const el=document.createElement('div');
+  el.id='aviso-reparacion';
+  el.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:100000;background:#fff;border:1px solid #FFCF40;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);padding:18px 20px;width:min(480px,92vw);max-height:80vh;overflow:auto;font-size:13px;color:#0D1B2A;';
+  el.innerHTML =
+    '<div style="font-size:15px;font-weight:600;margin-bottom:8px;">🔧 Se repararon datos duplicados</div>'+
+    (ents.length ?
+      '<div style="margin-bottom:6px;">Había <b>'+ents.length+'</b> entrenador'+(ents.length>1?'es/as':'/a')+' con el mismo número interno que otro/a. Ya se corrigió y no se va a volver a repetir.</div>'+
+      '<div style="margin-bottom:4px;color:#856404;">Revisá estos grupos: si alguna vez editaste o borraste a uno, el cambio pudo haberse aplicado sobre el otro.</div>'+
+      '<ul style="margin:6px 0 10px 18px;padding:0;">'+filas+'</ul>' : '')+
+    (nConv ? '<div style="margin-bottom:10px;">También se corrigieron <b>'+nConv+'</b> convocatoria'+(nConv>1?'s':'')+' con número repetido.</div>' : '')+
+    '<button class="btn btn-org" style="width:100%;justify-content:center;" onclick="document.getElementById(\'aviso-reparacion\').remove()">Entendido</button>';
+  document.body.appendChild(el);
 }
 
 async function fbSaveDoc(id, value) {
