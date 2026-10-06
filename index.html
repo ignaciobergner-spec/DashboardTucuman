@@ -1418,6 +1418,7 @@ function moverCategoria(playerId,destTeam){
       PLS[destTeam].push(rem);
       document.getElementById('m-pv').classList.remove('open');
       renderEqP();renderPad();
+      dbAutoSave();
       alert('✅ '+rem.nombre+' fue movido/a a '+(TM[destTeam]?.n||destTeam)+'.');
       return;
     }
@@ -1794,6 +1795,7 @@ function confirmarBaja(){
   p.historialBajas.push({fecha, motivo, anio: new Date(fecha).getFullYear()});
   document.getElementById('m-baja').classList.remove('open');
   renderEqP(); renderPad();
+  dbAutoSave();
 }
 
 function reincorporar(playerId){
@@ -1802,6 +1804,7 @@ function reincorporar(playerId){
   p.proceso = 'activo';
   document.getElementById('m-baja').classList.remove('open');
   renderEqP(); renderPad();
+  dbAutoSave();
 }
 function openImportExcel(){
   excelData=[];excelHeaders=[];excelColMap={};
@@ -1915,6 +1918,7 @@ function excelImportar(){
   PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});
   document.getElementById('m-excel').classList.remove('open');
   renderEqP();renderPad();
+  dbAutoSave();
   alert('✅ '+importados+' jugadores/as importados/as a '+( TM[curTeam]?.n||curTeam));
 }
 
@@ -1960,6 +1964,11 @@ async function doLogin(){
     return;
   }
   curUser=found;
+  // Cargar TODOS los datos antes de mostrar la app, para que nadie edite
+  // sobre datos vacíos (y así no se pisen los datos reales al guardar)
+  if(btn){btn.textContent='Cargando datos...';btn.disabled=true;}
+  await dbLoad();
+  if(btn){btn.textContent='Ingresar';btn.disabled=false;}
   // Sin sesión persistente — siempre pide login
   document.getElementById('login-screen').style.display='none';
   document.getElementById('login-err').style.display='none';
@@ -1967,7 +1976,6 @@ async function doLogin(){
   buildTP();
   navegarPorRol();
   updateMobileNav();
-  dbLoad(); // cargar todos los datos en background
 }
 
 function applyPermissions(){
@@ -2205,6 +2213,7 @@ function canAccess(teamId){
 
 function checkLogout(){
   showConfirm('¿Cerrar sesión?','Vas a salir del sistema.','Sí, salir',()=>{
+    if(dbHayCambiosPendientes()) dbSaveNow();
     curUser=null;
     try{['atah_session','atah_session_v2','atah_session_v3','atah_session_v5'].forEach(k=>localStorage.removeItem(k));}catch(e){}
     document.getElementById('login-screen').style.display='flex';
@@ -2914,6 +2923,7 @@ function paGuardarEvento(){
   }
   document.getElementById('m-pa-ev').classList.remove('open');
   renderAgCal();renderPruebaAgenda();
+  dbAutoSave();
 }
 
 
@@ -3068,6 +3078,7 @@ function paMarcarSuspendido(){
   const doneBtn=document.getElementById('pa-view-done-btn');
   if(doneBtn) doneBtn.style.opacity=ev.estado==='suspendido'?'0.4':'1';
   renderPruebaAgenda();
+  dbAutoSave();
 }
 
 function paMarcarRealizado(){
@@ -3080,6 +3091,7 @@ function paMarcarRealizado(){
   if(lbl) lbl.textContent=ev.done?'Desmarcar realizado':'Marcar realizado';
   if(btn) btn.style.background=ev.done?'#D4EDDA':'#EAF3DE';
   renderPruebaAgenda();
+  dbAutoSave();
 }
 
 function paEliminarEvento(){
@@ -3102,6 +3114,7 @@ function paEliminarEvento(){
     if(idx>-1) EVS.splice(idx,1);
     document.getElementById('m-pa-view').classList.remove('open');
     renderPruebaAgenda(); renderAgCal();
+    dbAutoSave();
   });
 }
 
@@ -3255,6 +3268,7 @@ function convCrearYCargar(){
   const nuevoEv={id:++evIdC,month:mes,days:dias,horaI:'08:00',horaF:'20:00',
     type:convNevTipo,sels:[curTeam],lugar,done:false};
   EVS.push(nuevoEv);
+  dbAutoSave();
   // Crear convocatoria para ese evento
   const c=getOrCreateConv(nuevoEv.id,curTeam);
   if(!c)return;
@@ -3513,7 +3527,7 @@ function execConfirm(){
   if(_confirmCb){_confirmCb();_confirmCb=null;}
   else execDel(); // compatibilidad con flujo de eventos
 }
-function execDel(){if(!pendingDelId)return;const i=EVS.findIndex(e=>e.id===pendingDelId);if(i>-1)EVS.splice(i,1);['m-confirm','m-ev','m-evv'].forEach(id=>document.getElementById(id).classList.remove('open'));pendingDelId=null;_confirmCb=null;if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}}
+function execDel(){if(!pendingDelId)return;const i=EVS.findIndex(e=>e.id===pendingDelId);if(i>-1)EVS.splice(i,1);['m-confirm','m-ev','m-evv'].forEach(id=>document.getElementById(id).classList.remove('open'));pendingDelId=null;_confirmCb=null;if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}dbAutoSave();}
 
 // DÍAS
 let selDays=new Set(),currentCalMonth=5,currentCalYear=2025;
@@ -4066,24 +4080,26 @@ function renderEqP(){const q=(document.getElementById('eq-srch')?.value||'').toL
 function selPos(p){curPos=p;['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));const m={'Arquero/a':'arq','Defensa':'def','Mediocampista':'med','Delantera/o':'del'};if(m[p])document.getElementById('ppb-'+m[p]).classList.add('sel');}
 function openNewP(){editPId=null;curPos=null;document.getElementById('mp-title').textContent='Nuevo jugador/a';document.getElementById('p-delbtn').style.display='none';['pf-n','pf-f','pf-d','pf-t','pf-tp','pf-e','pf-c'].forEach(i=>document.getElementById(i).value='');['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));document.getElementById('pf-sl').value=curTeam==='arqueros'?'Arqueros/as':TM[curTeam]?.n||'';document.getElementById('m-p').classList.add('open');setTimeout(()=>document.getElementById('pf-n').focus(),100);}
 function openEditPById(id){const p=allP().find(x=>x.id===id);if(!p)return;editPId=id;curPos=p.pos||null;document.getElementById('mp-title').textContent='Editar jugador/a';document.getElementById('p-delbtn').style.display='inline-flex';document.getElementById('pf-n').value=p.nombre||'';document.getElementById('pf-f').value=p.fnac||'';document.getElementById('pf-d').value=p.dni||'';document.getElementById('pf-t').value=p.tel||'';document.getElementById('pf-tp').value=p.telp||'';document.getElementById('pf-e').value=p.email||'';document.getElementById('pf-c').value=p.club||'';document.getElementById('pf-sl').value=curTeam==='arqueros'?'Arqueros/as':TM[curTeam]?.n||'';['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));const mp={'Arquero/a':'arq','Defensa':'def','Mediocampista':'med','Delantera/o':'del'};if(p.pos&&mp[p.pos])document.getElementById('ppb-'+mp[p.pos]).classList.add('sel');document.getElementById('m-pv').classList.remove('open');document.getElementById('m-p').classList.add('open');}
-function savePlayer(){const n=document.getElementById('pf-n').value.trim();if(!n){alert('Ingresá el nombre');return;}const data={nombre:n,fnac:document.getElementById('pf-f').value,dni:document.getElementById('pf-d').value.trim(),tel:document.getElementById('pf-t').value.trim(),telp:document.getElementById('pf-tp').value.trim(),email:document.getElementById('pf-e').value.trim(),club:document.getElementById('pf-c').value.trim(),pos:curPos||'—',teams:[curTeam]};if(!PLS[curTeam])PLS[curTeam]=[];if(editPId){const ap=allP().find(x=>x.id===editPId);if(ap)Object.assign(ap,data);}else{PLS[curTeam].push({id:Date.now(),...data});}if(PLS[curTeam])PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});document.getElementById('m-p').classList.remove('open');renderEqP();renderPad();  dbAutoSave();
+function savePlayer(){const n=document.getElementById('pf-n').value.trim();if(!n){alert('Ingresá el nombre');return;}const data={nombre:n,fnac:document.getElementById('pf-f').value,dni:document.getElementById('pf-d').value.trim(),tel:document.getElementById('pf-t').value.trim(),telp:document.getElementById('pf-tp').value.trim(),email:document.getElementById('pf-e').value.trim(),club:document.getElementById('pf-c').value.trim(),pos:curPos||'—'};if(editPId){const ap=allP().find(x=>x.id===editPId);if(ap)Object.assign(ap,data);/* al editar se mantienen las selecciones que ya tenía */}else{if(!PLS[curTeam])PLS[curTeam]=[];PLS[curTeam].push({id:Date.now(),...data,teams:[curTeam]});}Object.keys(PLS).forEach(k=>{if(Array.isArray(PLS[k]))PLS[k].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});});document.getElementById('m-p').classList.remove('open');renderEqP();renderPad();  dbAutoSave();
 }
 function delPlayer(){
   if(!editPId)return;
-  const p=allP().find(x=>x.id===editPId);
+  const delId=editPId;
+  const p=allP().find(x=>x.id===delId);
   if(!p)return;
+  const equipoNom=(p.teams||[]).map(t=>TM[t]?.n||t).join(', ')||'el padrón';
   showConfirm(
     '¿Eliminar jugador/a?',
-    `Vas a eliminar a <b>${p.nombre}</b> de ${TM[curTeam]?.n||curTeam}.<br><br><span style="font-size:12px;color:var(--color-text-tertiary);">Esta acción no se puede deshacer.</span>`,
+    `Vas a eliminar a <b>${p.nombre}</b> de ${equipoNom}.<br><br><span style="font-size:12px;color:var(--color-text-tertiary);">Esta acción no se puede deshacer.</span>`,
     'Sí, eliminar',
     ()=>{
-      if(PLS[curTeam])PLS[curTeam]=PLS[curTeam].filter(x=>x.id!==editPId);
-      if(PLS[curTeam])PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});
+      // Quitar de todas las listas donde esté (no depende del equipo abierto)
+      Object.keys(PLS).forEach(k=>{ if(Array.isArray(PLS[k])) PLS[k]=PLS[k].filter(x=>x.id!==delId); });
       document.getElementById('m-p').classList.remove('open');
       renderEqP();renderPad();
+      dbAutoSave();
     }
   );
-  dbAutoSave();
 }
 function openVP(id){
   viewPId=id;const p=allP().find(x=>x.id===id);if(!p)return;
@@ -4263,7 +4279,12 @@ const FB_CONFIG = {
 
 let fbDb = null;
 let DB_SAVING = false;
-let DB_LOADED = false;
+let DB_LOADED = false;      // true SOLO si la carga desde Firebase salió bien
+let DB_LOAD_FAILED = false; // true si la carga falló → se bloquea el guardado
+let DB_PENDING = false;     // hubo cambios mientras se estaba guardando
+let dbCambioSeq = 0;        // contador de cambios hechos
+let dbGuardadoSeq = 0;      // último cambio confirmado en Firebase
+let dbRetryTimer = null;
 
 function initFirebase() {
   if(typeof firebase === 'undefined') { console.warn('Firebase no cargado'); return false; }
@@ -4274,8 +4295,32 @@ function initFirebase() {
   return true;
 }
 
+// Aviso visible arriba de la pantalla (errores de carga / guardado)
+function dbAviso(msg, tipo){
+  let el=document.getElementById('db-aviso');
+  if(!msg){ if(el) el.style.display='none'; return; }
+  if(!el){
+    el=document.createElement('div');
+    el.id='db-aviso';
+    el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;padding:10px 16px;font-size:13px;font-weight:500;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.15);';
+    document.body.appendChild(el);
+  }
+  const err=tipo==='error';
+  el.style.background=err?'#FCEBEB':'#FFF3CD';
+  el.style.color=err?'#8A1C1C':'#533f03';
+  el.style.borderBottom='1px solid '+(err?'#F7C1C1':'#FFCF40');
+  el.innerHTML=msg;
+  el.style.display='block';
+}
+
+function dbHayCambiosPendientes(){ return dbCambioSeq > dbGuardadoSeq; }
+
 async function dbLoad() {
-  if(!initFirebase()) return;
+  if(!initFirebase()) {
+    DB_LOAD_FAILED = true;
+    dbAviso('⚠️ No se pudo conectar con la base de datos. Los cambios <b>no se van a guardar</b>. Recargá la página.','error');
+    return;
+  }
   try {
     const snap = await fbDb.collection('atah').get();
     snap.forEach(doc => {
@@ -4289,6 +4334,8 @@ async function dbLoad() {
       if(id==='USERS' && Array.isArray(d) && d.length){ USERS.length=0; d.forEach(u=>USERS.push(u)); }
     });
     DB_LOADED = true;
+    DB_LOAD_FAILED = false;
+    dbAviso(null);
     console.log('✅ Firebase cargado');
     // Re-renderizar la página activa con los datos nuevos
     const activePage = document.querySelector('.page.active');
@@ -4297,22 +4344,34 @@ async function dbLoad() {
       else if(activePage.id==='pg-padron') renderPad();
       else if(activePage.id==='pg-entrenadores') renderEnts();
     }
-    // Re-renderizar equipo si está activo
     if(curTeam){
-      if(eqVista==='tabla') renderEqTabla();
-      else renderEqCal();
+      try{ if(eqVista==='tabla') renderEqTabla(); else renderEqCal(); }catch(e){ console.warn(e); }
     }
-  } catch(err) { DB_LOADED=true; console.warn('⚠️ Firebase error:', err); }
+  } catch(err) {
+    DB_LOADED = false;
+    DB_LOAD_FAILED = true;
+    console.warn('⚠️ Firebase error:', err);
+    dbAviso('⚠️ No se pudieron cargar los datos desde la base. Para no borrar información, los cambios <b>no se van a guardar</b>. Revisá la conexión y recargá la página.','error');
+  }
 }
 
 async function fbSaveDoc(id, value) {
-  if(!initFirebase()) return;
+  if(!initFirebase()) throw new Error('Firebase no disponible');
   await fbDb.collection('atah').doc(id).set({ value });
 }
 
 async function dbSave() {
-  if(DB_SAVING) return;
+  // Nunca guardar si los datos no se cargaron bien: pisaría Firebase con datos vacíos
+  if(!DB_LOADED){
+    console.warn('⛔ Guardado bloqueado: los datos no se cargaron correctamente');
+    dbAviso('⚠️ Los datos no se cargaron correctamente, así que este cambio <b>no se guardó</b>. Recargá la página.','error');
+    return;
+  }
+  // Si ya hay un guardado en curso, anotar que hay que volver a guardar al terminar
+  if(DB_SAVING){ DB_PENDING = true; return; }
   DB_SAVING = true;
+  DB_PENDING = false;
+  const seqAlIniciar = dbCambioSeq;
   try {
     await Promise.all([
       fbSaveDoc('EVS', EVS),
@@ -4321,9 +4380,18 @@ async function dbSave() {
       fbSaveDoc('ENTS', ENTS),
       fbSaveDoc('CONVS', CONVS),
     ]);
+    if(seqAlIniciar > dbGuardadoSeq) dbGuardadoSeq = seqAlIniciar;
+    dbAviso(null);
     console.log('✅ Guardado en Firebase');
-  } catch(err) { console.warn('⚠️ Error guardando:', err); }
+  } catch(err) {
+    console.warn('⚠️ Error guardando:', err);
+    dbAviso('⚠️ No se pudieron guardar los últimos cambios. Se va a reintentar automáticamente; no cierres la página.','error');
+    if(dbRetryTimer) clearTimeout(dbRetryTimer);
+    dbRetryTimer = setTimeout(dbSave, 10000);
+  }
   DB_SAVING = false;
+  // Hubo cambios durante el guardado → guardar de nuevo
+  if(DB_PENDING || dbHayCambiosPendientes()){ DB_PENDING = false; if(!dbRetryTimer) setTimeout(dbSave, 300); }
 }
 
 async function saveUsers() {
@@ -4335,9 +4403,30 @@ async function saveUsers() {
 
 let dbSaveTimer=null;
 function dbAutoSave() {
+  dbCambioSeq++;
+  if(!DB_LOADED){ dbSave(); return; } // muestra el aviso de que no se puede guardar
   if(dbSaveTimer) clearTimeout(dbSaveTimer);
-  dbSaveTimer = setTimeout(dbSave, 2000);
+  dbSaveTimer = setTimeout(()=>{ dbSaveTimer=null; if(dbRetryTimer){clearTimeout(dbRetryTimer);dbRetryTimer=null;} dbSave(); }, 2000);
 }
+// Guardar ya, sin esperar los 2 segundos
+function dbSaveNow(){
+  if(dbSaveTimer){ clearTimeout(dbSaveTimer); dbSaveTimer=null; }
+  if(dbRetryTimer){ clearTimeout(dbRetryTimer); dbRetryTimer=null; }
+  return dbSave();
+}
+// Si se cierra/recarga la página con cambios sin guardar: guardar y avisar
+window.addEventListener('beforeunload', function(e){
+  if(DB_LOADED && dbHayCambiosPendientes()){
+    dbSaveNow();
+    e.preventDefault();
+    e.returnValue = 'Hay cambios que todavía se están guardando.';
+    return e.returnValue;
+  }
+});
+// En celular, al cambiar de app o bloquear la pantalla, guardar enseguida
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='hidden' && DB_LOADED && dbHayCambiosPendientes()) dbSaveNow();
+});
 // Siempre mostrar login — cargar usuarios de Firebase en background
 (async function(){
   const ls=document.getElementById('login-screen');
