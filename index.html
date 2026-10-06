@@ -1346,6 +1346,11 @@ const ROL_KEYS=Object.keys(ROLES);
 const ROL_IDS={'Entrenador/a principal':'princ','Asistente':'asist','Entrenador/a de arqueros/as':'arqc','Preparador/a físico/a':'fis','Mentor/a':'mentor'};
 
 const EVS=[];
+// ── ESTADO DE LA AGENDA (estas variables se usaban pero nunca estaban declaradas) ──
+let agY=2026, agM=new Date().getMonth(), agVista='tabla';
+const agFiltros=new Set();     // filtro por tipo de evento (agenda general)
+const agSelFiltros=new Set();  // filtro por selección/equipo (agenda general)
+const eqFiltros=new Set();     // filtro por tipo de evento (agenda de equipo)
 
 const PLS={};ATEAMS.forEach(k=>PLS[k]=[]);
 
@@ -3905,7 +3910,7 @@ function updateLegendStyles(cal){
   });
 }
 function renderAgCal(){renderCal('ag-cal',agM,agY,null);}
-function agYear(y){agY=y;document.getElementById('ay25').classList.toggle('on',y===2025);document.getElementById('ay26').classList.toggle('on',y===2026);renderAgCal();}
+function agYear(y){agY=y;const b25=document.getElementById('ay25');if(b25)b25.classList.toggle('on',y===2025);const b26=document.getElementById('ay26');if(b26)b26.classList.toggle('on',y===2026);if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();}
 function agPrev(){if(agM===0){agM=11;agY--;}else agM--;agYear(agY);}
 function agNext(){if(agM===11){agM=0;agY++;}else agM++;agYear(agY);}
 
@@ -4156,7 +4161,15 @@ function renderEnts(){const q=(document.getElementById('ent-q')?.value||'').toLo
 
 // PADRÓN
 let padFG='todos',padFC='todas';
-function padF(t,v){if(t==='g'){padFG=v;['todos','f','m'].forEach(x=>document.getElementById('fg-'+x).classList.toggle('on',(v==='todos'&&x==='todos')||(v==='F'&&x==='f')||(v==='M'&&x==='m')));}else{padFC=v;const map={'todas':'todas','Mayor':'mayor','Sub-19':'sub19','Sub-16':'sub16','Sub-14':'sub14','Sub-12':'sub12','Arquero/a':'arq'};Object.entries(map).forEach(([k,x])=>document.getElementById('fc-'+x).classList.toggle('on',v===k));}renderPad();}
+function padF(t,v){
+  // Ocultar proyección y mostrar lista normal
+  const proyDiv=document.getElementById('pad-proy');
+  const listDiv=document.getElementById('pad-list');
+  if(proyDiv) proyDiv.style.display='none';
+  if(listDiv) listDiv.style.display='';
+  // Desactivar botón proyección
+  const proyBtn=document.getElementById('fg-proy');
+  if(proyBtn) proyBtn.classList.remove('on');if(t==='g'){padFG=v;['todos','f','m'].forEach(x=>document.getElementById('fg-'+x).classList.toggle('on',(v==='todos'&&x==='todos')||(v==='F'&&x==='f')||(v==='M'&&x==='m')));}else{padFC=v;const map={'todas':'todas','Mayor':'mayor','Sub-19':'sub19','Sub-16':'sub16','Sub-14':'sub14','Sub-12':'sub12','Arquero/a':'arq'};Object.entries(map).forEach(([k,x])=>document.getElementById('fc-'+x).classList.toggle('on',v===k));}renderPad();}
 function renderPad(){const q=(document.getElementById('pad-q')?.value||'').toLowerCase().trim();const all=allP();const list=all.filter(p=>{if(padFG!=='todos'&&!p.teams.some(t=>TM[t]?.g===padFG))return false;if(padFC!=='todas'){if(padFC==='Arquero/a'){if(p.pos!=='Arquero/a')return false;}else if(!p.teams.some(t=>TM[t]?.cat===padFC))return false;}if(q){const tn=p.teams.map(t=>TM[t]?.n||'').join(' ').toLowerCase();return p.nombre.toLowerCase().includes(q)||(p.dni||'').includes(q)||(p.club||'').toLowerCase().includes(q)||(p.pos||'').toLowerCase().includes(q)||tn.includes(q)||(p.tel||'').includes(q)||(p.email||'').toLowerCase().includes(q);}return true;});const f=all.filter(p=>p.teams.some(t=>TM[t]?.g==='F')).length;const m=all.filter(p=>p.teams.some(t=>TM[t]?.g==='M')).length;const arq=all.filter(p=>p.pos==='Arquero/a').length;const clubs=new Set(all.map(p=>p.club).filter(Boolean)).size;document.getElementById('pad-stats').innerHTML=`<div class="stat"><div class="statl">Total padrón</div><div class="statv">${all.length}</div></div><div class="stat"><div class="statl">Femenino</div><div class="statv">${f}</div></div><div class="stat"><div class="statl">Masculino</div><div class="statv">${m}</div></div><div class="stat"><div class="statl">Arqueros/as</div><div class="statv">${arq}</div></div><div class="stat"><div class="statl">Clubes</div><div class="statv">${clubs}</div></div>`;document.getElementById('pad-cnt').innerHTML=q||padFG!=='todos'||padFC!=='todas'?`Se encontraron <b>${list.length}</b> de <b>${all.length}</b> jugadores/as`:`Mostrando <b>${all.length}</b> jugadores/as`;function hl(tx){if(!q)return tx;const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return tx.replace(re,'<mark>$1</mark>');}document.getElementById('pad-list').innerHTML=list.length===0?`<div style="padding:30px;text-align:center;font-size:13px;color:var(--color-text-secondary);">Sin resultados.</div>`:list.map((p,idx)=>{const g=p.teams.some(t=>TM[t]?.g==='F')?'F':'M';const tb=p.teams.slice(0,2).map(t=>`<span class="tbsm ${g==='F'?'tbf':'tbm'}">${TM[t]?.n||t}</span>`).join('')+(p.teams.length>2?`<span style="font-size:10px;color:var(--color-text-tertiary);"> +${p.teams.length-2}</span>`:'');const age=calcAge(p.fnac);const alrt=getCatAlert(p);return`<div class="prow-pad" onclick="openVP(${p.id})" style="${alrt?'background:rgba(255,200,50,0.07);':''}"><div style="font-size:11px;font-weight:700;color:var(--color-text-tertiary);text-align:center;min-width:22px;">${idx+1}</div><div><div class="pname">${hl(p.nombre)}${alrt?'<span style="margin-left:5px;font-size:9px;background:#FFF3CD;color:#856404;padding:1px 5px;border-radius:4px;">⚠️</span>':''}</div><div class="psub">${hl(p.email||'Sin email')}</div></div><div>${tb}</div><div><span class="${pbc(p.pos)}">${p.pos||'—'}</span></div><div class="pcell"><b>${getAnoNac(p.fnac)}</b>${age?`<br><span style="opacity:.6;">${age} años</span>`:''}</div><div class="pcell">${hl(p.club||'—')}</div><div class="pcell">${hl(p.tel||'—')}</div><div class="pcell">${hl(p.dni||'—')}</div><div><i class="ti ti-chevron-right" style="font-size:14px;color:var(--color-text-tertiary);"></i></div></div>`;}).join('');
   // Banner alertas
   const conAlerta=all.filter(p=>getCatAlert(p));
@@ -4165,7 +4178,7 @@ function renderPad(){const q=(document.getElementById('pad-q')?.value||'').toLow
 }
 
 // NAVEGACIÓN
-function showPg(id,n){document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='';});document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));const _pgEl=document.getElementById('pg-'+id);if(_pgEl){_pgEl.classList.add('active');_pgEl.style.display='block';}if(n)n.classList.add('active');const titles={agenda:'Agenda Anual',padron:'Padrón Jugadores',entrenadores:'Padrón Entrenadores',convocatorias:'Convocatorias',capacitaciones:'Capacitaciones'};document.getElementById('tb-title').textContent=titles[id]||id;document.getElementById('tb-sub').textContent='ATAH Tucumán · 2026';const a=document.getElementById('tb-acts');if(id==='agenda'){a.innerHTML=`<button class="btn" onclick="exportarAgendaExcel()"><i class="ti ti-download"></i> Exportar</button><button class="btn btn-org" onclick="openNewEv()"><i class="ti ti-plus"></i> Nuevo evento</button>`;agSetVista('tabla');}else if(id==='padron'){a.innerHTML=`<button class="btn" onclick="exportarPadronExcel()"><i class="ti ti-download"></i> Exportar Excel</button><button class="btn btn-org" onclick="openNewP()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderPad();}else if(id==='entrenadores'){a.innerHTML=`<button class="btn btn-org" onclick="openNewEnt()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderEnts();}else if(id==='convocatorias'){a.innerHTML=`<button class="btn btn-org" onclick="openNuevaConv()"><i class="ti ti-plus"></i> Nueva convocatoria</button>`;renderConvs();}else a.innerHTML='';}
+function showPg(id,n){document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='';});document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));const _pgEl=document.getElementById('pg-'+id);if(_pgEl){_pgEl.classList.add('active');_pgEl.style.display='block';}if(n)n.classList.add('active');const titles={agenda:'Agenda Anual',padron:'Padrón Jugadores',entrenadores:'Padrón Entrenadores',convocatorias:'Convocatorias',capacitaciones:'Capacitaciones'};document.getElementById('tb-title').textContent=titles[id]||id;document.getElementById('tb-sub').textContent='ATAH Tucumán · 2026';const a=document.getElementById('tb-acts');if(id==='agenda'){a.innerHTML=`<button class="btn" onclick="exportarAgendaExcel()"><i class="ti ti-download"></i> Exportar</button><button class="btn btn-org" onclick="openNewEv()"><i class="ti ti-plus"></i> Nuevo evento</button>`;setTimeout(()=>agSetVista('tabla'),100);}else if(id==='padron'){a.innerHTML=`<button class="btn" onclick="exportarPadronExcel()"><i class="ti ti-download"></i> Exportar Excel</button><button class="btn btn-org" onclick="openNewP()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderPad();}else if(id==='entrenadores'){a.innerHTML=`<button class="btn btn-org" onclick="openNewEnt()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderEnts();}else if(id==='convocatorias'){a.innerHTML=`<button class="btn btn-org" onclick="openNuevaConv()"><i class="ti ti-plus"></i> Nueva convocatoria</button>`;renderConvs();}else a.innerHTML='';}
 
 
 
@@ -4277,6 +4290,18 @@ async function dbLoad() {
     });
     DB_LOADED = true;
     console.log('✅ Firebase cargado');
+    // Re-renderizar la página activa con los datos nuevos
+    const activePage = document.querySelector('.page.active');
+    if(activePage){
+      if(activePage.id==='pg-agenda') agSetVista(agVista);
+      else if(activePage.id==='pg-padron') renderPad();
+      else if(activePage.id==='pg-entrenadores') renderEnts();
+    }
+    // Re-renderizar equipo si está activo
+    if(curTeam){
+      if(eqVista==='tabla') renderEqTabla();
+      else renderEqCal();
+    }
   } catch(err) { DB_LOADED=true; console.warn('⚠️ Firebase error:', err); }
 }
 
