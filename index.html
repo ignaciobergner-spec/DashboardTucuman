@@ -3376,7 +3376,6 @@ function convToggle(playerId){
   if(!entry){entry={id:playerId,estado:'convocado'};c.jugadores.push(entry);}
   else entry.estado=entry.estado==='convocado'?'desafectado':'convocado';
   renderModalConv();
-}
   dbAutoSave();
 }
 function convMarcarTodos(estado){
@@ -3391,8 +3390,8 @@ function guardarConvocatoria(){
   renderConvs();renderEqP();
   const conv=c.jugadores.filter(j=>j.estado==='convocado').length;
   alert('✅ Convocatoria guardada: '+conv+' convocados/as.');
+  dbAutoSave();
 }
-
 function renderConvs(){
   const q=(document.getElementById('conv-q')?.value||'').toLowerCase();
   const list=CONVS.filter(c=>{
@@ -3707,10 +3706,8 @@ function evTogSusp(){
 
 function evTogDone(){if(!evViewId)return;const ev=EVS.find(e=>e.id===evViewId);if(!ev)return;ev.done=!ev.done;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';db.style.opacity=ev.estado==='suspendido'?'0.4':'1';
   const sb=document.getElementById('evv-suspbtn');const sl=document.getElementById('evv-susplbl');
-  if(sb&&sl){sl.textContent=ev.estado==='suspendido'?'Quitar suspensión':'Suspendido';sb.style.background=ev.estado==='suspendido'?'#F7C1C1':'#FCEBEB';}if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}}
-
-// CALENDARIOS
-let agY=2026,agM=new Date().getMonth(),agFiltros=new Set(),eqFiltros=new Set(),agSelFiltros=new Set(),agVista='tabla';
+  if(sb&&sl){sl.textContent=ev.estado==='suspendido'?'Quitar suspensión':'Suspendido';sb.style.background=ev.estado==='suspendido'?'#F7C1C1':'#FCEBEB';}if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}  dbAutoSave();
+}
 function renderCal(calId,month,year,filter){const lbl=calId==='ag-cal'?'ag-mlbl':'eq-mlbl';document.getElementById(lbl).textContent=MN[month]+' '+year;const fd=new Date(year,month,1).getDay(),off=(fd+6)%7,dim=new Date(year,month+1,0).getDate(),prev=new Date(year,month,0).getDate();const today=new Date();const filtros=calId==='ag-cal'?agFiltros:eqFiltros;
   const evs=EVS.filter(e=>e.month===month
     &&(!filter||e.sels.includes(filter))
@@ -4064,7 +4061,8 @@ function renderEqP(){const q=(document.getElementById('eq-srch')?.value||'').toL
 function selPos(p){curPos=p;['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));const m={'Arquero/a':'arq','Defensa':'def','Mediocampista':'med','Delantera/o':'del'};if(m[p])document.getElementById('ppb-'+m[p]).classList.add('sel');}
 function openNewP(){editPId=null;curPos=null;document.getElementById('mp-title').textContent='Nuevo jugador/a';document.getElementById('p-delbtn').style.display='none';['pf-n','pf-f','pf-d','pf-t','pf-tp','pf-e','pf-c'].forEach(i=>document.getElementById(i).value='');['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));document.getElementById('pf-sl').value=curTeam==='arqueros'?'Arqueros/as':TM[curTeam]?.n||'';document.getElementById('m-p').classList.add('open');setTimeout(()=>document.getElementById('pf-n').focus(),100);}
 function openEditPById(id){const p=allP().find(x=>x.id===id);if(!p)return;editPId=id;curPos=p.pos||null;document.getElementById('mp-title').textContent='Editar jugador/a';document.getElementById('p-delbtn').style.display='inline-flex';document.getElementById('pf-n').value=p.nombre||'';document.getElementById('pf-f').value=p.fnac||'';document.getElementById('pf-d').value=p.dni||'';document.getElementById('pf-t').value=p.tel||'';document.getElementById('pf-tp').value=p.telp||'';document.getElementById('pf-e').value=p.email||'';document.getElementById('pf-c').value=p.club||'';document.getElementById('pf-sl').value=curTeam==='arqueros'?'Arqueros/as':TM[curTeam]?.n||'';['arq','def','med','del'].forEach(x=>document.getElementById('ppb-'+x).classList.remove('sel'));const mp={'Arquero/a':'arq','Defensa':'def','Mediocampista':'med','Delantera/o':'del'};if(p.pos&&mp[p.pos])document.getElementById('ppb-'+mp[p.pos]).classList.add('sel');document.getElementById('m-pv').classList.remove('open');document.getElementById('m-p').classList.add('open');}
-function savePlayer(){const n=document.getElementById('pf-n').value.trim();if(!n){alert('Ingresá el nombre');return;}const data={nombre:n,fnac:document.getElementById('pf-f').value,dni:document.getElementById('pf-d').value.trim(),tel:document.getElementById('pf-t').value.trim(),telp:document.getElementById('pf-tp').value.trim(),email:document.getElementById('pf-e').value.trim(),club:document.getElementById('pf-c').value.trim(),pos:curPos||'—',teams:[curTeam]};if(!PLS[curTeam])PLS[curTeam]=[];if(editPId){const ap=allP().find(x=>x.id===editPId);if(ap)Object.assign(ap,data);}else{PLS[curTeam].push({id:Date.now(),...data});}if(PLS[curTeam])PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});document.getElementById('m-p').classList.remove('open');renderEqP();renderPad();}
+function savePlayer(){const n=document.getElementById('pf-n').value.trim();if(!n){alert('Ingresá el nombre');return;}const data={nombre:n,fnac:document.getElementById('pf-f').value,dni:document.getElementById('pf-d').value.trim(),tel:document.getElementById('pf-t').value.trim(),telp:document.getElementById('pf-tp').value.trim(),email:document.getElementById('pf-e').value.trim(),club:document.getElementById('pf-c').value.trim(),pos:curPos||'—',teams:[curTeam]};if(!PLS[curTeam])PLS[curTeam]=[];if(editPId){const ap=allP().find(x=>x.id===editPId);if(ap)Object.assign(ap,data);}else{PLS[curTeam].push({id:Date.now(),...data});}if(PLS[curTeam])PLS[curTeam].sort((a,b)=>{const ba=a.proceso==='baja'?1:0,bb=b.proceso==='baja'?1:0;if(ba!==bb)return ba-bb;return a.nombre.localeCompare(b.nombre,'es');});document.getElementById('m-p').classList.remove('open');renderEqP();renderPad();  dbAutoSave();
+}
 function delPlayer(){
   if(!editPId)return;
   const p=allP().find(x=>x.id===editPId);
@@ -4080,6 +4078,7 @@ function delPlayer(){
       renderEqP();renderPad();
     }
   );
+  dbAutoSave();
 }
 function openVP(id){
   viewPId=id;const p=allP().find(x=>x.id===id);if(!p)return;
