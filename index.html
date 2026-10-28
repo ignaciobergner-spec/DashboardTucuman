@@ -367,6 +367,7 @@
 .ec-partido{background:#E8ECF8;color:#1A2B5C}
 .ec-torneo{background:#FDF0E3;color:#7A3A00}
 .ec-gira{background:#F0E8F8;color:#4A1A7A}
+.ec-receso{background:repeating-linear-gradient(135deg,#E6F4EF 0 6px,#D6EDE4 6px 12px);color:#1F5E4A}
 
 /* EQUIPO TABS */
 .eqtabs{display:flex;gap:0;margin-bottom:16px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:4px;width:100%;position:sticky;top:0;z-index:90;box-shadow:0 2px 8px rgba(26,43,92,0.06)}
@@ -535,6 +536,81 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
 .fuera-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:500;background:#F5F5F5;color:#888;border:0.5px solid #ddd;margin-left:5px}
 .ph{padding:40px;text-align:center;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);color:var(--color-text-secondary);font-size:13px}
 .ph i{font-size:32px;display:block;margin-bottom:10px;color:var(--color-text-tertiary)}
+/* ── TORNEOS ARGENTINOS ── */
+.tor-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
+.tor-bar .grp{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tor-bar select{font-size:11px;padding:4px 8px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary)}
+.tor-ley{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--color-text-secondary);margin:0 0 10px}
+.tor-ley span{display:inline-flex;align-items:center;gap:5px}
+.tor-ley i.sw{width:12px;height:12px;border-radius:3px;display:inline-block;border:0.5px solid var(--color-border-secondary)}
+.tor-wrap{overflow-x:auto;background:#fff;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg)}
+.tor-mx{border-collapse:separate;border-spacing:0;width:100%;min-width:560px}
+.tor-mx th{font-size:12px;font-weight:500;color:#fff;background:#1A2B5C;padding:9px 8px;text-align:center}
+.tor-mx th:first-child{text-align:left;padding-left:14px}
+.tor-mx td{padding:5px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:middle}
+.tor-mx tr:last-child td{border-bottom:none}
+.tor-mx td.tor-eq{position:sticky;left:0;z-index:1;background:#fff;font-size:12px;font-weight:500;color:var(--color-text-primary);padding-left:14px;white-space:nowrap;min-width:96px}
+.tor-mx td.tor-eq .g{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.tor-cell{position:relative;border-radius:8px;padding:7px 6px;text-align:center;cursor:pointer;min-height:50px;display:flex;flex-direction:column;justify-content:center;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.tor-cell + .tor-cell{margin-top:4px}
+.tor-cell:hover,.tor-cell:focus-visible{border-color:#1A2B5C;outline:none}
+.tor-cell .pos{font-size:19px;font-weight:600;line-height:1.1;color:#1A2B5C;font-variant-numeric:tabular-nums}
+.tor-cell .pos.txt{font-size:12px}
+.tor-cell .dv{font-size:10.5px;color:var(--color-text-secondary);margin-top:2px}
+.tor-cell.d-campeon{background:#FFF4D6;border-color:#E9C46A}
+.tor-cell.d-campeon .pos{color:#8A5A00}
+.tor-cell.d-ascendio{background:#E6F4EA;border-color:#9FD3AE}
+.tor-cell.d-ascendio .pos{color:#1E7B3A}
+.tor-cell.d-descendio{background:#FCEBEB;border-color:#F2B8B5}
+.tor-cell.d-descendio .pos{color:#B42318}
+.tor-cell.fut{background:#fff;border:1px dashed #E87B1E}
+.tor-cell.fut .pos{font-size:12px;color:#B85E0E}
+.tor-cell .nv{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#E87B1E}
+.tor-empty{text-align:center;color:var(--color-text-tertiary);font-size:12px;min-height:50px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.tor-empty.add{cursor:pointer}
+.tor-empty.add:hover,.tor-empty.add:focus-visible{background:var(--color-background-primary);color:#1A2B5C;outline:none}
+.tor-list{display:flex;flex-direction:column;gap:6px}
+.tor-row{display:grid;grid-template-columns:86px 1fr auto;gap:12px;align-items:center;background:#fff;border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:10px 12px;cursor:pointer}
+.tor-row:hover,.tor-row:focus-visible{border-color:#1A2B5C;outline:none}
+.tor-row .f{font-size:11px;color:var(--color-text-tertiary);line-height:1.35}
+.tor-row .f b{display:block;font-size:13px;color:var(--color-text-primary);font-weight:600}
+.tor-row .n{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.tor-row .m{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.tor-row .r{text-align:right;font-size:12px;font-weight:600;white-space:nowrap}
+.tor-chip{display:inline-block;font-size:10.5px;font-weight:500;padding:1px 7px;border-radius:10px;margin-right:5px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.tor-chip.F{background:#FDF0E3;color:#7A3A00}
+.tor-chip.M{background:#E0EAF6;color:#1A2B5C}
+.tor-chip.nv{background:#FFF3CD;color:#7A5200}
+.tor-chip.ok{background:#E6F4EA;color:#1E7B3A}
+.tor-sec{font-size:12px;font-weight:600;color:var(--color-text-primary);margin:14px 0 6px}
+.tor-kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;font-size:12px}
+.tor-kv div span{display:block;font-size:11px;color:var(--color-text-tertiary)}
+.tor-res{display:flex;align-items:center;gap:10px;background:var(--color-background-primary);border-radius:10px;padding:10px 12px;margin-top:10px}
+.tor-res .big{font-size:26px;font-weight:600;color:#1A2B5C;line-height:1}
+.tor-pt{width:100%;border-collapse:collapse;font-size:12px}
+.tor-pt td{padding:6px 4px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tor-pt td.sc{text-align:right;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tor-pt .W{color:#1E7B3A}.tor-pt .L{color:#B42318}.tor-pt .D{color:#3A5068}.tor-pt .X{color:var(--color-text-tertiary);font-weight:400}
+.tor-note{font-size:12px;color:var(--color-text-secondary);background:#FFF8E6;border-left:3px solid #E87B1E;padding:8px 10px;border-radius:0 6px 6px 0;margin-top:10px;line-height:1.45}
+.tor-src a{color:#1A2B5C;font-size:12px;display:block;margin:3px 0;word-break:break-word}
+.tor-acts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary)}
+.tor-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.tor-fgrid .full{grid-column:1/-1}
+.tor-prow{display:grid;gap:5px;align-items:center;margin-bottom:5px}
+.tor-prow.p{grid-template-columns:1.1fr 1.3fr 46px 46px 58px 26px}
+.tor-prow.d{grid-template-columns:1fr 1fr 26px}
+.tor-prow.s{grid-template-columns:0.8fr 1.4fr 26px}
+.tor-prow .finput{padding:6px 7px;font-size:12px}
+.tor-prow button{border:none;background:transparent;color:#B42318;cursor:pointer;font-size:16px}
+.tor-addrow{font-size:12px;color:#1A2B5C;background:transparent;border:0.5px dashed var(--color-border-secondary);border-radius:6px;padding:5px 10px;cursor:pointer}
+.tor-hint{font-size:10.5px;color:var(--color-text-tertiary);margin-bottom:5px}
+@media (max-width:640px){
+  .tor-row{grid-template-columns:70px 1fr}
+  .tor-row .r{grid-column:2;text-align:left}
+  .tor-fgrid{grid-template-columns:1fr}
+  .tor-prow.p{grid-template-columns:1fr 1fr 40px 40px}
+  .tor-prow.p .pen{grid-column:1/3}
+}
 </style>
 
 <!-- MODAL CONFIRMAR -->
@@ -1021,6 +1097,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
     <div class="ni" onclick="showPg('agenda',this)"><i class="ti ti-calendar"></i> Agenda Anual</div>
     <div class="ni" onclick="showPg('padron',this)"><i class="ti ti-database"></i> Padrón Jugadores</div>
     <div class="ni" onclick="showPg('entrenadores',this)"><i class="ti ti-whistle"></i> Padrón Entrenadores</div>
+    <div class="ni" onclick="showPg('torneos',this)"><i class="ti ti-trophy"></i> Torneos Argentinos</div>
     <div class="sl">Selecciones F <span class="gtag ftag">F</span></div>
     <div class="ni" onclick="goTeam('mayor-f',this)"><i class="ti ti-shield"></i> Mayor <span class="gtag ftag">F</span></div>
     <div class="ni" onclick="goTeam('sub19-f',this)"><i class="ti ti-shield"></i> Sub-19 <span class="gtag ftag">F</span></div>
@@ -1074,6 +1151,11 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
             <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Entrenadores</div>
             <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Cuerpo técnico</div>
           </div>
+          <div onclick="mnavGo('torneos')" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
+            <i class="ti ti-trophy" style="font-size:24px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
+            <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Torneos</div>
+            <div style="font-size:11px;color:#7A98B8;margin-top:2px;">Resultados y próximos</div>
+          </div>
           <div onclick="openUsers()" class="admin-only" data-home-admin="1" style="background:#fff;border-radius:12px;padding:14px 12px;border:0.5px solid #C8DAF0;cursor:pointer;">
             <i class="ti ti-users-group" style="font-size:24px;color:#1A2B5C;display:block;margin-bottom:8px;"></i>
             <div style="font-size:13px;font-weight:500;color:#0D1B2A;">Usuarios</div>
@@ -1113,7 +1195,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
           <button class="vtab" id="vtab-anio" onclick="agSetVista('anio')">🗓️ Año</button>
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
-          <button class="ypill on" id="ay26" onclick="agYear(2026)">2026</button>
+          <button class="ypill on" id="ay26" onclick="agYear(2026)">2026</button><button class="ypill" id="ay27" onclick="agYear(2027)">2027</button>
           <div style="width:1px;height:20px;background:var(--color-border-tertiary);margin:0 2px;"></div>
           <button class="narr" id="ag-prev-btn" onclick="agPrev()"><i class="ti ti-chevron-left"></i></button>
           <span class="mlbl" id="ag-mlbl"></span>
@@ -1143,7 +1225,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
         <div class="li" id="ag-li-lista" onclick="toggleFiltro('ag','lista')"><div class="ld" style="background:#FEF9E3;border:1px solid #F0C830"></div>📋 Lista</div>
         <div class="li" id="ag-li-partido" onclick="toggleFiltro('ag','partido')"><div class="ld" style="background:#E8ECF8;border:1px solid #1A2B5C"></div>🏑 Partido</div>
         <div class="li" id="ag-li-torneo" onclick="toggleFiltro('ag','torneo')"><div class="ld" style="background:#FDF0E3;border:1px solid #E87B1E"></div>🏆 Torneo</div>
-        <div class="li" id="ag-li-gira" onclick="toggleFiltro('ag','gira')"><div class="ld" style="background:#F0E8F8;border:1px solid #9B59D4"></div>✈️ Gira</div>
+        <div class="li" id="ag-li-gira" onclick="toggleFiltro('ag','gira')"><div class="ld" style="background:#F0E8F8;border:1px solid #9B59D4"></div>✈️ Gira</div><div class="li" id="ag-li-receso" onclick="toggleFiltro('ag','receso')"><div class="ld" style="background:#E6F4EF;border:1px solid #2E8B6E"></div>🌴 Receso</div>
       </div>
       <div id="ag-vista-anio" style="display:none;"><div class="yr-grid" id="ag-yr-grid"></div></div>
       <div id="ag-vista-tabla" style="display:none;"><div id="ag-tabla-content"></div></div>
@@ -1201,6 +1283,31 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
         <div class="pthdr-ent"><div class="th"></div><div class="th">Nombre</div><div class="th">Rol</div><div class="th">Edad</div><div class="th">Tel.</div><div class="th">Selecciones</div><div class="th"></div></div>
         <div id="ent-list"></div>
       </div>
+    </div>
+
+    <!-- TORNEOS ARGENTINOS -->
+    <div id="pg-torneos" class="page">
+      <div class="tor-bar">
+        <div class="view-toggle">
+          <button class="vtab on" id="torv-matriz" onclick="torSetVista('matriz')"><i class="ti ti-table"></i> Evolución</button>
+          <button class="vtab" id="torv-lista" onclick="torSetVista('lista')"><i class="ti ti-list"></i> Lista</button>
+        </div>
+        <div class="grp">
+          <button class="fpill on" id="tort-seleccion" onclick="torSetFiltro('tipo','seleccion')">Selecciones</button>
+          <button class="fpill" id="tort-club" onclick="torSetFiltro('tipo','club')">Clubes</button>
+        </div>
+        <div class="grp">
+          <button class="fpill on" id="torr-todas" onclick="torSetFiltro('rama','todas')">Todas</button>
+          <button class="fpill" id="torr-F" onclick="torSetFiltro('rama','F')">Damas</button>
+          <button class="fpill" id="torr-M" onclick="torSetFiltro('rama','M')">Caballeros</button>
+        </div>
+        <div class="grp" id="tor-anio-grp" style="display:none;">
+          <select id="tor-anio" onchange="torSetFiltro('anio',this.value)" aria-label="Año"></select>
+        </div>
+      </div>
+      <div class="search-bar" id="tor-q-wrap" style="display:none;"><i class="ti ti-search"></i><input id="tor-q" placeholder="Buscar por torneo, sede, club o rival" oninput="torSetFiltro('q',this.value)"/></div>
+      <div class="tor-ley" id="tor-ley"></div>
+      <div id="tor-content"></div>
     </div>
 
     <!-- EQUIPO -->
@@ -1262,7 +1369,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
             <button class="vtab" id="eq-vtab-anio" onclick="eqSetVista('anio')">🗓️ Año</button>
           </div>
           <div style="display:flex;align-items:center;gap:6px;" id="eq-nav-mes">
-            <button class="ypill on" id="eq-ay26">2026</button>
+            <button class="ypill on" id="eq-ay26" onclick="eqYear(2026)">2026</button><button class="ypill" id="eq-ay27" onclick="eqYear(2027)">2027</button>
             <div style="width:1px;height:20px;background:var(--color-border-tertiary);margin:0 2px;"></div>
             <button class="narr" onclick="eqPrev()"><i class="ti ti-chevron-left"></i></button>
             <span class="mlbl" id="eq-mlbl"></span>
@@ -1275,7 +1382,7 @@ mark{background:#FFF3CD;border-radius:2px;color:inherit}
           <div class="li" id="eq-li-lista" onclick="toggleFiltro('eq','lista')"><div class="ld" style="background:#FEF9E3;border:1px solid #F0C830"></div>📋 Lista</div>
           <div class="li" id="eq-li-partido" onclick="toggleFiltro('eq','partido')"><div class="ld" style="background:#E8ECF8;border:1px solid #1A2B5C"></div>🏑 Partido</div>
           <div class="li" id="eq-li-torneo" onclick="toggleFiltro('eq','torneo')"><div class="ld" style="background:#FDF0E3;border:1px solid #E87B1E"></div>🏆 Torneo</div>
-          <div class="li" id="eq-li-gira" onclick="toggleFiltro('eq','gira')"><div class="ld" style="background:#F0E8F8;border:1px solid #9B59D4"></div>✈️ Gira</div>
+          <div class="li" id="eq-li-gira" onclick="toggleFiltro('eq','gira')"><div class="ld" style="background:#F0E8F8;border:1px solid #9B59D4"></div>✈️ Gira</div><div class="li" id="eq-li-receso" onclick="toggleFiltro('eq','receso')"><div class="ld" style="background:#E6F4EF;border:1px solid #2E8B6E"></div>🌴 Receso</div>
         </div>
         <!-- Vista Tabla equipo -->
         <div id="eq-vista-tabla"><div id="eq-tabla-content"></div></div>
@@ -1336,7 +1443,7 @@ class="page">
 const ATAH_LOGO="data:image/jpeg;base64,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";
 const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const WD=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-const TI={entrenamiento:{e:'🏃',l:'Entrenamiento',b:'#5DB8F0',c:'ec-entrenamiento'},lista:{e:'📋',l:'Lista',b:'#F0C830',c:'ec-lista'},partido:{e:'🏑',l:'Partido',b:'#1A2B5C',c:'ec-partido'},torneo:{e:'🏆',l:'Torneo',b:'#E87B1E',c:'ec-torneo'},gira:{e:'✈️',l:'Gira',b:'#9B59D4',c:'ec-gira'}};
+const TI={entrenamiento:{e:'🏃',l:'Entrenamiento',b:'#5DB8F0',c:'ec-entrenamiento'},lista:{e:'📋',l:'Lista',b:'#F0C830',c:'ec-lista'},partido:{e:'🏑',l:'Partido',b:'#1A2B5C',c:'ec-partido'},torneo:{e:'🏆',l:'Torneo',b:'#E87B1E',c:'ec-torneo'},gira:{e:'✈️',l:'Gira',b:'#9B59D4',c:'ec-gira'},receso:{e:'🌴',l:'Receso',b:'#2E8B6E',c:'ec-receso'}};
 const TM={'mayor-f':{n:'Mayor F',cat:'Mayor',g:'F'},'sub19-f':{n:'Sub-19 F',cat:'Sub-19',g:'F'},'sub16-f':{n:'Sub-16 F',cat:'Sub-16',g:'F'},'sub14-f':{n:'Sub-14 F',cat:'Sub-14',g:'F'},'sub12-f':{n:'Sub-12 F',cat:'Sub-12',g:'F'},'mayor-m':{n:'Mayor M',cat:'Mayor',g:'M'},'sub19-m':{n:'Sub-19 M',cat:'Sub-19',g:'M'},'sub16-m':{n:'Sub-16 M',cat:'Sub-16',g:'M'},'sub14-m':{n:'Sub-14 M',cat:'Sub-14',g:'M'},'sub12-m':{n:'Sub-12 M',cat:'Sub-12',g:'M'},'arqueros':{n:'Arqueros/as',cat:'Especial',g:'X'}};
 const ATEAMS=Object.keys(TM);
 const TIMES=[];for(let h=7;h<=24;h++){TIMES.push(String(h).padStart(2,'0')+':00');if(h<24)TIMES.push(String(h).padStart(2,'0')+':30');}
@@ -1346,6 +1453,29 @@ const ROL_KEYS=Object.keys(ROLES);
 const ROL_IDS={'Entrenador/a principal':'princ','Asistente':'asist','Entrenador/a de arqueros/as':'arqc','Preparador/a físico/a':'fis','Mentor/a':'mentor'};
 
 const EVS=[];
+const SEMILLAS=[]; // claves de eventos precargados ya aplicados (para no repetirlos ni revivir los borrados)
+// Recesos de Tucumán precargados en la agenda
+const EV_SEMILLAS=[
+  {clave:'receso-semana-santa-2027',year:2027,month:2,days:[24,25,26,27,28],type:'receso',
+   lugar:'Semana Santa · feriados 24 y 26, 25 no laborable'},
+  {clave:'receso-invierno-tucuman-2027',year:2027,month:6,days:[12,13,14,15,16,17,18,19,20,21,22,23],type:'receso',
+   lugar:'Vacaciones de invierno Tucumán · fecha estimada, a confirmar'}
+];
+function evAplicarSemillas(){
+  let n=0;
+  EV_SEMILLAS.forEach(sd=>{
+    if(SEMILLAS.includes(sd.clave)) return;
+    if(!EVS.some(e=>e.clave===sd.clave)){
+      EVS.push({id:++evIdC,clave:sd.clave,year:sd.year,month:sd.month,days:sd.days.slice(),horaI:'',horaF:'',type:sd.type,sels:ATEAMS.slice(),lugar:sd.lugar,done:false});
+      n++;
+    }
+    SEMILLAS.push(sd.clave);
+  });
+  if(n){ dbAutoSave(); console.log('🌴 Recesos agregados a la agenda:',n); }
+}
+const EV_ANIO_BASE=2026; // los eventos guardados antes de manejar años son de 2026
+function evAnio(e){return Number(e&&e.year)||EV_ANIO_BASE;}
+const TORNEOS=[]; let torIdC=0; // historial y próximos Torneos Argentinos
 // ── ESTADO DE LA AGENDA (estas variables se usaban pero nunca estaban declaradas) ──
 let agY=2026, agM=new Date().getMonth(), agVista='tabla';
 const agFiltros=new Set();     // filtro por tipo de evento (agenda general)
@@ -1435,7 +1565,7 @@ function getOrCreateConv(evId, teamId){
   if(!c){
     const ev=EVS.find(e=>e.id===evId);
     if(!ev)return null;
-    c={id:++convIdC,evId,teamId,month:ev.month,year:agY,
+    c={id:++convIdC,evId,teamId,month:ev.month,year:evAnio(ev),
        jugadores:(PLS[teamId]||[]).map(p=>({id:p.id,estado:'convocado'}))};
     CONVS.push(c);
   }
@@ -1489,8 +1619,8 @@ function renderAsistencia(){
   const cont=document.getElementById('eq-asist-content');
   if(!cont)return;
   // Todos los eventos del equipo actual, ordenados por mes/día
-  const evs=EVS.filter(e=>e.sels.includes(curTeam))
-    .sort((a,b)=>a.month===b.month?a.days[0]-b.days[0]:a.month-b.month);
+  const evs=EVS.filter(e=>e.sels.includes(curTeam)&&e.type!=='receso')
+    .sort((a,b)=>evAnio(a)-evAnio(b)||(a.month===b.month?a.days[0]-b.days[0]:a.month-b.month));
   if(!evs.length){
     cont.innerHTML='<div class="ph"><i class="ti ti-checkbox"></i>Sin eventos en la agenda de este equipo.</div>';
     return;
@@ -1545,7 +1675,7 @@ function renderAsistencia(){
         <div class="asist-ev-info">
           <span style="font-size:18px;">${ti.e}</span>
           <div>
-            <div class="asist-ev-title">${ti.l} · ${MN[ev.month]} ${ev.days.join(', ')}</div>
+            <div class="asist-ev-title">${ti.l} · ${MN[ev.month]} ${ev.days.join(', ')} · ${evAnio(ev)}</div>
             <div class="asist-ev-meta">${ev.lugar} · ${ev.horaI}–${ev.horaF}</div>
           </div>
         </div>
@@ -1644,7 +1774,7 @@ function exportarAgendaExcel(){
         const ds=WDA[new Date(agY,mi,dia).getDay()];
         row.push(ds);
         equipos.forEach(t=>{
-          const ev=EVS.find(e=>e.month===mi&&e.days.includes(dia)&&e.sels.includes(t)&&(agFiltros.size===0||agFiltros.has(e.type)));
+          const ev=EVS.find(e=>evAnio(e)===agY&&e.month===mi&&e.days.includes(dia)&&e.sels.includes(t)&&(agFiltros.size===0||agFiltros.has(e.type)));
           row.push(ev?(TI[ev.type]?.l||ev.type)+(ev.lugar?' · '+ev.lugar:''):'');
         });
       }
@@ -1677,7 +1807,7 @@ function exportarEqExcel(){
       else{
         const ds=WDA[new Date(eqY,mi,dia).getDay()];
         row.push(ds);
-        const ev=EVS.find(e=>e.month===mi&&e.days.includes(dia)&&e.sels.includes(curTeam));
+        const ev=EVS.find(e=>evAnio(e)===eqY&&e.month===mi&&e.days.includes(dia)&&e.sels.includes(curTeam));
         row.push(ev?(TI[ev.type]?.l||ev.type)+(ev.lugar?' · '+ev.lugar:''):'');
       }
     }
@@ -2627,7 +2757,7 @@ function paExportarExcel(){
             const teamMap = {'DMayor':'mayor-f','D19':'sub19-f','D16':'sub16-f','D14':'sub14-f',
               'CMayor':'mayor-m','C19':'sub19-m','C16':'sub16-m','C14':'sub14-m','ARQ':'arqueros'};
             const teamId = teamMap[eq];
-            const ev = EVS.find(e=>e.month===mi&&e.days.includes(dia)&&e.sels.includes(teamId));
+            const ev = EVS.find(e=>evAnio(e)===2026&&e.month===mi&&e.days.includes(dia)&&e.sels.includes(teamId));
             if(ev){ const ti=TI[ev.type]||TI.entrenamiento; val=ti.l+(ev.lugar&&ev.lugar!=='Por confirmar'?' · '+ev.lugar:''); }
           }
           row.push(val||'');
@@ -2832,7 +2962,7 @@ function renderPruebaAgenda() {
             const miC=PA_MESES_KEY.indexOf(mes);
             const tmC={'DMayor':'mayor-f','D19':'sub19-f','D16':'sub16-f','D14':'sub14-f','CMayor':'mayor-m','C19':'sub19-m','C16':'sub16-m','C14':'sub14-m','ARQ':'arqueros'};
             const tid=tmC[eq];
-            const evF=EVS.find(function(e){return e.month===miC&&e.days.includes(dia)&&e.sels.includes(tid);});
+            const evF=EVS.find(function(e){return evAnio(e)===2026&&e.month===miC&&e.days.includes(dia)&&e.sels.includes(tid);});
             if(evF){const ti2=TI[evF.type]||TI.entrenamiento;valFinal=ti2.l;}
           }
           // Filtro de tipo
@@ -2844,7 +2974,7 @@ function renderPruebaAgenda() {
           if(valFinal){
             const cls=paEvClass(valFinal),emoji=paEvEmoji(valFinal);
             const label=valFinal.length>10?valFinal.slice(0,10)+'\u2026':valFinal;
-            const evChk=EVS.find(function(e){const mi2=PA_MESES_KEY.indexOf(mes);const tid2={'DMayor':'mayor-f','D19':'sub19-f','D16':'sub16-f','D14':'sub14-f','CMayor':'mayor-m','C19':'sub19-m','C16':'sub16-m','C14':'sub14-m','ARQ':'arqueros'}[eq];return e.month===mi2&&e.days.includes(dia)&&e.sels.includes(tid2);});
+            const evChk=EVS.find(function(e){const mi2=PA_MESES_KEY.indexOf(mes);const tid2={'DMayor':'mayor-f','D19':'sub19-f','D16':'sub16-f','D14':'sub14-f','CMayor':'mayor-m','C19':'sub19-m','C16':'sub16-m','C14':'sub14-m','ARQ':'arqueros'}[eq];return evAnio(e)===2026&&e.month===mi2&&e.days.includes(dia)&&e.sels.includes(tid2);});
             const doneCheck=evChk&&evChk.done?'<span style="font-size:9px;margin-left:2px;">✅</span>':(evChk&&evChk.estado==='suspendido'?'<span style="font-size:9px;margin-left:2px;">⚠️</span>':'');
             const suspStyle=evChk&&evChk.estado==='suspendido'?'opacity:.5;text-decoration:line-through;':'';
             html+='<td style="'+lbg+'cursor:pointer;" onclick="paVerEvento(\''+mes+'\','+dia+',\''+eq+'\')"><span class="pa-ev '+cls+'" style="'+suspStyle+'" title="'+valFinal+'">'+emoji+' '+label+doneCheck+'</span></td>';
@@ -3013,14 +3143,14 @@ function paGuardarEvento(){
     // Un evento por día con su propio horario
     dias.forEach(d=>{
       const cfg=paHorarioPorDia[d]||{};
-      EVS.push({id:++evIdC,month:mi,days:[d],horaI:cfg.horaI||'08:00',horaF:cfg.horaF||'20:00',
+      EVS.push({id:++evIdC,year:2026,month:mi,days:[d],horaI:cfg.horaI||'08:00',horaF:cfg.horaF||'20:00',
         type:paTipo,sels,lugar:lugarFinal,done:false});
     });
   } else {
     if(!paHoraI){alert('Elegí el horario de inicio');return;}
     if(!paHoraF){alert('Elegí el horario de fin');return;}
     // Un solo evento con todos los días
-    EVS.push({id:++evIdC,month:mi,days:dias,horaI:paHoraI,horaF:paHoraF,
+    EVS.push({id:++evIdC,year:2026,month:mi,days:dias,horaI:paHoraI,horaF:paHoraF,
       type:paTipo,sels,lugar:lugarFinal,done:false});
   }
   // Si es edición, eliminar el evento anterior
@@ -3094,7 +3224,7 @@ function paVerEvento(mes, dia, eq, evId){
   // Buscar en EVS
   const tmC={'DMayor':'mayor-f','D19':'sub19-f','D16':'sub16-f','D14':'sub14-f','CMayor':'mayor-m','C19':'sub19-m','C16':'sub16-m','C14':'sub14-m','ARQ':'arqueros'};
   const tid=tmC[eq];
-  evSrc=EVS.find(function(e){return e.month===mi&&e.days.includes(dia)&&e.sels.includes(tid);});
+  evSrc=EVS.find(function(e){return evAnio(e)===2026&&e.month===mi&&e.days.includes(dia)&&e.sels.includes(tid);});
   if(evSrc){const ti2=TI[evSrc.type]||TI.entrenamiento; val=ti2.l; paViewEvId=evSrc.id;}
 
   const ti = evSrc ? (TI[evSrc.type]||TI.entrenamiento) : null;
@@ -3320,7 +3450,7 @@ let convNevTipo=null, nevSelDays=new Set();
 
 function buildNevDaysGrid(){
   const mes=parseInt(document.getElementById('nev-mes')?.value||'0');
-  const anio=parseInt(document.getElementById('ef-anio')?.value||new Date().getFullYear());
+  const anio=eqY;
   const dim=new Date(anio,mes+1,0).getDate();
   const WDA=['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
   const grid=document.getElementById('nev-days-grid');
@@ -3373,7 +3503,7 @@ function convCrearYCargar(){
   const mes=parseInt(document.getElementById('nev-mes')?.value);
   const lugar=(document.getElementById('nev-lugar')?.value||'').trim()||'Por confirmar';
   // Crear el evento con el equipo actual
-  const nuevoEv={id:++evIdC,month:mes,days:dias,horaI:'08:00',horaF:'20:00',
+  const nuevoEv={id:++evIdC,year:eqY,month:mes,days:dias,horaI:'08:00',horaF:'20:00',
     type:convNevTipo,sels:[curTeam],lugar,done:false};
   EVS.push(nuevoEv);
   dbAutoSave();
@@ -3730,6 +3860,7 @@ const TI_TYPES=[
   {k:'partido',e:'🏑',l:'Partido'},
   {k:'torneo',e:'🏆',l:'Torneo'},
   {k:'gira',e:'✈️',l:'Gira'},
+  {k:'receso',e:'🌴',l:'Receso'},
 ];
 function openNewEv(pd,teamCtx){
   evMode='new';evEditId=null;
@@ -3758,13 +3889,13 @@ function openEvEdit(){
   if(!evViewId)return;
   const ev=EVS.find(e=>e.id===evViewId);if(!ev)return;
   evMode='edit';evEditId=evViewId;
-  currentCalMonth=ev.month;currentCalYear=agY;
+  currentCalMonth=ev.month;currentCalYear=evAnio(ev);
   resetEvF();
   // Setear selector de mes/año
   const efMes=document.getElementById('ef-mes');
   const efAnio=document.getElementById('ef-anio');
   if(efMes)efMes.value=String(ev.month);
-  if(efAnio)efAnio.value=String(agY);
+  if(efAnio)efAnio.value=String(evAnio(ev));
   // Cargar días y configs
   selDays=new Set(ev.days);
   ev.days.forEach(d=>{dayConfigs[d]={type:ev.type,horaI:ev.horaI,horaF:ev.horaF,lugar:ev.lugar,_open:false};});
@@ -3794,22 +3925,22 @@ function saveEv(){
   if(evMode==='new'){
     for(const d of sorted){
       const cfg=dayConfigs[d];
-      EVS.push({id:++evIdC,month:currentCalMonth,days:[d],horaI:cfg.horaI,horaF:cfg.horaF,type:cfg.type,sels:[...evFTeams],lugar:cfg.lugar||'Por confirmar',done:false});
+      EVS.push({id:++evIdC,year:currentCalYear,month:currentCalMonth,days:[d],horaI:cfg.horaI,horaF:cfg.horaF,type:cfg.type,sels:[...evFTeams],lugar:cfg.lugar||'Por confirmar',done:false});
     }
   } else {
     if(sorted.length===1){
       const ev=EVS.find(e=>e.id===evEditId);
-      if(ev){const cfg=dayConfigs[sorted[0]];ev.days=[sorted[0]];ev.horaI=cfg.horaI;ev.horaF=cfg.horaF;ev.type=cfg.type;ev.sels=[...evFTeams];ev.lugar=cfg.lugar||'Por confirmar';}
+      if(ev){const cfg=dayConfigs[sorted[0]];ev.year=currentCalYear;ev.month=currentCalMonth;ev.days=[sorted[0]];ev.horaI=cfg.horaI;ev.horaF=cfg.horaF;ev.type=cfg.type;ev.sels=[...evFTeams];ev.lugar=cfg.lugar||'Por confirmar';}
     } else {
       const idx=EVS.findIndex(e=>e.id===evEditId);if(idx>-1)EVS.splice(idx,1);
-      for(const d of sorted){const cfg=dayConfigs[d];EVS.push({id:++evIdC,month:currentCalMonth,days:[d],horaI:cfg.horaI,horaF:cfg.horaF,type:cfg.type,sels:[...evFTeams],lugar:cfg.lugar||'Por confirmar',done:false});}
+      for(const d of sorted){const cfg=dayConfigs[d];EVS.push({id:++evIdC,year:currentCalYear,month:currentCalMonth,days:[d],horaI:cfg.horaI,horaF:cfg.horaF,type:cfg.type,sels:[...evFTeams],lugar:cfg.lugar||'Por confirmar',done:false});}
     }
   }
   document.getElementById('m-ev').classList.remove('open');
   if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}
   dbAutoSave();
 }
-function openEvView(id,ev2){ev2&&ev2.stopPropagation();evViewId=id;evViewTeam=curTeam||null;const ev=EVS.find(x=>x.id===id);if(!ev)return;const ti=TI[ev.type]||TI.entrenamiento;const dStr=ev.days.length===1?`${ev.days[0]} de ${MN[ev.month]}`:`${ev.days[0]}–${ev.days[ev.days.length-1]} de ${MN[ev.month]} (${ev.days.length} días)`;document.getElementById('evv-bar').style.background=ti.b;document.getElementById('evv-type').textContent=ti.e+' '+ti.l;document.getElementById('evv-type').style.color=ti.b;document.getElementById('evv-name').textContent=ti.e+' '+ti.l+' · '+dStr;document.getElementById('evv-date').textContent=dStr+' '+agY;document.getElementById('evv-hora').textContent=ev.horaI+' hs → '+ev.horaF+' hs';document.getElementById('evv-lugar').textContent=ev.lugar;const sH=ev.sels.length>=10?'<span class="tbadge" style="background:#E8ECF8;color:#1A2B5C;">Todas las selecciones</span>':ev.sels.map(s=>`<span class="tbadge" style="background:${TM[s]?.g==='F'?'rgba(232,123,30,0.12)':TM[s]?.g==='M'?'#E8ECF8':'#F3F0FA'};color:${TM[s]?.g==='F'?'#7A3A00':TM[s]?.g==='M'?'#1A2B5C':'#4A1A7A'};">${TM[s]?.n||s}</span>`).join('');document.getElementById('evv-sels').innerHTML=sH;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';
+function openEvView(id,ev2){ev2&&ev2.stopPropagation();evViewId=id;evViewTeam=curTeam||null;const ev=EVS.find(x=>x.id===id);if(!ev)return;const ti=TI[ev.type]||TI.entrenamiento;const dStr=ev.days.length===1?`${ev.days[0]} de ${MN[ev.month]}`:`${ev.days[0]}–${ev.days[ev.days.length-1]} de ${MN[ev.month]} (${ev.days.length} días)`;document.getElementById('evv-bar').style.background=ti.b;document.getElementById('evv-type').textContent=ti.e+' '+ti.l;document.getElementById('evv-type').style.color=ti.b;document.getElementById('evv-name').textContent=ti.e+' '+ti.l+' · '+dStr;document.getElementById('evv-date').textContent=dStr+' '+evAnio(ev);document.getElementById('evv-hora').textContent=ev.type==='receso'?'Todo el día':ev.horaI+' hs → '+ev.horaF+' hs';document.getElementById('evv-lugar').textContent=ev.lugar;const sH=ev.sels.length>=10?'<span class="tbadge" style="background:#E8ECF8;color:#1A2B5C;">Todas las selecciones</span>':ev.sels.map(s=>`<span class="tbadge" style="background:${TM[s]?.g==='F'?'rgba(232,123,30,0.12)':TM[s]?.g==='M'?'#E8ECF8':'#F3F0FA'};color:${TM[s]?.g==='F'?'#7A3A00':TM[s]?.g==='M'?'#1A2B5C':'#4A1A7A'};">${TM[s]?.n||s}</span>`).join('');document.getElementById('evv-sels').innerHTML=sH;document.getElementById('evv-doneind').style.display=ev.done?'flex':'none';
   const convBtn=document.getElementById('evv-conv-btn');
   if(convBtn)convBtn.style.display=['torneo','gira','partido'].includes(ev.type)?'flex':'none';const db=document.getElementById('evv-donebtn');db.textContent=ev.done?'↩ Desmarcar':'✓ Marcar realizado';db.style.background=ev.done?'#EAF3DE':'';db.style.color=ev.done?'#3B6D11':'';db.style.opacity=ev.estado==='suspendido'?'0.4':'1';
   const sb=document.getElementById('evv-suspbtn');const sl=document.getElementById('evv-susplbl');
@@ -3836,10 +3967,10 @@ function evTogDone(){if(!evViewId)return;const ev=EVS.find(e=>e.id===evViewId);i
   if(sb&&sl){sl.textContent=ev.estado==='suspendido'?'Quitar suspensión':'Suspendido';sb.style.background=ev.estado==='suspendido'?'#F7C1C1':'#FCEBEB';}if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();if(curTeam){if(eqVista==='tabla')renderEqTabla();else renderEqCal();}  dbAutoSave();
 }
 function renderCal(calId,month,year,filter){const lbl=calId==='ag-cal'?'ag-mlbl':'eq-mlbl';document.getElementById(lbl).textContent=MN[month]+' '+year;const fd=new Date(year,month,1).getDay(),off=(fd+6)%7,dim=new Date(year,month+1,0).getDate(),prev=new Date(year,month,0).getDate();const today=new Date();const filtros=calId==='ag-cal'?agFiltros:eqFiltros;
-  const evs=EVS.filter(e=>e.month===month
+  const evs=EVS.filter(e=>evAnio(e)===year&&e.month===month
     &&(!filter||e.sels.includes(filter))
     &&(filtros.size===0||filtros.has(e.type))
-    &&(calId!=='ag-cal'||agSelFiltros.size===0||e.sels.some(s=>agSelFiltros.has(s))));const em={};evs.forEach(e=>{e.days.forEach(d=>{if(!em[d])em[d]=[];if(!em[d].find(x=>x.id===e.id))em[d].push(e);});});let h='';for(let i=0;i<off;i++)h+=`<div class="cday other"><div class="dnum">${prev-off+i+1}</div></div>`;for(let d=1;d<=dim;d++){const isT=today.getFullYear()===year&&today.getMonth()===month&&today.getDate()===d;const wd=WD[new Date(year,month,d).getDay()];const chips=(em[d]||[]).map(e=>{const ti=TI[e.type]||TI.entrenamiento;const aT=e.sels.length>=10;const ts=aT?'Todas':e.sels.slice(0,2).map(s=>TM[s]?.n||s).join(' · ')+(e.sels.length>2?` +${e.sels.length-2}`:'');const md=e.days.length>1?` (${e.days.length}d)`:'';return`<div class="evchip ${ti.c}${e.done?' done':''}" onclick="openEvView(${e.id},event)"><div class="ect">${ts}</div><div class="ecy">${ti.e} ${ti.l}${md}</div><div class="ecm">${e.horaI}–${e.horaF} · ${e.lugar}</div></div>`;}).join('');h+=`<div class="cday${isT?' today':''}" onclick="openNewEv(${d},${calId==='eq-cal'?`'${curTeam}'`:'null'})"><div class="dnum">${d}</div><div class="dweek">${wd}</div>${chips}</div>`;}const rem=(off+dim)%7===0?0:7-(off+dim)%7;for(let i=1;i<=rem;i++)h+=`<div class="cday other"><div class="dnum">${i}</div></div>`;document.getElementById(calId).innerHTML=h;}
+    &&(calId!=='ag-cal'||agSelFiltros.size===0||e.sels.some(s=>agSelFiltros.has(s))));const em={};evs.forEach(e=>{e.days.forEach(d=>{if(!em[d])em[d]=[];if(!em[d].find(x=>x.id===e.id))em[d].push(e);});});let h='';for(let i=0;i<off;i++)h+=`<div class="cday other"><div class="dnum">${prev-off+i+1}</div></div>`;for(let d=1;d<=dim;d++){const isT=today.getFullYear()===year&&today.getMonth()===month&&today.getDate()===d;const wd=WD[new Date(year,month,d).getDay()];const chips=(em[d]||[]).map(e=>{const ti=TI[e.type]||TI.entrenamiento;const aT=e.sels.length>=10;const ts=aT?'Todas':e.sels.slice(0,2).map(s=>TM[s]?.n||s).join(' · ')+(e.sels.length>2?` +${e.sels.length-2}`:'');const md=e.days.length>1?` (${e.days.length}d)`:'';return`<div class="evchip ${ti.c}${e.done?' done':''}" onclick="openEvView(${e.id},event)"><div class="ect">${ts}</div><div class="ecy">${ti.e} ${ti.l}${md}</div><div class="ecm">${e.type==='receso'?'Todo el día':e.horaI+'–'+e.horaF} · ${e.lugar}</div></div>`;}).join('');h+=`<div class="cday${isT?' today':''}" onclick="openNewEv(${d},${calId==='eq-cal'?`'${curTeam}'`:'null'})"><div class="dnum">${d}</div><div class="dweek">${wd}</div>${chips}</div>`;}const rem=(off+dim)%7===0?0:7-(off+dim)%7;for(let i=1;i<=rem;i++)h+=`<div class="cday other"><div class="dnum">${i}</div></div>`;document.getElementById(calId).innerHTML=h;}
 
 
 
@@ -3869,7 +4000,7 @@ function renderAgAnio(){
   grid.innerHTML=MN.map((mn,mi)=>{
     // Filtrar eventos del mes según selecciones activas
     const evs=EVS.filter(e=>
-      e.month===mi
+      evAnio(e)===agY&&e.month===mi
       &&(agSelFiltros.size===0||e.sels.some(s=>agSelFiltros.has(s)))
     );
     // Agrupar por día (primer día si es multi-día)
@@ -3962,7 +4093,7 @@ function renderAgTabla(){
         equipos.forEach(t=>{
           // Buscar eventos de este equipo en este día/mes
           const evs = EVS.filter(e=>
-            e.month===mi &&
+            evAnio(e)===agY && e.month===mi &&
             e.days.includes(dia) &&
             e.sels.includes(t) &&
             (agFiltros.size===0||agFiltros.has(e.type))
@@ -4022,7 +4153,7 @@ function toggleFiltro(cal, tipo){
 
 function updateLegendStyles(cal){
   const filtros = cal==='ag' ? agFiltros : eqFiltros;
-  const tipos=['entrenamiento','lista','partido','torneo','gira'];
+  const tipos=['entrenamiento','lista','partido','torneo','gira','receso'];
   tipos.forEach(t=>{
     const el=document.getElementById(cal+'-li-'+t);
     if(!el)return;
@@ -4032,12 +4163,12 @@ function updateLegendStyles(cal){
   });
 }
 function renderAgCal(){renderCal('ag-cal',agM,agY,null);}
-function agYear(y){agY=y;const b25=document.getElementById('ay25');if(b25)b25.classList.toggle('on',y===2025);const b26=document.getElementById('ay26');if(b26)b26.classList.toggle('on',y===2026);if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();}
+function agYear(y){agY=y;document.querySelectorAll('[id^="ay2"]').forEach(b=>b.classList.toggle('on',b.id==='ay'+String(y).slice(2)));if(agVista==='tabla')renderAgTabla();else if(agVista==='anio')renderAgAnio();else renderAgCal();}
 function agPrev(){if(agM===0){agM=11;agY--;}else agM--;agYear(agY);}
 function agNext(){if(agM===11){agM=0;agY++;}else agM++;agYear(agY);}
 
 // EQUIPO
-let curTeam='mayor-m',eqM=5,eqY=2025,curTab='agenda';
+let curTeam='mayor-m',eqM=new Date().getMonth(),eqY=new Date().getFullYear(),curTab='agenda';
 function goTeam(id,n){document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='';});document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));document.getElementById('pg-equipo').classList.add('active');if(n)n.classList.add('active');curTeam=id;const fn=id==='arqueros'?'Arqueros/as':(TM[id].n.replace(' F',' Femenino').replace(' M',' Masculino'));document.getElementById('tb-title').textContent=fn;document.getElementById('tb-sub').textContent='Selección provincial · ATAH Tucumán 2025';// Mostrar pantalla de inicio del equipo
   ['sub-home','sub-ag','sub-jug','sub-conv','sub-asist','sub-proy'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display='none';
@@ -4084,7 +4215,7 @@ function eqTab(tab){
   else{a.innerHTML=`<button class="btn" onclick="exportarEqExcel()"><i class="ti ti-download"></i> Exportar</button><button class="btn btn-org" onclick="openNewEv(null,'${curTeam}')"><i class="ti ti-plus"></i> Nuevo evento</button>`;eqSetVista('tabla');}
 }
 function renderEqCal(){document.getElementById('eq-note').textContent='Solo eventos de '+(curTeam==='arqueros'?'Arqueros/as':TM[curTeam]?.n||'');renderCal('eq-cal',eqM,eqY,curTeam);renderEqS();}
-function renderEqS(){const all=EVS.filter(e=>e.sels.includes(curTeam));const mes=all.filter(e=>e.month===eqM).length;const today=new Date();const px=all.filter(e=>new Date(eqY,e.month,Math.min(...e.days))>=today).sort((a,b)=>a.month===b.month?Math.min(...a.days)-Math.min(...b.days):a.month-b.month)[0];document.getElementById('eq-stats').innerHTML=`<div class="stat"><div class="statl">Eventos este mes</div><div class="statv">${mes}</div></div><div class="stat"><div class="statl">Total 2025</div><div class="statv">${all.length}</div></div><div class="stat"><div class="statl">Próximo evento</div><div class="statv" style="font-size:13px;">${px?TI[px.type]?.e+' '+TI[px.type]?.l:'Sin eventos'}</div><div class="stats">${px?Math.min(...px.days)+' '+MN[px.month].slice(0,3):''}</div></div>`;}
+function renderEqS(){const all=EVS.filter(e=>e.sels.includes(curTeam));const mes=all.filter(e=>evAnio(e)===eqY&&e.month===eqM).length;const today=new Date();today.setHours(0,0,0,0);const px=all.filter(e=>new Date(evAnio(e),e.month,Math.min(...e.days))>=today).sort((a,b)=>new Date(evAnio(a),a.month,Math.min(...a.days))-new Date(evAnio(b),b.month,Math.min(...b.days)))[0];document.getElementById('eq-stats').innerHTML=`<div class="stat"><div class="statl">Eventos este mes</div><div class="statv">${mes}</div></div><div class="stat"><div class="statl">Total 2025</div><div class="statv">${all.length}</div></div><div class="stat"><div class="statl">Próximo evento</div><div class="statv" style="font-size:13px;">${px?TI[px.type]?.e+' '+TI[px.type]?.l:'Sin eventos'}</div><div class="stats">${px?Math.min(...px.days)+' '+MN[px.month].slice(0,3):''}</div></div>`;}
 
 let eqVista = 'tabla';
 
@@ -4134,7 +4265,7 @@ function renderEqTabla(){
         const lbg=isLun?'background:#EEF3FF;':'background:#fff;';
         const dsCol=isLun?'color:#4A6FA5;font-weight:700;':'color:#7A98B8;';
         html+=`<td style="${lbg}text-align:center;font-size:11px;font-weight:700;color:#0D1B2A;">${dia}<br><span style="font-size:8px;${dsCol}">${ds.toUpperCase()}</span></td>`;
-        const evs=EVS.filter(e=>e.month===mi&&e.days.includes(dia)&&e.sels.includes(curTeam)&&(eqFiltros.size===0||eqFiltros.has(e.type)));
+        const evs=EVS.filter(e=>evAnio(e)===eqY&&e.month===mi&&e.days.includes(dia)&&e.sels.includes(curTeam)&&(eqFiltros.size===0||eqFiltros.has(e.type)));
         if(evs.length){
           const ev=evs[0];const ti=TI[ev.type]||TI.entrenamiento;
           const lbl=ti.l.length>10?ti.l.slice(0,10)+'…':ti.l;
@@ -4156,7 +4287,7 @@ function renderEqAnio(){
   if(!grid||!curTeam) return;
   const MN2=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   grid.innerHTML=MN2.map((mn,mi)=>{
-    const evs=EVS.filter(e=>e.month===mi&&e.sels.includes(curTeam)&&(eqFiltros.size===0||eqFiltros.has(e.type)));
+    const evs=EVS.filter(e=>evAnio(e)===eqY&&e.month===mi&&e.sels.includes(curTeam)&&(eqFiltros.size===0||eqFiltros.has(e.type)));
     const chips=evs.map(e=>{
       const ti=TI[e.type]||TI.entrenamiento;
       const d=e.days[0];const multi=e.days.length>1?'–'+e.days[e.days.length-1]:'';
@@ -4168,8 +4299,9 @@ function renderEqAnio(){
     </div>`;
   }).join('');
 }
-function eqPrev(){if(eqM===0){eqM=11;eqY--;}else eqM--;renderEqCal();}
-function eqNext(){if(eqM===11){eqM=0;eqY++;}else eqM++;renderEqCal();}
+function eqPrev(){if(eqM===0){eqM=11;eqY--;}else eqM--;eqYear(eqY);}
+function eqNext(){if(eqM===11){eqM=0;eqY++;}else eqM++;eqYear(eqY);}
+function eqYear(y){eqY=y;document.querySelectorAll('[id^="eq-ay2"]').forEach(b=>b.classList.toggle('on',b.id==='eq-ay'+String(y).slice(2)));if(eqVista==='tabla')renderEqTabla();else if(eqVista==='anio')renderEqAnio();else renderEqCal();}
 
 // JUGADORES
 let editPId=null,viewPId=null,curPos=null;
@@ -4302,7 +4434,7 @@ function renderPad(){const q=(document.getElementById('pad-q')?.value||'').toLow
 }
 
 // NAVEGACIÓN
-function showPg(id,n){document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='';});document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));const _pgEl=document.getElementById('pg-'+id);if(_pgEl){_pgEl.classList.add('active');_pgEl.style.display='block';}if(n)n.classList.add('active');const titles={agenda:'Agenda Anual',padron:'Padrón Jugadores',entrenadores:'Padrón Entrenadores',convocatorias:'Convocatorias',capacitaciones:'Capacitaciones'};document.getElementById('tb-title').textContent=titles[id]||id;document.getElementById('tb-sub').textContent='ATAH Tucumán · 2026';const a=document.getElementById('tb-acts');if(id==='agenda'){a.innerHTML=`<button class="btn" onclick="exportarAgendaExcel()"><i class="ti ti-download"></i> Exportar</button><button class="btn btn-org" onclick="openNewEv()"><i class="ti ti-plus"></i> Nuevo evento</button>`;setTimeout(()=>agSetVista('tabla'),100);}else if(id==='padron'){a.innerHTML=`<button class="btn" onclick="exportarPadronExcel()"><i class="ti ti-download"></i> Exportar Excel</button><button class="btn btn-org" onclick="openNewP()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderPad();}else if(id==='entrenadores'){a.innerHTML=`<button class="btn btn-org" onclick="openNewEnt()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderEnts();}else if(id==='convocatorias'){a.innerHTML=`<button class="btn btn-org" onclick="openNuevaConv()"><i class="ti ti-plus"></i> Nueva convocatoria</button>`;renderConvs();}else a.innerHTML='';}
+function showPg(id,n){document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='';});document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));const _pgEl=document.getElementById('pg-'+id);if(_pgEl){_pgEl.classList.add('active');_pgEl.style.display='block';}if(n)n.classList.add('active');const titles={agenda:'Agenda Anual',padron:'Padrón Jugadores',entrenadores:'Padrón Entrenadores',convocatorias:'Convocatorias',capacitaciones:'Capacitaciones',torneos:'Torneos Argentinos'};document.getElementById('tb-title').textContent=titles[id]||id;document.getElementById('tb-sub').textContent='ATAH Tucumán · 2026';const a=document.getElementById('tb-acts');if(id==='agenda'){a.innerHTML=`<button class="btn" onclick="exportarAgendaExcel()"><i class="ti ti-download"></i> Exportar</button><button class="btn btn-org" onclick="openNewEv()"><i class="ti ti-plus"></i> Nuevo evento</button>`;setTimeout(()=>agSetVista('tabla'),100);}else if(id==='padron'){a.innerHTML=`<button class="btn" onclick="exportarPadronExcel()"><i class="ti ti-download"></i> Exportar Excel</button><button class="btn btn-org" onclick="openNewP()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderPad();}else if(id==='entrenadores'){a.innerHTML=`<button class="btn btn-org" onclick="openNewEnt()"><i class="ti ti-user-plus"></i> Agregar</button>`;renderEnts();}else if(id==='torneos'){a.innerHTML=torEsAdmin()?`<button class="btn btn-org" onclick="torNuevo()"><i class="ti ti-plus"></i> Nuevo torneo</button>`:'';renderTorneos();}else if(id==='convocatorias'){a.innerHTML=`<button class="btn btn-org" onclick="openNuevaConv()"><i class="ti ti-plus"></i> Nueva convocatoria</button>`;renderConvs();}else a.innerHTML='';}
 
 
 
@@ -4431,14 +4563,17 @@ async function dbLoad() {
   }
   try {
     const snap = await fbDb.collection('atah').get();
+    let torExiste=false;
     snap.forEach(doc => {
       const d = doc.data().value;
       const id = doc.id;
-      if(id==='EVS' && Array.isArray(d) && d.length){ EVS.length=0; d.forEach(e=>{EVS.push(e);if(e.id>=evIdC)evIdC=e.id+1;}); }
+      if(id==='EVS' && Array.isArray(d) && d.length){ EVS.length=0; d.forEach(e=>{if(!e.year)e.year=EV_ANIO_BASE;EVS.push(e);if(e.id>=evIdC)evIdC=e.id+1;}); }
       if(id==='PLS' && d && Object.keys(d).length){ Object.keys(d).forEach(k=>{PLS[k]=d[k];}); }
       if(id==='ASIST' && Array.isArray(d) && d.length){ ASIST.length=0; d.forEach(a=>ASIST.push(a)); }
       if(id==='ENTS' && Array.isArray(d) && d.length){ ENTS.length=0; d.forEach(e=>ENTS.push(e)); }
       if(id==='CONVS' && Array.isArray(d) && d.length){ CONVS.length=0; d.forEach(c=>CONVS.push(c)); }
+      if(id==='SEMILLAS' && Array.isArray(d)){ SEMILLAS.length=0; d.forEach(k=>SEMILLAS.push(k)); }
+      if(id==='TORNEOS' && Array.isArray(d)){ torExiste=true; TORNEOS.length=0; d.forEach(t=>TORNEOS.push(t)); }
       if(id==='USERS' && Array.isArray(d) && d.length){ USERS.length=0; d.forEach(u=>USERS.push(u)); }
     });
     DB_LOADED = true;
@@ -4447,12 +4582,15 @@ async function dbLoad() {
     console.log('✅ Firebase cargado');
     // Reparar IDs repetidos y ajustar contadores para que no se vuelvan a repetir
     dbRepararIds();
+    torInicializar(torExiste);
+    evAplicarSemillas();
     // Re-renderizar la página activa con los datos nuevos
     const activePage = document.querySelector('.page.active');
     if(activePage){
       if(activePage.id==='pg-agenda') agSetVista(agVista);
       else if(activePage.id==='pg-padron') renderPad();
       else if(activePage.id==='pg-entrenadores') renderEnts();
+      else if(activePage.id==='pg-torneos') renderTorneos();
     }
     if(curTeam){
       try{ if(eqVista==='tabla') renderEqTabla(); else renderEqCal(); }catch(e){ console.warn(e); }
@@ -4549,6 +4687,8 @@ async function dbSave() {
       fbSaveDoc('ASIST', ASIST),
       fbSaveDoc('ENTS', ENTS),
       fbSaveDoc('CONVS', CONVS),
+      fbSaveDoc('TORNEOS', TORNEOS),
+      fbSaveDoc('SEMILLAS', SEMILLAS),
     ]);
     if(seqAlIniciar > dbGuardadoSeq) dbGuardadoSeq = seqAlIniciar;
     dbAviso(null);
@@ -4614,8 +4754,477 @@ document.addEventListener('visibilitychange', function(){
     } catch(err){ console.warn('Sin Firebase:', err); }
   }
 })();
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── TORNEOS ARGENTINOS ───────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+const TOR_EQUIPOS=['mayor-f','sub19-f','sub16-f','sub14-f','mayor-m','sub19-m','sub16-m','sub14-m'];
+const TOR_DES={campeon:{t:'Campeón',i:'🏆'},ascendio:{t:'Ascendió',i:'↑'},mantuvo:{t:'Mantuvo la división',i:''},descendio:{t:'Descendió',i:'↓'},'':{t:'Sin dato',i:''}};
+const TOR_DIVS=['Campeonato (A)','Ascenso','Ascenso A','Ascenso B','B','C','D','Promocional','Súper Liga','Regional'];
+const TOR_MESES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+let torVista='matriz';
+const torF={tipo:'seleccion',rama:'todas',anio:'todos',q:''};
+let torEditId=null;
+
+function torEsAdmin(){return !!(curUser&&curUser.rol==='admin');}
+function torEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function torHoy(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function torTieneResultado(t){return !!(t.puesto||t.puestoTxt||t.desenlace);}
+function torEstado(t){
+  if(torTieneResultado(t)) return 'finalizado';
+  const hoy=torHoy();
+  if(t.desde&&hoy<t.desde) return 'por jugar';
+  if(t.desde&&hoy<=(t.hasta||t.desde)) return 'en curso';
+  if(!t.desde&&t.anio>=new Date().getFullYear()) return 'por jugar';
+  return 'finalizado';
+}
+function torFecha(d){if(!d)return '';const p=d.split('-');return (+p[2])+' '+TOR_MESES[(+p[1])-1];}
+function torRango(t){
+  if(!t.desde) return String(t.anio||'');
+  if(!t.hasta||t.hasta===t.desde) return torFecha(t.desde)+' '+t.desde.slice(0,4);
+  const a=t.desde.split('-'),b=t.hasta.split('-');
+  return (a[1]===b[1]?String(+a[2]):torFecha(t.desde))+'–'+torFecha(t.hasta)+' '+b[0];
+}
+function torDivCorta(d){
+  const x=(d||'').trim(); const l=x.toLowerCase();
+  if(!x) return '';
+  if(l.startsWith('campeonato')) return 'A';
+  if(l.startsWith('ascenso')){const r=x.slice(7).trim();return 'Asc.'+(r?' '+r.toUpperCase():'');}
+  if(l.startsWith('promoc')) return 'Prom.';
+  return x;
+}
+function torPuestoTxt(t){return t.puesto?t.puesto+'°':(t.puestoTxt||'');}
+function torNombreEquipo(t){const eq=TM[t.equipo]?.n||t.equipo||'';return t.tipo==='club'?(t.club||'Club')+' · '+eq:eq;}
+
+// ── Datos iniciales: se cargan una sola vez, cuando todavía no existe TORNEOS en Firebase
+function torSeed(){
+  const P=(fase,rival,gf,gc,pen)=>({fase,rival:rival||'',gf:gf==null?'':gf,gc:gc==null?'':gc,pen:pen||''});
+  const F=(nombre,url)=>({nombre,url});
+  const NOM='Campeonato Argentino de Selecciones';
+  let id=1;
+  const T=o=>{const t=Object.assign({id:id++,tipo:'seleccion',club:'',nombre:NOM,division:'Campeonato (A)',sede:'',desde:'',hasta:'',puesto:null,puestoTxt:'',desenlace:'',partidos:[],distinciones:[],fuentes:[],notas:'',verificado:false,evIds:[]},o);t.clave=torClave(t);return t;};
+  const may23=F('CAH · Buenos Aires es el nuevo Campeón Argentino (2023)','https://www.cahockey.org.ar/noticia/buenos-aires-es-el-nuevo-campeon-argentino/3497');
+  const may24=F('CAH · Buenos Aires y Mendoza campeones argentinos 2024','https://www.cahockey.org.ar/noticia/ante-un-estadio-colmado-buenos-aires-y-mendoza-se-coronaron-campeones-argentinos-2024-/3691');
+  const may24m=F('ESPN · Posiciones finales caballeros 2024','https://www.espn.com.mx/hockey-sobre-cesped/nota/_/id/14071550/hockey-sobre-cesped-los-resultados-masculinos-del-argentino-de-selecciones-mayores');
+  const may25=F('CAH · Se definen los campeones Gaby Pando 2025','https://www.cahockey.org.ar/noticia/se-definen-los-campeones-del-argentino-de-selecciones-mayores-gaby-pando-2025/3789');
+  const may25f=F('ESPN · Resultados damas 2025','https://espndeportes.espn.com/hockey-sobre-cesped/nota/_/id/15378081/fixture-resultados-torneo-argentino-ascenso-rosario-2025-femenino');
+  const may26=F('La Gaceta · Damas y caballeros aseguraron la permanencia','https://www.lagaceta.com.ar/nota/1158546/deportes/sabado-alivio-para-hockey-tucumano-caballeros-damas-aseguraron-permanencia-campeonato-argentino.html');
+  const may26b=F('El Eco de Tandil · Posiciones finales 2026','https://www.eleco.com.ar/deportes/las-damas-se-quedaron-con-el-tercer-puesto-en-cordoba');
+  const may26c=F('CAH · En marcha el Argentino de Selecciones 2026','https://www.cahockey.org.ar/noticia/en-marcha-el-argentino-de-selecciones-2026/3961');
+  const s19_24=F('CAH · Córdoba y Buenos Aires campeones Sub 19','https://www.cahockey.org.ar/noticia/cordoba-y-buenos-aires-campeones-argentinos-sub-19-/3704');
+  const s16_24=F('Club San Martín · Podio Sub 16 2024','https://clubatleticosanmartin.com.ar/contenido/2263/podio-para-tucuman-sub-16-en-damas-y-en-caballeros');
+  const s16_25=F('CAH · Córdoba campeón Sub 16 por partida doble','https://www.cahockey.org.ar/noticia/cordoba-campeon-argentino-sub-16-por-partida-doble/3818');
+  const s16_25b=F('Tendencia de Noticias · Primera fase Sub-16 2025','https://tendenciadenoticias.com.ar/deportes/los-naranjitas-arrasaron-en-primera-fase-y-estan-en-semifinales-del-argentino-sub-16');
+  const s14_24=F('CAH · Buenos Aires campeón Sub 14 2024','https://www.cahockey.org.ar/noticia/buenos-aires-campe%C3%93n-argentino-sub-14-2024/3694');
+  const s14_25=F('CAH · Buenos Aires campeón Sub 14 por partida doble','https://www.cahockey.org.ar/noticia/buenos-aires-campeon-argentino-sub-14-por-partida-doble/3825');
+  return [
+    // MAYORES
+    T({anio:2023,equipo:'mayor-f',sede:'Tucumán',desde:'2023-05-10',hasta:'2023-05-13',puesto:6,desenlace:'mantuvo',fuentes:[may23],verificado:true}),
+    T({anio:2023,equipo:'mayor-m',sede:'Tucumán',desde:'2023-05-10',hasta:'2023-05-13',puesto:5,desenlace:'mantuvo',fuentes:[may23],verificado:true}),
+    T({anio:2024,equipo:'mayor-f',sede:'Mendoza',desde:'2024-08-22',hasta:'2024-08-25',puesto:7,desenlace:'descendio',
+       distinciones:[{jugador:'Paula Santamarina',premio:'Goleadora del torneo (3 goles)'}],fuentes:[may24],verificado:true}),
+    T({anio:2024,equipo:'mayor-m',sede:'Mendoza',desde:'2024-08-22',hasta:'2024-08-25',puesto:5,desenlace:'mantuvo',
+       partidos:[P('5° puesto','Tandil',1,0)],fuentes:[may24,may24m],verificado:true}),
+    T({anio:2025,equipo:'mayor-f',division:'Ascenso',sede:'Rosario',desde:'2025-07-02',hasta:'2025-07-06',desenlace:'mantuvo',
+       partidos:[P('Zona C','Sudoeste de Buenos Aires',3,1),P('Semifinal del Ascenso','',null,null),P('Reubicación','Mar del Plata',1,2)],
+       fuentes:[may25,may25f],
+       notas:'Ganó su semifinal del Ascenso y perdió la reubicación 2-1 con Mar del Plata, así que siguió en el Ascenso. ESPN publica además una derrota 2-1 con Santa Fe que no coincide con eso: confirmar rival y resultado de la semifinal.'}),
+    T({anio:2025,equipo:'mayor-m',sede:'Rosario',desde:'2025-07-02',hasta:'2025-07-06',puestoTxt:'5° o 6°',desenlace:'mantuvo',
+       partidos:[P('5° puesto','San Juan',null,null)],fuentes:[may25],
+       notas:'Aseguró la permanencia y jugó por el 5° puesto con San Juan. Falta ese resultado.'}),
+    T({anio:2026,equipo:'mayor-f',division:'Ascenso',sede:'Córdoba',desde:'2026-10-14',hasta:'2026-10-18',puesto:13,desenlace:'mantuvo',
+       partidos:[P('Zona D','Chaco',3,0),P('Zona D','Santa Fe',3,3),P('Zona D','Entre Ríos',1,1),P('Permanencia','Catamarca',5,1)],
+       distinciones:[{jugador:'Paula Santamarina',premio:'Máxima goleadora del campeonato'}],
+       fuentes:[may26,may26b,may26c],
+       notas:'Invicta en la zona (5 puntos) pero tercera por diferencia de gol, detrás de Santa Fe y Entre Ríos, así que no jugó por el ascenso. Ganó la permanencia: sigue en el Ascenso en 2027. Puesto 13 de 16 en la tabla general.',verificado:true}),
+    T({anio:2026,equipo:'mayor-m',sede:'Córdoba',desde:'2026-10-14',hasta:'2026-10-18',puesto:6,desenlace:'mantuvo',
+       partidos:[P('Zona A','Buenos Aires',null,null),P('Zona A','Tandil',1,2),P('Zona A','Litoral',null,null),P('Reclasificación 5° a 8°','San Juan',2,2,'4-3'),P('5° puesto','Tandil',3,5)],
+       fuentes:[may26,may26b,may26c],
+       notas:'Mantuvo la categoría para 2027. Faltan los resultados ante Buenos Aires (derrota) y Litoral.',verificado:true}),
+    // SUB-19
+    T({anio:2024,equipo:'sub19-f',sede:'Tucumán',desde:'2024-10-17',hasta:'2024-10-20',puesto:8,desenlace:'descendio',fuentes:[s19_24],verificado:true}),
+    T({anio:2024,equipo:'sub19-m',sede:'Tucumán',desde:'2024-10-17',hasta:'2024-10-20',puesto:6,desenlace:'mantuvo',fuentes:[s19_24],
+       notas:'Tucumán presentó dos equipos: el B terminó 8°.',verificado:true}),
+    T({anio:2025,equipo:'sub19-f',division:'Ascenso A',sede:'Tucumán',desde:'2025-10-22',hasta:'2025-10-25',desenlace:'mantuvo',
+       fuentes:[F('Cuarto · Salta campeón del Ascenso A','https://www.cuarto.com.ar/hockey-femenino-salta-conquisto-el-titulo-del-campeonato-sub-19-de-ascenso-a/')],
+       notas:'Llegó a semifinales y no ascendió. Campeón: Salta; subcampeón: San Juan. Falta el puesto final.'}),
+    T({anio:2025,equipo:'sub19-m',sede:'Mendoza',desde:'2025-10-22',hasta:'2025-10-25',puesto:4,desenlace:'mantuvo',
+       partidos:[P('Zona','Buenos Aires',0,9),P('Cuartos de final','Córdoba',1,0),P('Semifinal','Litoral',1,1,'1-4'),P('3° puesto','Buenos Aires',null,null)],
+       fuentes:[F('La Gaceta · Semifinal Sub-19','https://www.lagaceta.com.ar/nota/1109503/deportes/naranjitas-cayeron-penales-van-tercer-puesto-argentino-selecciones-sub19.html'),F('MDZ Hockey · Posiciones finales','https://mdzhockey.com.ar/los-pibes-son-de-oro/')],verificado:true}),
+    T({anio:2026,equipo:'sub19-f',division:'Ascenso A',sede:'Monte Hermoso',desde:'2026-09-17',hasta:'2026-09-20',puesto:1,desenlace:'ascendio',
+       partidos:[P('Zona B','Neuquén',2,1),P('Zona B','Bahía Blanca',null,null),P('Zona B','Santiago del Estero',null,null),P('Cruce por el ascenso','Entre Ríos',3,0),P('Final','Mar del Plata',4,2)],
+       distinciones:[{jugador:'Julieta Nadra',premio:'Entre las goleadoras (5 goles)'}],
+       fuentes:[F('La Gaceta · Tucumán campeón y de primera','https://www.lagaceta.com.ar/nota/1154838/deportes/tucuman-campeon-primera-naranjitas-se-consagraron-campeonato-argentino-ascenso.html')],
+       notas:'Campeón invicto: ganó los tres partidos de zona (faltan dos resultados). Juega en la A en 2027. Fechas a confirmar.'}),
+    T({anio:2026,equipo:'sub19-m',sede:'Rosario',desde:'2026-09-17',hasta:'2026-09-20',puestoTxt:'3° o 4°',
+       partidos:[P('Semifinal','Mendoza',2,5)],
+       fuentes:[F('617 News · Mendoza en el Sub 19','https://617.news/mendoza-sub-19-hockey-argentino-selecciones-rosario/')],
+       notas:'Semifinalista. Falta el resultado del partido por el 3° puesto.'}),
+    // SUB-16
+    T({anio:2024,equipo:'sub16-f',sede:'Buenos Aires',desde:'2024-08-15',hasta:'2024-08-18',puesto:2,desenlace:'mantuvo',
+       partidos:[P('Zona B','Salta',1,1),P('Zona B','Mendoza',2,2),P('Zona B','San Juan',2,0),P('Semifinal','Buenos Aires',2,1),P('Final','Córdoba',0,2)],
+       distinciones:[{jugador:'Valentina Pérez',premio:'Goleadora del torneo (4 goles)'}],
+       fuentes:[s16_24,F('La Gaceta · Finalistas Sub-16','https://www.lagaceta.com.ar/nota/1047828/deportes/naranjitas-dieron-golpe-son-finalistas-argentino-selecciones-sub16-hockey.html')],verificado:true}),
+    T({anio:2024,equipo:'sub16-m',sede:'Buenos Aires',desde:'2024-08-15',hasta:'2024-08-18',puesto:3,desenlace:'mantuvo',
+       partidos:[P('Zona D','Chile',2,0),P('Zona D','Tandil',1,2),P('Semifinal','Buenos Aires',2,7),P('3° puesto','Córdoba',2,1)],
+       fuentes:[s16_24],verificado:true}),
+    T({anio:2025,equipo:'sub16-f',sede:'Córdoba',puesto:5,desenlace:'mantuvo',
+       partidos:[P('Zona','San Juan',0,0),P('Zona','Buenos Aires',0,1),P('Zona','Entre Ríos',2,0)],
+       distinciones:[{jugador:'Sofía Odstrcil',premio:'Mejor arquera del torneo'}],
+       fuentes:[s16_25,s16_25b],notas:'Fechas a cargar.',verificado:true}),
+    T({anio:2025,equipo:'sub16-m',sede:'Córdoba',puesto:4,desenlace:'mantuvo',
+       partidos:[P('Zona','Litoral',4,0),P('Semifinal','',null,null),P('3° puesto','Litoral',1,4)],
+       distinciones:[{jugador:'Luca Dulor Marchesi',premio:'Mejor jugador y goleador del torneo (8 goles)'}],
+       fuentes:[s16_25,s16_25b],notas:'Ganó los tres partidos de zona (faltan dos resultados). Falta el rival y el resultado de la semifinal. Fechas a cargar.',verificado:true}),
+    T({anio:2026,equipo:'sub16-f',sede:'Rosario',desde:'2026-09-03',hasta:'2026-09-06',
+       partidos:[P('Zona','Córdoba',1,3)],
+       notas:'Falta el resto de los resultados y el puesto final. Cargar la fuente.'}),
+    T({anio:2026,equipo:'sub16-m',sede:'Rosario',desde:'2026-09-03',hasta:'2026-09-06',puestoTxt:'5° o 6°',
+       partidos:[P('Zona','Neuquén',2,3),P('Por posiciones (5° a 8°)','Tandil',2,2,'2-1')],
+       notas:'Jugó por el 5° puesto; falta ese resultado. Cargar la fuente.'}),
+    // SUB-14
+    T({anio:2024,equipo:'sub14-f',sede:'Tandil',puesto:8,desenlace:'descendio',
+       distinciones:[{jugador:'Sofía Odstrcil',premio:'Mejor arquera de la final'}],fuentes:[s14_24],
+       notas:'Descenso deducido: en 2025 jugó el Sub-14 B. Fechas a cargar.',verificado:true}),
+    T({anio:2024,equipo:'sub14-m',sede:'Tandil',puesto:4,desenlace:'mantuvo',
+       partidos:[P('3° puesto','Mendoza',1,9)],fuentes:[s14_24],notas:'Fechas a cargar.',verificado:true}),
+    T({anio:2025,equipo:'sub14-f',division:'B',sede:'Mar del Plata',desde:'2025-09-11',hasta:'2025-09-14',puesto:1,desenlace:'ascendio',fuentes:[s14_25],
+       notas:'Campeón del Sub-14 B. En 2026 jugó el A.',verificado:true}),
+    T({anio:2025,equipo:'sub14-m',sede:'Mendoza',desde:'2025-09-11',hasta:'2025-09-14',puesto:9,
+       distinciones:[{jugador:'Bautista Dulor Marchesi',premio:'Mejor jugador del torneo'}],fuentes:[s14_25],verificado:true}),
+    T({anio:2026,equipo:'sub14-f',sede:'Buenos Aires',desde:'2026-08-13',hasta:'2026-08-16',
+       fuentes:[F('CAH · En marcha el Argentino Sub 14','https://www.cahockey.org.ar/noticia/en-marcha-el-argentino-de-selecciones-sub-14/3903')],
+       notas:'Zona B con Mendoza, Salta y Noroeste. Faltan resultados y puesto final.'}),
+    // ── 2027 · Calendario oficial CAH (Circular 126-2026, 23/10/2026). Sedes a designar.
+    ...torSeed2027(T,F)
+  ];
+}
+
+function torSeed2027(T,F){
+  const circ=F('CAH · Circular 126-2026: Calendario Campeonatos CAH 2027','https://www.cahockey.org.ar/circulares');
+  const nota='Fechas según el calendario oficial 2027 de la CAH. Sede a designar.';
+  const S=(equipo,division,desde,hasta,extra)=>T(Object.assign({anio:2027,equipo,division,sede:'A designar',desde,hasta,fuentes:[circ],notas:nota,verificado:true},extra||{}));
+  const C=(equipo,nombre,division,desde,hasta,extra)=>T(Object.assign({anio:2027,tipo:'club',club:'Clubes tucumanos (a definir)',equipo,nombre,division,sede:'A designar',desde,hasta,fuentes:[circ],
+    notas:'Fechas según el calendario oficial 2027 de la CAH. Completar qué clubes tucumanos clasificaron y la sede.',verificado:false},extra||{}));
+  return [
+    S('sub19-f','Campeonato (A)','2027-04-07','2027-04-10',{notas:nota+' Primer año en la A tras el ascenso de 2026.'}),
+    S('sub19-m','Campeonato (A)','2027-04-07','2027-04-10'),
+    S('mayor-f','Ascenso','2027-05-12','2027-05-16'),
+    S('mayor-m','Campeonato (A)','2027-05-12','2027-05-16'),
+    S('sub16-f','Campeonato (A)','2027-08-12','2027-08-15'),
+    S('sub16-m','Campeonato (A)','2027-08-12','2027-08-15'),
+    S('sub14-f','Campeonato (A)','2027-09-09','2027-09-12'),
+    S('sub14-m','Campeonato (A)','2027-09-09','2027-09-12',{verificado:false,notas:nota+' Confirmar división: falta el resultado de 2026.'}),
+    C('mayor-f','Regional de Clubes NOA','A','2027-04-29','2027-05-02'),
+    C('mayor-m','Regional de Clubes NOA','A','2027-04-29','2027-05-02'),
+    C('mayor-f','Súper Liga · Fase 1','Súper Liga','2027-06-09','2027-06-13'),
+    C('mayor-m','Súper Liga · Fase 1','Súper Liga','2027-06-09','2027-06-13'),
+    C('sub16-f','Argentino de Clubes Sub-16','A','2027-09-30','2027-10-03',{notas:'Fechas según el calendario oficial 2027 de la CAH. En las mismas fechas se juegan los Regionales Sub-16 NOA (A a E). Completar qué clubes tucumanos clasificaron y la sede.'}),
+    C('sub16-m','Argentino de Clubes Sub-16','A','2027-09-30','2027-10-03'),
+    C('sub19-f','Argentino de Clubes Sub-19','A','2027-10-28','2027-10-31',{notas:'Fechas según el calendario oficial 2027 de la CAH. En las mismas fechas se juegan los Regionales Sub-19 NOA (A a C). Completar qué clubes tucumanos clasificaron y la sede.'}),
+    C('sub19-m','Argentino de Clubes Sub-19','','2027-10-28','2027-10-31'),
+    C('sub14-f','Argentino de Clubes Sub-14','A','2027-10-28','2027-10-31',{notas:'Fechas según el calendario oficial 2027 de la CAH. En las mismas fechas se juegan los Regionales Sub-14 NOA (A a E). Completar qué clubes tucumanos clasificaron y la sede.'})
+  ];
+}
+function torClave(t){return [t.tipo||'seleccion',t.anio,t.equipo,excelNorm(t.club||''),excelNorm(t.nombre||'')].join('|');}
+
+// Siembra los datos la primera vez y ajusta el contador de IDs
+function torInicializar(existeDoc){
+  const maxT=TORNEOS.reduce((m,t)=>Math.max(m,Number(t.id)||0),0);
+  if(maxT>=torIdC) torIdC=maxT;
+  // Torneos de versiones anteriores sin clave: se les asigna para poder reconocerlos
+  TORNEOS.forEach(t=>{ if(!t.clave) t.clave=torClave(t); });
+  const claves=new Set(TORNEOS.map(t=>t.clave));
+  const nuevos=torSeed().filter(t=>!claves.has(t.clave)); // nunca duplica ni revive uno eliminado
+  nuevos.forEach(t=>{ t.id=++torIdC; TORNEOS.push(t); torSincronizarAgenda(t); });
+  if(nuevos.length){ dbAutoSave(); console.log('🏆 Torneos agregados:',nuevos.length); }
+}
+
+// ── Agenda: los torneos por jugar o en curso del año de la agenda aparecen como eventos "Torneo"
+function torTramos(t){
+  if(!t.desde) return [];
+  const a=new Date(t.desde+'T12:00:00'), b=new Date((t.hasta||t.desde)+'T12:00:00');
+  const tr={};
+  for(let d=new Date(a); d<=b; d.setDate(d.getDate()+1)){
+    const k=d.getFullYear()+'-'+d.getMonth();
+    (tr[k]=tr[k]||{year:d.getFullYear(),month:d.getMonth(),days:[]}).days.push(d.getDate());
+  }
+  return Object.values(tr);
+}
+function torSincronizarAgenda(t){
+  const vinc=EVS.filter(e=>e.torneoId===t.id);
+  const debe=t.tipo==='seleccion'&&t.equipo&&t.desde&&torEstado(t)!=='finalizado';
+  if(!debe){ t.evIds=vinc.map(e=>e.id); return; } // los torneos ya jugados no tocan la agenda
+  const tramos=torTramos(t);
+  const d=torDivCorta(t.division);
+  const lugar=(t.sede||'Por confirmar')+' · Argentino'+(d&&d!=='A'?' '+d:'');
+  tramos.forEach((tr,i)=>{
+    let ev=vinc[i];
+    if(!ev){
+      // Si ya hay un evento "Torneo" cargado a mano para esa selección y esos días, se vincula en vez de duplicar
+      ev=EVS.find(e=>!e.torneoId&&e.type==='torneo'&&evAnio(e)===tr.year&&e.month===tr.month&&(e.sels||[]).includes(t.equipo)&&(e.days||[]).some(x=>tr.days.includes(x)));
+      if(ev) ev.torneoId=t.id;
+      else { EVS.push({id:++evIdC,year:tr.year,month:tr.month,days:tr.days,horaI:'08:00',horaF:'20:00',type:'torneo',sels:[t.equipo],lugar,done:false,torneoId:t.id}); return; }
+    }
+    ev.year=tr.year; ev.month=tr.month; ev.days=tr.days; ev.lugar=lugar;
+    if(!(ev.sels||[]).includes(t.equipo)) ev.sels=[...(ev.sels||[]),t.equipo];
+  });
+  vinc.slice(tramos.length).forEach(e=>{const i=EVS.indexOf(e); if(i>-1) EVS.splice(i,1);});
+  t.evIds=EVS.filter(e=>e.torneoId===t.id).map(e=>e.id);
+}
+
+// ── Página
+function torSetVista(v){torVista=v;renderTorneos();}
+function torSetFiltro(k,v){torF[k]=v;if(k==='tipo')torVista=v==='club'?'lista':'matriz';renderTorneos();}
+function torFiltrados(){
+  const q=excelNorm(torF.q||'');
+  return TORNEOS.filter(t=>{
+    if(t.eliminado) return false;
+    if((t.tipo||'seleccion')!==torF.tipo) return false;
+    if(torF.rama!=='todas'&&TM[t.equipo]?.g!==torF.rama) return false;
+    if(torF.anio!=='todos'&&String(t.anio)!==String(torF.anio)) return false;
+    if(q){const txt=excelNorm([t.nombre,t.sede,t.club,t.division,TM[t.equipo]?.n,...(t.partidos||[]).map(p=>p.rival)].join(' '));if(!txt.includes(q))return false;}
+    return true;
+  });
+}
+function renderTorneos(){
+  const cont=document.getElementById('tor-content'); if(!cont) return;
+  const esClub=torF.tipo==='club';
+  if(esClub) torVista='lista';
+  const $=id=>document.getElementById(id);
+  $('torv-matriz').classList.toggle('on',torVista==='matriz');
+  $('torv-lista').classList.toggle('on',torVista==='lista');
+  $('torv-matriz').style.display=esClub?'none':'';
+  ['seleccion','club'].forEach(x=>$('tort-'+x).classList.toggle('on',torF.tipo===x));
+  ['todas','F','M'].forEach(x=>$('torr-'+x).classList.toggle('on',torF.rama===x));
+  const anios=[...new Set(TORNEOS.filter(t=>!t.eliminado).map(t=>t.anio))].sort((a,b)=>b-a);
+  $('tor-anio').innerHTML='<option value="todos">Todos los años</option>'+anios.map(a=>`<option value="${a}" ${String(torF.anio)===String(a)?'selected':''}>${a}</option>`).join('');
+  $('tor-anio-grp').style.display=torVista==='lista'?'':'none';
+  $('tor-q-wrap').style.display=torVista==='lista'?'':'none';
+  $('tor-ley').innerHTML=torVista==='matriz'
+    ?'<span><i class="sw" style="background:#FFF4D6;border-color:#E9C46A"></i>Campeón</span><span><i class="sw" style="background:#E6F4EA;border-color:#9FD3AE"></i>Ascendió</span><span><i class="sw" style="background:#FCEBEB;border-color:#F2B8B5"></i>Descendió</span><span><i class="sw" style="background:#fff;border:1px dashed #E87B1E"></i>Por jugar</span><span><i class="sw" style="background:#E87B1E;border-radius:50%;width:8px;height:8px;border:none"></i>Datos a confirmar</span>'
+    :'';
+  cont.innerHTML=torVista==='matriz'?torHtmlMatriz():torHtmlLista();
+}
+function torCeldaHtml(t){
+  const est=torEstado(t), fut=est!=='finalizado';
+  const camp=t.puesto===1&&t.desenlace!=='descendio';
+  const cls='tor-cell'+(fut?' fut':' d-'+(camp?'campeon':(t.desenlace||'')));
+  let pos;
+  if(fut) pos=`<div class="pos">${est==='en curso'?'En curso':torEsc(torFecha(t.desde)||'Por jugar')}</div>`;
+  else { const p=torPuestoTxt(t); const alt=t.desenlace==='mantuvo'?'Mantuvo':(t.desenlace?TOR_DES[t.desenlace].t:'Sin dato'); pos=p?`<div class="pos${t.puesto?'':' txt'}">${torEsc(p)}</div>`:`<div class="pos txt">${torEsc(alt)}</div>`; }
+  const flecha=t.desenlace==='ascendio'?' ↑':t.desenlace==='descendio'?' ↓':'';
+  const lbl=`${TM[t.equipo]?.n||''} ${t.anio}: ${torPuestoTxt(t)||est}, ${t.division||''}`;
+  return `<div class="${cls}" tabindex="0" role="button" aria-label="${torEsc(lbl)}" onclick="torAbrir(${t.id})" onkeydown="if(event.key==='Enter')torAbrir(${t.id})">${t.verificado?'':'<span class="nv" title="Datos a confirmar"></span>'}${pos}<div class="dv">${torEsc(torDivCorta(t.division))}${flecha}</div></div>`;
+}
+function torHtmlMatriz(){
+  const lista=torFiltrados();
+  const vivos=TORNEOS.filter(t=>!t.eliminado);
+  const anioMin=Math.min(2023,...vivos.map(t=>t.anio));
+  const anioMax=Math.max(new Date().getFullYear(),...vivos.map(t=>t.anio));
+  const anios=[];for(let a=anioMin;a<=anioMax;a++)anios.push(a);
+  const eqs=TOR_EQUIPOS.filter(e=>torF.rama==='todas'||TM[e]?.g===torF.rama);
+  const admin=torEsAdmin();
+  let h='<div class="tor-wrap"><table class="tor-mx"><thead><tr><th scope="col">Selección</th>'+anios.map(a=>`<th scope="col">${a}</th>`).join('')+'</tr></thead><tbody>';
+  eqs.forEach(e=>{
+    h+=`<tr><td class="tor-eq"><span class="g" style="background:${TM[e]?.g==='F'?'#E87B1E':'#1A2B5C'}"></span>${torEsc(TM[e]?.n||e)}</td>`;
+    anios.forEach(a=>{
+      const ts=lista.filter(t=>t.equipo===e&&t.anio===a).sort((x,y)=>(x.desde||'').localeCompare(y.desde||''));
+      h+='<td>'+(ts.length?ts.map(torCeldaHtml).join('')
+        :(admin?`<div class="tor-empty add" tabindex="0" role="button" aria-label="Cargar torneo ${torEsc(TM[e]?.n)} ${a}" onclick="torNuevo('${e}',${a})" onkeydown="if(event.key==='Enter')torNuevo('${e}',${a})">+</div>`:'<div class="tor-empty">—</div>'))+'</td>';
+    });
+    h+='</tr>';
+  });
+  return h+'</tbody></table></div>';
+}
+function torHtmlLista(){
+  const lista=torFiltrados().sort((a,b)=>(b.desde||String(b.anio)).localeCompare(a.desde||String(a.anio)));
+  if(!lista.length){
+    const msg=torF.tipo==='club'?'Todavía no hay torneos de clubes cargados.':'No hay torneos con estos filtros.';
+    return `<div class="tor-note">${msg}${torEsAdmin()?' Usá «Nuevo torneo» para cargar uno.':''}</div>`;
+  }
+  return '<div class="tor-list">'+lista.map(t=>{
+    const est=torEstado(t), g=TM[t.equipo]?.g||'';
+    const res=est!=='finalizado'?`<span style="color:#B85E0E">${est==='en curso'?'En curso':'Por jugar'}</span>`
+      :`${torEsc(torPuestoTxt(t)||'Sin dato')}${t.desenlace&&t.desenlace!=='mantuvo'?' · '+torEsc(TOR_DES[t.desenlace].t):''}`;
+    const fecha=t.desde?torEsc(torRango(t).replace(' '+t.desde.slice(0,4),'')):'';
+    return `<div class="tor-row" tabindex="0" role="button" onclick="torAbrir(${t.id})" onkeydown="if(event.key==='Enter')torAbrir(${t.id})">
+      <div class="f"><b>${t.anio}</b>${fecha}</div>
+      <div><div class="n"><span class="tor-chip ${g}">${torEsc(torNombreEquipo(t))}</span>${torEsc(t.nombre||'Torneo')}</div>
+      <div class="m">${torEsc([t.division,t.sede].filter(Boolean).join(' · '))}${t.verificado?'':' <span class="tor-chip nv">A confirmar</span>'}</div></div>
+      <div class="r">${res}</div></div>`;
+  }).join('')+'</div>';
+}
+
+// ── Ficha
+function torAbrir(id){
+  const t=TORNEOS.find(x=>x.id===id); if(!t||t.eliminado) return;
+  const est=torEstado(t), des=TOR_DES[t.desenlace||'']||TOR_DES[''];
+  document.getElementById('torf-title').textContent=torNombreEquipo(t)+' · '+t.anio;
+  let h=`<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;">${torEsc(t.nombre||'Torneo')}
+    ${t.verificado?'<span class="tor-chip ok">Verificado</span>':'<span class="tor-chip nv">A confirmar</span>'}</div>
+    <div class="tor-kv"><div><span>División</span>${torEsc(t.division||'—')}</div><div><span>Sede</span>${torEsc(t.sede||'—')}</div>
+    <div><span>Fechas</span>${torEsc(t.desde?torRango(t):'Sin cargar')}</div><div><span>Estado</span>${torEsc(est.charAt(0).toUpperCase()+est.slice(1))}</div></div>`;
+  if(est==='finalizado'){
+    h+=`<div class="tor-res"><div class="big">${torEsc(torPuestoTxt(t)||'—')}</div><div style="font-size:12px;color:var(--color-text-secondary)">Puesto final<br><b style="color:var(--color-text-primary)">${des.i?des.i+' ':''}${torEsc(des.t)}</b></div></div>`;
+  }
+  if(t.partidos&&t.partidos.length){
+    h+='<div class="tor-sec">Partidos</div><table class="tor-pt">'+t.partidos.map(p=>{
+      let r='X', sc='Sin dato';
+      if(p.gf!==''&&p.gc!==''&&p.gf!=null&&p.gc!=null){
+        const gf=+p.gf, gc=+p.gc;
+        if(gf>gc) r='W'; else if(gf<gc) r='L';
+        else if(p.pen){const [a,b]=String(p.pen).split('-').map(Number); r=a>b?'W':a<b?'L':'D';} else r='D';
+        sc=`${gf}-${gc}${p.pen?' ('+torEsc(p.pen)+' pen.)':''}`;
+      }
+      return `<tr><td style="color:var(--color-text-tertiary);width:36%">${torEsc(p.fase)}</td><td>${torEsc(p.rival||'Rival sin dato')}</td><td class="sc ${r}">${sc}</td></tr>`;
+    }).join('')+'</table>';
+  }
+  if(t.distinciones&&t.distinciones.length)
+    h+='<div class="tor-sec">Distinciones</div>'+t.distinciones.map(d=>`<div style="font-size:12px;margin:3px 0;">🏅 <b>${torEsc(d.jugador)}</b> · ${torEsc(d.premio)}</div>`).join('');
+  if(t.notas) h+=`<div class="tor-note">${torEsc(t.notas)}</div>`;
+  if(t.fuentes&&t.fuentes.length)
+    h+='<div class="tor-sec">Fuentes</div><div class="tor-src">'+t.fuentes.map(f=>/^https?:\/\//i.test(f.url||'')
+      ?`<a href="${torEsc(f.url)}" target="_blank" rel="noopener noreferrer"><i class="ti ti-external-link"></i> ${torEsc(f.nombre||f.url)}</a>`
+      :`<div style="font-size:12px">${torEsc(f.nombre||'')}</div>`).join('')+'</div>';
+  if(EVS.some(e=>e.torneoId===t.id))
+    h+='<div class="tor-note" style="background:#EEF3FA;border-left-color:#1A2B5C">📅 Está en la agenda como evento «Torneo»: desde ahí podés armar la convocatoria.</div>';
+  if(torEsAdmin())
+    h+=`<div class="tor-acts">
+      <button class="btn" style="color:#B42318" onclick="torEliminar(${t.id})"><i class="ti ti-trash"></i> Eliminar</button>
+      <button class="btn" onclick="torToggleVerif(${t.id})"><i class="ti ti-${t.verificado?'alert-circle':'circle-check'}"></i> ${t.verificado?'Marcar a confirmar':'Marcar verificado'}</button>
+      <button class="btn btn-org" onclick="torEditar(${t.id})"><i class="ti ti-pencil"></i> Editar</button></div>`;
+  document.getElementById('torf-body').innerHTML=h;
+  document.getElementById('m-tor-ficha').classList.add('open');
+}
+function torToggleVerif(id){const t=TORNEOS.find(x=>x.id===id);if(!t||!torEsAdmin())return;t.verificado=!t.verificado;dbAutoSave();renderTorneos();torAbrir(id);}
+function torEliminar(id){
+  const t=TORNEOS.find(x=>x.id===id); if(!t||!torEsAdmin()) return;
+  const enAgenda=EVS.some(e=>e.torneoId===id);
+  showConfirm('¿Eliminar torneo?',`Vas a eliminar <b>${torEsc(torNombreEquipo(t))} · ${t.anio}</b>.${enAgenda?'<br><br>También se va a quitar de la agenda.':''}`,'Sí, eliminar',()=>{
+    for(let i=EVS.length-1;i>=0;i--) if(EVS[i].torneoId===id) EVS.splice(i,1);
+    t.eliminado=true; t.evIds=[]; // queda marcado para que la carga de datos oficiales no lo vuelva a agregar
+    document.getElementById('m-tor-ficha').classList.remove('open');
+    dbAutoSave(); renderTorneos();
+  });
+}
+
+// ── Formulario (solo Asesor)
+function torRowHtml(tipo,o){
+  o=o||{};
+  const del='<button type="button" aria-label="Quitar fila" onclick="this.closest(\'.tor-prow\').remove()">×</button>';
+  if(tipo==='p') return `<div class="tor-prow p"><input class="finput" list="torf-fases" placeholder="Instancia" aria-label="Instancia" data-k="fase" value="${torEsc(o.fase)}"/><input class="finput" placeholder="Rival" aria-label="Rival" data-k="rival" value="${torEsc(o.rival)}"/><input class="finput" type="number" min="0" placeholder="GF" aria-label="Goles a favor" data-k="gf" value="${torEsc(o.gf)}"/><input class="finput" type="number" min="0" placeholder="GC" aria-label="Goles en contra" data-k="gc" value="${torEsc(o.gc)}"/><input class="finput pen" placeholder="Pen." aria-label="Penales" data-k="pen" value="${torEsc(o.pen)}"/>${del}</div>`;
+  if(tipo==='d') return `<div class="tor-prow d"><input class="finput" placeholder="Jugador/a" aria-label="Jugador/a" data-k="jugador" value="${torEsc(o.jugador)}"/><input class="finput" placeholder="Premio" aria-label="Premio" data-k="premio" value="${torEsc(o.premio)}"/>${del}</div>`;
+  return `<div class="tor-prow s"><input class="finput" placeholder="Nombre de la fuente" aria-label="Nombre de la fuente" data-k="nombre" value="${torEsc(o.nombre)}"/><input class="finput" placeholder="https://" aria-label="Enlace" data-k="url" value="${torEsc(o.url)}"/>${del}</div>`;
+}
+function torAddRow(tipo){document.getElementById({p:'torf-partidos',d:'torf-dist',s:'torf-fuentes'}[tipo]).insertAdjacentHTML('beforeend',torRowHtml(tipo));}
+function torLeerRows(id){return [...document.querySelectorAll('#'+id+' .tor-prow')].map(r=>{const o={};r.querySelectorAll('[data-k]').forEach(i=>o[i.dataset.k]=i.value.trim());return o;});}
+function torFormTipo(){
+  const club=document.getElementById('torf-tipo').value==='club';
+  document.getElementById('torf-club-wrap').style.display=club?'':'none';
+  document.getElementById('torf-eq-lbl').textContent=club?'Categoría y rama':'Selección';
+}
+function torAbrirForm(t){
+  torEditId=t?t.id:null;
+  document.getElementById('torform-title').textContent=t?'Editar torneo':'Nuevo torneo';
+  document.getElementById('torf-equipo').innerHTML=ATEAMS.filter(e=>e!=='arqueros').map(e=>`<option value="${e}">${torEsc(TM[e].n)}</option>`).join('');
+  document.getElementById('torf-divs').innerHTML=TOR_DIVS.map(d=>`<option value="${torEsc(d)}">`).join('');
+  document.getElementById('torf-clubes').innerHTML=[...new Set(TORNEOS.map(x=>x.club).filter(Boolean))].map(c=>`<option value="${torEsc(c)}">`).join('');
+  const v=t||{tipo:torF.tipo,equipo:'mayor-f',anio:new Date().getFullYear(),nombre:torF.tipo==='club'?'':'Campeonato Argentino de Selecciones',division:torF.tipo==='club'?'':'Campeonato (A)'};
+  const set=(id,val)=>{document.getElementById(id).value=val==null?'':val;};
+  set('torf-tipo',v.tipo||'seleccion');set('torf-equipo',v.equipo);set('torf-club',v.club);set('torf-anio',v.anio);
+  set('torf-division',v.division);set('torf-nombre',v.nombre);set('torf-sede',v.sede);set('torf-desde',v.desde);set('torf-hasta',v.hasta);
+  set('torf-puesto',v.puesto);set('torf-puestotxt',v.puestoTxt);set('torf-desenlace',v.desenlace||'');set('torf-notas',v.notas);
+  document.getElementById('torf-verif').checked=!!v.verificado;
+  document.getElementById('torf-partidos').innerHTML=(v.partidos||[]).map(p=>torRowHtml('p',p)).join('');
+  document.getElementById('torf-dist').innerHTML=(v.distinciones||[]).map(d=>torRowHtml('d',d)).join('');
+  document.getElementById('torf-fuentes').innerHTML=(v.fuentes||[]).map(s=>torRowHtml('s',s)).join('');
+  torFormTipo();
+  document.getElementById('m-tor-ficha').classList.remove('open');
+  document.getElementById('m-tor-form').classList.add('open');
+}
+function torNuevo(equipo,anio){
+  if(!torEsAdmin()) return;
+  torAbrirForm(null);
+  if(equipo){document.getElementById('torf-tipo').value='seleccion';document.getElementById('torf-equipo').value=equipo;torFormTipo();}
+  if(anio) document.getElementById('torf-anio').value=anio;
+}
+function torEditar(id){const t=TORNEOS.find(x=>x.id===id);if(t&&torEsAdmin())torAbrirForm(t);}
+function torGuardar(){
+  if(!torEsAdmin()) return;
+  const g=id=>document.getElementById(id).value.trim();
+  const tipo=g('torf-tipo'), anio=parseInt(g('torf-anio'));
+  if(!anio){alert('Completá el año del torneo.');return;}
+  if(tipo==='club'&&!g('torf-club')){alert('Completá el nombre del club.');return;}
+  const desde=g('torf-desde'), hasta=g('torf-hasta');
+  if(desde&&hasta&&hasta<desde){alert('La fecha «Hasta» es anterior a «Desde».');return;}
+  if(desde&&parseInt(desde.slice(0,4))!==anio){alert('El año no coincide con la fecha de inicio.');return;}
+  const puesto=parseInt(g('torf-puesto'));
+  const datos={tipo,equipo:g('torf-equipo'),club:tipo==='club'?g('torf-club'):'',anio,division:g('torf-division'),nombre:g('torf-nombre'),
+    sede:g('torf-sede'),desde,hasta:hasta||desde,puesto:isNaN(puesto)?null:puesto,puestoTxt:g('torf-puestotxt'),desenlace:g('torf-desenlace'),
+    partidos:torLeerRows('torf-partidos').filter(p=>p.fase||p.rival||p.gf||p.gc),
+    distinciones:torLeerRows('torf-dist').filter(d=>d.jugador||d.premio),
+    fuentes:torLeerRows('torf-fuentes').filter(s=>s.nombre||s.url),
+    notas:g('torf-notas'),verificado:document.getElementById('torf-verif').checked};
+  let t;
+  if(torEditId){t=TORNEOS.find(x=>x.id===torEditId);Object.assign(t,datos);}
+  else{t={id:++torIdC,evIds:[],...datos};t.clave=torClave(t)+'|'+t.id;TORNEOS.push(t);}
+  torSincronizarAgenda(t);
+  dbAutoSave();
+  document.getElementById('m-tor-form').classList.remove('open');
+  renderTorneos();
+  torAbrir(t.id);
+}
 </script>
 
+
+<!-- MODAL FICHA DE TORNEO -->
+<div class="moverlay" id="m-tor-ficha" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="mbox" onclick="event.stopPropagation()" style="width:540px;">
+  <div class="mtitle"><span id="torf-title"></span><button class="mclose" onclick="document.getElementById('m-tor-ficha').classList.remove('open')">×</button></div>
+  <div id="torf-body"></div>
+</div>
+</div>
+
+<!-- MODAL FORMULARIO DE TORNEO -->
+<div class="moverlay" id="m-tor-form" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="mbox" onclick="event.stopPropagation()" style="width:620px;">
+  <div class="mtitle"><span id="torform-title">Nuevo torneo</span><button class="mclose" onclick="document.getElementById('m-tor-form').classList.remove('open')">×</button></div>
+  <div class="tor-fgrid">
+    <div class="fg"><label class="flabel" for="torf-tipo">Tipo</label>
+      <select class="finput" id="torf-tipo" onchange="torFormTipo()"><option value="seleccion">Selección provincial</option><option value="club">Club tucumano</option></select></div>
+    <div class="fg"><label class="flabel" id="torf-eq-lbl" for="torf-equipo">Selección</label><select class="finput" id="torf-equipo"></select></div>
+    <div class="fg full" id="torf-club-wrap" style="display:none;"><label class="flabel" for="torf-club">Club</label><input class="finput" id="torf-club" list="torf-clubes" placeholder="Ej: Los Tarcos"/><datalist id="torf-clubes"></datalist></div>
+    <div class="fg"><label class="flabel" for="torf-anio">Año</label><input class="finput" id="torf-anio" type="number" min="2000" max="2100"/></div>
+    <div class="fg"><label class="flabel" for="torf-division">División</label><input class="finput" id="torf-division" list="torf-divs" placeholder="Ej: Campeonato (A)"/><datalist id="torf-divs"></datalist></div>
+    <div class="fg full"><label class="flabel" for="torf-nombre">Nombre del torneo</label><input class="finput" id="torf-nombre" placeholder="Ej: Campeonato Argentino de Selecciones"/></div>
+    <div class="fg full"><label class="flabel" for="torf-sede">Sede</label><input class="finput" id="torf-sede" placeholder="Ej: Rosario"/></div>
+    <div class="fg"><label class="flabel" for="torf-desde">Desde</label><input class="finput" id="torf-desde" type="date"/></div>
+    <div class="fg"><label class="flabel" for="torf-hasta">Hasta</label><input class="finput" id="torf-hasta" type="date"/></div>
+    <div class="fg"><label class="flabel" for="torf-puesto">Puesto final</label><input class="finput" id="torf-puesto" type="number" min="1" max="40" placeholder="Vacío si no se jugó"/></div>
+    <div class="fg"><label class="flabel" for="torf-puestotxt">Puesto aproximado</label><input class="finput" id="torf-puestotxt" placeholder="Ej: 5° o 6°"/></div>
+    <div class="fg full"><label class="flabel" for="torf-desenlace">Desenlace</label>
+      <select class="finput" id="torf-desenlace"><option value="">Sin dato</option><option value="campeon">Campeón</option><option value="ascendio">Ascendió</option><option value="mantuvo">Mantuvo la división</option><option value="descendio">Descendió</option></select></div>
+  </div>
+  <div class="tor-sec">Partidos</div>
+  <div class="tor-hint">Instancia · Rival · Goles a favor · Goles en contra · Penales (ej: 4-2)</div>
+  <div id="torf-partidos"></div>
+  <button class="tor-addrow" onclick="torAddRow('p')"><i class="ti ti-plus"></i> Agregar partido</button>
+  <div class="tor-sec">Distinciones</div>
+  <div id="torf-dist"></div>
+  <button class="tor-addrow" onclick="torAddRow('d')"><i class="ti ti-plus"></i> Agregar distinción</button>
+  <div class="tor-sec">Fuentes</div>
+  <div id="torf-fuentes"></div>
+  <button class="tor-addrow" onclick="torAddRow('s')"><i class="ti ti-plus"></i> Agregar fuente</button>
+  <div class="fg" style="margin-top:14px;"><label class="flabel" for="torf-notas">Notas</label><textarea class="finput" id="torf-notas" rows="3" placeholder="Datos a confirmar, aclaraciones"></textarea></div>
+  <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-text-primary);cursor:pointer;"><input type="checkbox" id="torf-verif"/> Datos verificados por la ATAH</label>
+  <div class="tor-acts">
+    <button class="btn" onclick="document.getElementById('m-tor-form').classList.remove('open')">Cancelar</button>
+    <button class="btn btn-org" onclick="torGuardar()"><i class="ti ti-device-floppy"></i> Guardar torneo</button>
+  </div>
+</div>
+</div>
+<datalist id="torf-fases"><option value="Zona"><option value="Cuartos de final"><option value="Semifinal"><option value="Final"><option value="3° puesto"><option value="5° puesto"><option value="Reubicación"><option value="Reclasificación 5° a 8°"><option value="Cruce por el ascenso"><option value="Permanencia"></datalist>
 
 <!-- BARRA NAVEGACIÓN MOBILE -->
 <div class="mobile-nav">
@@ -4633,6 +5242,9 @@ document.addEventListener('visibilitychange', function(){
     </div>
     <div class="mnav-item" id="mnav-entrenadores" onclick="mnavGo('entrenadores')">
       <i class="ti ti-whistle"></i>Entren.
+    </div>
+    <div class="mnav-item" id="mnav-torneos" onclick="mnavGo('torneos')">
+      <i class="ti ti-trophy"></i>Torneos
     </div>
     <div class="mnav-sep"></div>
     <div class="mnav-item" id="mnav-mayor-f" onclick="mnavTeam('mayor-f')" data-team-card="mayor-f">
